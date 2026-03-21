@@ -1,13 +1,13 @@
 import { Link } from '@inertiajs/react';
 import type { PropsWithChildren } from 'react';
-import AppLogoIcon from '@/components/app-logo-icon';
+import AppLogoIcon from '@/components/ui/app/app-logo-icon';
 import {
     Card,
     CardContent,
     CardDescription,
     CardHeader,
     CardTitle,
-} from '@/components/ui/card';
+} from '@/components/ui/shadcn/card';
 import { home } from '@/routes';
 
 export default function AuthCardLayout({

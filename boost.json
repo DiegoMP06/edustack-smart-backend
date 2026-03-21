@@ -1,0 +1,29 @@
+{
+    "agents": [
+        "cursor",
+        "claude_code",
+        "gemini"
+    ],
+    "guidelines": true,
+    "herd_mcp": true,
+    "mcp": true,
+    "nightwatch_mcp": false,
+    "packages": [
+        "laravel/fortify",
+        "spatie/laravel-medialibrary",
+        "spatie/laravel-permission",
+        "spatie/laravel-query-builder"
+    ],
+    "sail": false,
+    "skills": [
+        "scout-development",
+        "wayfinder-development",
+        "pest-testing",
+        "inertia-react-development",
+        "tailwindcss-development",
+        "fortify-development",
+        "medialibrary-development",
+        "laravel-permission-development",
+        "laravel-query-builder"
+    ]
+}
