@@ -2,6 +2,7 @@ import { createInertiaApp } from '@inertiajs/react';
 import createServer from '@inertiajs/react/server';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import ReactDOMServer from 'react-dom/server';
+import { ConfirmDialogProvider } from '@/components/ui/app/confirm-dialog-provider';
 import { TooltipProvider } from '@/components/ui/shadcn/tooltip';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
@@ -18,9 +19,11 @@ createServer((page) =>
             ),
         setup: ({ App, props }) => {
             return (
-                <TooltipProvider delayDuration={0}>
-                    <App {...props} />
-                </TooltipProvider>
+                <ConfirmDialogProvider>
+                    <TooltipProvider delayDuration={0}>
+                        <App {...props} />
+                    </TooltipProvider>
+                </ConfirmDialogProvider>
             );
         },
     }),

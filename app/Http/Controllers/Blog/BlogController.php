@@ -1,0 +1,127 @@
+<?php
+
+namespace App\Http\Controllers\Blog;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Blog\StorePostRequest;
+use App\Http\Requests\Blog\UpdatePostRequest;
+use App\Http\Resources\Blog\PostCollection;
+use App\Models\Blog\Post;
+use App\Models\Blog\PostCategory;
+use App\Models\Blog\PostType;
+use App\Traits\ApiQueryable;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+
+class BlogController extends Controller
+{
+    use ApiQueryable;
+
+    private function formData(): array
+    {
+        return [
+            'types' => PostType::orderBy('order')->get(),
+            'categories' => PostCategory::orderBy('order')->get(),
+        ];
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        $posts = $this->buildQuery(
+            $request->user()->posts(),
+            defaultIncludes: ['type', 'categories', 'media']
+        )->paginate(20)->withQueryString();
+
+        return Inertia::render('blog/blog', [
+            ...$this->formData(),
+            'posts' => new PostCollection($posts),
+            'filter' => $request->query('filter'),
+            'message' => $request->session()->get('message'),
+        ]);
+    }
+
+    public function create()
+    {
+        return Inertia::render('blog/create-post', $this->formData());
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StorePostRequest $request)
+    {
+        $data = $request->validated();
+
+        $post = $request->user()->posts()->create([
+            'name' => $data['name'],
+            'summary' => $data['summary'],
+            'content' => [],
+            'reading_time_minutes' => $data['reading_time_minutes'],
+            'post_type_id' => $data['post_type_id'],
+        ]);
+
+        $post->categories()->sync($data['categories']);
+
+        foreach ($request->file('images') as $file) {
+            $post->addMedia($file)->toMediaCollection('gallery');
+        }
+
+        return redirect()->intended(
+            route('posts.content.edit', ['post' => $post, 'edit' => false], false)
+        );
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Post $post)
+    {
+        return Inertia::render('blog/show-post', [
+            'post' => (new PostCollection([$post->load(['categories', 'type', 'media', 'author'])]))->first(),
+        ]);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Post $post, Request $request)
+    {
+        return Inertia::render('blog/edit-post', [
+            ...$this->formData(),
+            'post' => (new PostCollection([$post->load(['categories', 'type', 'media'])]))->first(),
+            'message' => $request->session()->get('message'),
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdatePostRequest $request, Post $post)
+    {
+        $data = $request->validated();
+
+        $post->update([
+            'name' => $data['name'],
+            'summary' => $data['summary'],
+            'reading_time_minutes' => $data['reading_time_minutes'],
+            'post_type_id' => $data['post_type_id'],
+        ]);
+
+        $post->categories()->sync($data['categories']);
+
+        return back()->with('message', 'Post actualizado correctamente.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Post $post)
+    {
+        $post->delete();
+
+        return back()->with('message', 'Post eliminado correctamente.');
+    }
+}

@@ -7,7 +7,7 @@ import {
     DropdownMenuSeparator,
 } from '@/components/ui/shadcn/dropdown-menu';
 import { UserInfo } from '@/components/ui/app/user-info';
-import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
+import { useMobileNavigation } from '@/hooks/app/use-mobile-navigation';
 import { logout } from '@/routes';
 import { edit } from '@/routes/profile';
 import type { User } from '@/types';
@@ -41,7 +41,7 @@ export function UserMenuContent({ user }: Props) {
                         onClick={cleanup}
                     >
                         <Settings className="mr-2" />
-                        Settings
+                        Configuración
                     </Link>
                 </DropdownMenuItem>
             </DropdownMenuGroup>
@@ -55,7 +55,7 @@ export function UserMenuContent({ user }: Props) {
                     data-test="logout-button"
                 >
                     <LogOut className="mr-2" />
-                    Log out
+                    Cerrar sesión
                 </Link>
             </DropdownMenuItem>
         </>

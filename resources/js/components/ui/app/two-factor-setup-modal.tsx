@@ -18,9 +18,9 @@ import {
     InputOTPSlot,
 } from '@/components/ui/shadcn/input-otp';
 import { Spinner } from '@/components/ui/shadcn/spinner';
-import { useAppearance } from '@/hooks/use-appearance';
-import { useClipboard } from '@/hooks/use-clipboard';
-import { OTP_MAX_LENGTH } from '@/hooks/use-two-factor-auth';
+import { useAppearance } from '@/hooks/app/use-appearance';
+import { useClipboard } from '@/hooks/app/use-clipboard';
+import { OTP_MAX_LENGTH } from '@/hooks/app/use-two-factor-auth';
 import { confirm } from '@/routes/two-factor';
 
 function GridScanIcon() {
@@ -104,7 +104,7 @@ function TwoFactorSetupStep({
                     <div className="relative flex w-full items-center justify-center">
                         <div className="absolute inset-0 top-1/2 h-px w-full bg-border" />
                         <span className="relative bg-card px-2 py-1">
-                            or, enter the code manually
+                            o ingrese el código manualmente
                         </span>
                     </div>
 
@@ -209,7 +209,7 @@ function TwoFactorVerificationStep({
                                 onClick={onBack}
                                 disabled={processing}
                             >
-                                Back
+                                Volver
                             </Button>
                             <Button
                                 type="submit"
@@ -218,7 +218,7 @@ function TwoFactorVerificationStep({
                                     processing || code.length < OTP_MAX_LENGTH
                                 }
                             >
-                                Confirm
+                                Confirmar
                             </Button>
                         </div>
                     </div>
@@ -261,27 +261,27 @@ export default function TwoFactorSetupModal({
     }>(() => {
         if (twoFactorEnabled) {
             return {
-                title: 'Two-factor authentication enabled',
+                title: 'Autenticación de dos factores activada',
                 description:
-                    'Two-factor authentication is now enabled. Scan the QR code or enter the setup key in your authenticator app.',
-                buttonText: 'Close',
+                    'La autenticación de dos factores ya está activada. Escanee el código QR o ingrese la clave de configuración en su aplicación de autenticación.',
+                buttonText: 'Cerrar',
             };
         }
 
         if (showVerificationStep) {
             return {
-                title: 'Verify authentication code',
+                title: 'Verifique el código de autenticación',
                 description:
-                    'Enter the 6-digit code from your authenticator app',
-                buttonText: 'Continue',
+                    'Ingrese el código de 6 dígitos de su aplicación de autenticación',
+                buttonText: 'Continuar',
             };
         }
 
         return {
-            title: 'Enable two-factor authentication',
+            title: 'Active la autenticación de dos factores',
             description:
-                'To finish enabling two-factor authentication, scan the QR code or enter the setup key in your authenticator app',
-            buttonText: 'Continue',
+                'Para finalizar la activación de la autenticación de dos factores, escanee el código QR o ingrese la clave de configuración en su aplicación de autenticación',
+            buttonText: 'Continuar',
         };
     }, [twoFactorEnabled, showVerificationStep]);
 

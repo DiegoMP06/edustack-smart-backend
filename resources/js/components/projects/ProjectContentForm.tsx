@@ -1,0 +1,67 @@
+import { router } from '@inertiajs/react';
+import { toast } from 'sonner';
+import PuckInput from '@/components/puck/PuckInput';
+import usePuckContent from '@/hooks/puck/usePuckContent';
+import { db } from '@/lib/dexie';
+import projects from '@/routes/projects';
+import type { Project } from '@/types/projects';
+
+type ProjectContentFormProps = {
+    project: Project;
+    edit: boolean;
+};
+
+export default function ProjectContentForm({
+    project,
+    edit,
+}: ProjectContentFormProps) {
+    const {
+        setProcessing,
+        initialData,
+        content,
+        DBId,
+        debouncedSaveDB,
+        processing,
+    } = usePuckContent({
+        contentType: 'projects',
+        itemId: project.id,
+        title: project.name,
+        serverContent: project.content,
+    });
+
+    const handleSaveChangesToServer = async () => {
+        setProcessing(true);
+
+        const formData = {
+            content,
+            edit,
+        };
+
+        router.patch(projects.content.update(project.id), formData as never, {
+            preserveScroll: true,
+            showProgress: true,
+            forceFormData: false,
+            onSuccess: async (data) => {
+                await db.contents.delete(DBId);
+                toast.success(data.props.message as string);
+            },
+            onFinish() {
+                setProcessing(false);
+            },
+            onError(error) {
+                Object.values(error).forEach((value) => toast.error(value));
+            },
+        });
+    };
+
+    return (
+        initialData && (
+            <PuckInput
+                initialData={initialData}
+                onChange={(data) => debouncedSaveDB(data.content)}
+                processing={processing}
+                handleSaveChangesToServer={handleSaveChangesToServer}
+            />
+        )
+    );
+}

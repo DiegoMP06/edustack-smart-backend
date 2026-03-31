@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/shadcn/avatar';
-import { useInitials } from '@/hooks/use-initials';
+import { useInitials } from '@/hooks/app/use-initials';
 import type { User } from '@/types';
 
 export function UserInfo({

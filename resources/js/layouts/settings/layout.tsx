@@ -3,7 +3,7 @@ import type { PropsWithChildren } from 'react';
 import Heading from '@/components/ui/app/heading';
 import { Button } from '@/components/ui/shadcn/button';
 import { Separator } from '@/components/ui/shadcn/separator';
-import { useCurrentUrl } from '@/hooks/use-current-url';
+import { useCurrentUrl } from '@/hooks/app/use-current-url';
 import { cn, toUrl } from '@/lib/utils';
 import { edit as editAppearance } from '@/routes/appearance';
 import { edit } from '@/routes/profile';
@@ -12,17 +12,17 @@ import type { NavItem } from '@/types';
 
 const sidebarNavItems: NavItem[] = [
     {
-        title: 'Profile',
+        title: 'Perfil',
         href: edit(),
         icon: null,
     },
     {
-        title: 'Security',
+        title: 'Seguridad',
         href: editSecurity(),
         icon: null,
     },
     {
-        title: 'Appearance',
+        title: 'Apariencia',
         href: editAppearance(),
         icon: null,
     },
@@ -31,7 +31,6 @@ const sidebarNavItems: NavItem[] = [
 export default function SettingsLayout({ children }: PropsWithChildren) {
     const { isCurrentOrParentUrl } = useCurrentUrl();
 
-    // When server-side rendering, we only render the layout on the client...
     if (typeof window === 'undefined') {
         return null;
     }
@@ -39,15 +38,15 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
     return (
         <div className="px-4 py-6">
             <Heading
-                title="Settings"
-                description="Manage your profile and account settings"
+                title="Configuración"
+                description="Administre la configuración de su perfil y de su cuenta"
             />
 
             <div className="flex flex-col lg:flex-row lg:space-x-12">
                 <aside className="w-full max-w-xl lg:w-48">
                     <nav
                         className="flex flex-col space-y-1 space-x-0"
-                        aria-label="Settings"
+                        aria-label="Configuración"
                     >
                         {sidebarNavItems.map((item, index) => (
                             <Button

@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/shadcn/sidebar';
 import { UserInfo } from '@/components/ui/app/user-info';
 import { UserMenuContent } from '@/components/ui/app/user-menu-content';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { useIsMobile } from '@/hooks/app/use-mobile';
 
 export function NavUser() {
     const { auth } = usePage().props;
