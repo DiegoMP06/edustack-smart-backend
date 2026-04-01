@@ -41,7 +41,6 @@ const TechStackInput: FC<TechStackInputProps> = ({ onChange, value }) => {
         }
     };
 
-
     const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
         const pasteData = e.clipboardData.getData('text');
 
@@ -50,12 +49,12 @@ const TechStackInput: FC<TechStackInputProps> = ({ onChange, value }) => {
 
             const newTechs = pasteData
                 .split(',')
-                .map(tech => tech.trim())
-                .filter(tech => tech !== '');
+                .map((tech) => tech.trim())
+                .filter((tech) => tech !== '');
 
-            const newItems = newTechs.map(tech => ({
+            const newItems = newTechs.map((tech) => ({
                 id: Date.now() * Math.random(),
-                value: tech
+                value: tech,
             }));
 
             setItems([...items, ...newItems]);
@@ -108,11 +107,11 @@ const TechStackInput: FC<TechStackInputProps> = ({ onChange, value }) => {
                     {items.map((item) => (
                         <Item
                             variant="muted"
-                            className="gap-1 p-0 w-fit overflow-hidden"
+                            className="w-fit gap-1 overflow-hidden p-0"
                             key={item.id}
                             onDoubleClick={() => handleRemoveItem(item.id)}
                         >
-                            <ItemMedia variant="icon" className="p-2 bg-accent">
+                            <ItemMedia variant="icon" className="bg-accent p-2">
                                 <Code className="size-6" />
                             </ItemMedia>
                             <ItemContent className="p-2">

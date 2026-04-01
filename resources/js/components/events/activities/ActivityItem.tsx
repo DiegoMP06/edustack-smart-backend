@@ -30,10 +30,7 @@ import {
     ItemMedia,
     ItemTitle,
 } from '@/components/ui/shadcn/item';
-import {
-    formatDateToLocale,
-    cn,
-} from '@/lib/utils';
+import { formatDateToLocale, cn } from '@/lib/utils';
 import events from '@/routes/events';
 import type { EventActivity } from '@/types/events';
 
@@ -52,19 +49,27 @@ export default function ActivityItem({ activity, eventId }: ActivityItemProps) {
 
     const deleteActivity = () => {
         setProcessing(true);
-        router.delete(events.activities.destroy({ event: eventId, activity: activity.id }), {
-            preserveScroll: true,
-            showProgress: true,
-            onError(error) {
-                Object.values(error).forEach((value) => toast.error(value as string));
+        router.delete(
+            events.activities.destroy({
+                event: eventId,
+                activity: activity.id,
+            }),
+            {
+                preserveScroll: true,
+                showProgress: true,
+                onError(error) {
+                    Object.values(error).forEach((value) =>
+                        toast.error(value as string),
+                    );
+                },
+                onFinish() {
+                    setProcessing(false);
+                },
+                onSuccess(data) {
+                    toast.success(data.props.message as string);
+                },
             },
-            onFinish() {
-                setProcessing(false);
-            },
-            onSuccess(data) {
-                toast.success(data.props.message as string);
-            },
-        });
+        );
     };
 
     return (
@@ -72,9 +77,7 @@ export default function ActivityItem({ activity, eventId }: ActivityItemProps) {
             <Item variant="outline">
                 <ItemMedia>
                     <Avatar className="size-10">
-                        <AvatarImage
-                            src={activity.image ?? undefined}
-                        />
+                        <AvatarImage src={activity.image ?? undefined} />
                         <AvatarFallback>
                             {activity.name.substring(0, 1)}
                         </AvatarFallback>
@@ -86,7 +89,10 @@ export default function ActivityItem({ activity, eventId }: ActivityItemProps) {
                         <HoverCard>
                             <HoverCardTrigger asChild>
                                 <Link
-                                    href={events.activities.show({ event: eventId, activity: activity.id })}
+                                    href={events.activities.show({
+                                        event: eventId,
+                                        activity: activity.id,
+                                    })}
                                     className="hover:underline"
                                 >
                                     {activity.name}
@@ -113,8 +119,11 @@ export default function ActivityItem({ activity, eventId }: ActivityItemProps) {
 
                                     <p className="text-sm">
                                         Del{' '}
-                                        {formatDateToLocale(activity.started_at)}{' '}
-                                        al {formatDateToLocale(activity.ended_at)}
+                                        {formatDateToLocale(
+                                            activity.started_at,
+                                        )}{' '}
+                                        al{' '}
+                                        {formatDateToLocale(activity.ended_at)}
                                     </p>
 
                                     <p className="flex flex-wrap items-center gap-2 text-sm">
@@ -150,7 +159,10 @@ export default function ActivityItem({ activity, eventId }: ActivityItemProps) {
                             </DropdownMenuLabel>
                             <DropdownMenuGroup>
                                 <Link
-                                    href={events.activities.edit({ event: eventId, activity: activity.id })}
+                                    href={events.activities.edit({
+                                        event: eventId,
+                                        activity: activity.id,
+                                    })}
                                     disabled={processing}
                                 >
                                     <DropdownMenuItem>

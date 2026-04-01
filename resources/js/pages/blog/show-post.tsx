@@ -75,10 +75,10 @@ export default function ShowPost({ post }: ShowPostProps) {
                             <AvatarFallback className="rounded-lg bg-indigo-200 text-indigo-700 dark:bg-neutral-700 dark:text-white">
                                 {getInitials(
                                     post.author?.name +
-                                    ' ' +
-                                    post.author?.father_last_name +
-                                    ' ' +
-                                    post.author?.mother_last_name,
+                                        ' ' +
+                                        post.author?.father_last_name +
+                                        ' ' +
+                                        post.author?.mother_last_name,
                                 )}
                             </AvatarFallback>
                         </Avatar>

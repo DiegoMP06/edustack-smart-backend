@@ -52,7 +52,7 @@ export default function Gallery({
         <div className="mx-4 my-6">
             <div className={`grid ${COLS[columns]} ${GAP[gap]}`}>
                 {images.map((img, i) => (
-                    <figure key={i}>
+                    <figure key={`${img.url}-${i}`}>
                         <button
                             type="button"
                             onClick={() => lightbox && setActive(i)}

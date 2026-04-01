@@ -1,13 +1,13 @@
 import { Head, router } from '@inertiajs/react';
 import { ChevronLeft } from 'lucide-react';
+import EditProjectForm from '@/components/projects/edit-project/EditProjectForm';
+import EditProjectGallery from '@/components/projects/edit-project/EditProjectGallery';
+import ProjectOptions from '@/components/projects/edit-project/ProjectOptions';
 import { Button } from '@/components/ui/shadcn/button';
 import AppLayout from '@/layouts/app-layout';
 import projects from '@/routes/projects';
 import type { BreadcrumbItem } from '@/types';
 import type { Project, ProjectCategory, ProjectStatus } from '@/types/projects';
-import EditProjectForm from './EditProject/EditProjectForm';
-import EditProjectGallery from './EditProject/EditProjectGallery';
-import ProjectOptions from './EditProject/ProjectOptions';
 
 type EditProjectProps = {
     project: Project;

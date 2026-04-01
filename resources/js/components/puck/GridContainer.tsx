@@ -1,10 +1,10 @@
 import type { ComponentConfig, SlotComponent } from '@puckeditor/core';
 
 type GridContainerProps = {
-    columns: number; // 1-12, configurable en Puck
-    gap: number; // pixels
+    columns: number;
+    gap: number;
     items: { content: SlotComponent }[];
-    stackOnMobile: boolean; // colapsar a 1 col en pantallas pequeñas
+    stackOnMobile: boolean;
 };
 
 export default function GridContainer({
@@ -13,25 +13,19 @@ export default function GridContainer({
     items,
     stackOnMobile,
 }: GridContainerProps) {
+    const containerClass = stackOnMobile
+        ? `grid grid-cols-1 md:grid-container-${columns}`
+        : `grid grid-container-${columns}`;
+
     return (
-        <div
-            className={stackOnMobile ? 'grid grid-cols-1 md:grid' : 'grid'}
-            style={{
-                gap,
-                gridTemplateColumns: stackOnMobile
-                    ? undefined // en mobile lo controla grid-cols-1
-                    : `repeat(${columns}, minmax(0, 1fr))`,
-            }}
-        >
+        <div className={containerClass} style={{ gap }}>
             <style>{`
-                @media (min-width: 768px) {
-                    .grid-container-${columns} {
-                        grid-template-columns: repeat(${columns}, minmax(0, 1fr));
-                    }
+                .grid-container-${columns} {
+                    grid-template-columns: repeat(${columns}, minmax(0, 1fr));
                 }
             `}</style>
             {items.map((item, i) => (
-                <div key={i}>{item.content()}</div>
+                <div key={`grid-item-${i}`}>{item.content()}</div>
             ))}
         </div>
     );
@@ -45,7 +39,7 @@ export const GridContainerConfig: ComponentConfig<GridContainerProps> = {
             max: 12,
             type: 'number',
             label: 'Columnas',
-            placeholder: 'Escribe aqui las columnas...',
+            placeholder: 'Escribe aquí las columnas...',
         },
         items: {
             type: 'array',

@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import PuckInput from '@/components/puck/PuckInput';
 import usePuckContent from '@/hooks/puck/usePuckContent';
 import { db } from '@/lib/dexie';
+import { eventPuckConfig } from '@/lib/puck';
 import events from '@/routes/events';
 import type { Event } from '@/types';
 
@@ -54,6 +55,7 @@ export default function EventContentForm({ event, edit }: ContentFormProps) {
     return (
         initialData && (
             <PuckInput
+                config={eventPuckConfig}
                 initialData={initialData}
                 onChange={(data) => debouncedSaveDB(data.content)}
                 processing={processing}

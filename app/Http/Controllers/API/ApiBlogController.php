@@ -33,7 +33,7 @@ class ApiBlogController extends Controller
 
     public function show(Request $request, Post $post)
     {
-        if (! $post->is_published) {
+        if (!$post->is_published) {
             return response()->json(['message' => 'Post not found.'], 404);
         }
 
@@ -42,11 +42,11 @@ class ApiBlogController extends Controller
 
         $isBot = preg_match('/bot|crawl|slurp|spider|mediapartners/i', $userAgent);
 
-        if (! $isBot) {
-            $viewerHash = md5($ipAddress.$userAgent);
+        if (!$isBot) {
+            $viewerHash = md5($ipAddress . $userAgent);
             $cacheKey = "post_{$post->id}_viewed_by_{$viewerHash}";
 
-            if (! Cache::has($cacheKey)) {
+            if (!Cache::has($cacheKey)) {
                 $post->increment('views_count');
                 Cache::put($cacheKey, true, now()->addHours(2));
             }

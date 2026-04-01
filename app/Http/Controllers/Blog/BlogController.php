@@ -30,13 +30,14 @@ class BlogController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Post::class);
+
         $posts = $this->buildQuery(
             $request->user()->posts(),
             defaultIncludes: ['type', 'categories', 'media']
         )->paginate(20)->withQueryString();
 
         return Inertia::render('blog/blog', [
-            ...$this->formData(),
             'posts' => new PostCollection($posts),
             'filter' => $request->query('filter'),
             'message' => $request->session()->get('message'),
@@ -45,6 +46,8 @@ class BlogController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Post::class);
+
         return Inertia::render('blog/create-post', $this->formData());
     }
 
@@ -53,6 +56,8 @@ class BlogController extends Controller
      */
     public function store(StorePostRequest $request)
     {
+        $this->authorize('create', Post::class);
+
         $data = $request->validated();
 
         $post = $request->user()->posts()->create([
@@ -79,6 +84,8 @@ class BlogController extends Controller
      */
     public function show(Post $post)
     {
+        $this->authorize('view', $post);
+
         return Inertia::render('blog/show-post', [
             'post' => (new PostCollection([$post->load(['categories', 'type', 'media', 'author'])]))->first(),
         ]);
@@ -89,6 +96,8 @@ class BlogController extends Controller
      */
     public function edit(Post $post, Request $request)
     {
+        $this->authorize('update', $post);
+
         return Inertia::render('blog/edit-post', [
             ...$this->formData(),
             'post' => (new PostCollection([$post->load(['categories', 'type', 'media'])]))->first(),
@@ -101,6 +110,8 @@ class BlogController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
+        $this->authorize('update', $post);
+
         $data = $request->validated();
 
         $post->update([
@@ -120,6 +131,8 @@ class BlogController extends Controller
      */
     public function destroy(Post $post)
     {
+        $this->authorize('delete', $post);
+
         $post->delete();
 
         return back()->with('message', 'Post eliminado correctamente.');

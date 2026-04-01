@@ -69,6 +69,7 @@ export default function ProjectItem({ project }: ProjectItemProps) {
     };
 
     const deleteProject = () => {
+        setProcessing(true);
         router.delete(projects.destroy(project.id), {
             preserveScroll: true,
             showProgress: true,
@@ -201,15 +202,15 @@ export default function ProjectItem({ project }: ProjectItemProps) {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-40" align="end">
                             <DropdownMenuLabel>
-                                Opciones del project
+                                Opciones del proyecto
                             </DropdownMenuLabel>
                             <DropdownMenuGroup>
-                                <Link href={projects.edit(project.id)}>
-                                    <DropdownMenuItem>
+                                <DropdownMenuItem asChild disabled={processing}>
+                                    <Link href={projects.edit(project.id)}>
                                         <Pencil />
                                         Editar
-                                    </DropdownMenuItem>
-                                </Link>
+                                    </Link>
+                                </DropdownMenuItem>
 
                                 <DropdownMenuItem
                                     onClick={handleProjectStatus}

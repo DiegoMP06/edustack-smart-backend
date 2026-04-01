@@ -41,7 +41,10 @@ export type Post = {
     author?: UserData;
 };
 
-export type PostFormData = Pick<Post, 'name' | 'summary' | 'post_type_id' | 'reading_time_minutes'> & {
+export type PostFormData = Pick<
+    Post,
+    'name' | 'summary' | 'post_type_id' | 'reading_time_minutes'
+> & {
     categories: number[];
     images?: File[];
 };

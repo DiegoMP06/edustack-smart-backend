@@ -22,7 +22,7 @@ type BlogProps = {
 
 export default function Blog({ posts, filter }: BlogProps) {
     return (
-        <AppLayout breadcrumbs={breadcrumbs} collectionName='posts' withSearch>
+        <AppLayout breadcrumbs={breadcrumbs} collectionName="posts" withSearch>
             <Head title="Blog" />
 
             <div className="mb-15">

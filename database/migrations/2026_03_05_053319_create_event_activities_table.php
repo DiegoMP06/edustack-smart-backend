@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -32,22 +31,22 @@ return new class extends Migration
             $table->boolean('is_competition')->default(false);
             $table->decimal('price', 10, 2)->default(0);
             $table->json('speakers')->nullable();
+            $table->string('repository_url')->nullable();
+            $table->boolean('is_published')->default(false);
+            $table->dateTime('started_at')->index();
+            $table->dateTime('ended_at');
+            $table->dateTime('registration_started_at');
+            $table->dateTime('registration_ended_at');
             $table->foreignId('course_id')->nullable()
                 ->constrained()->nullOnDelete();
             $table->foreignId('project_id')->nullable()
                 ->constrained()->nullOnDelete();
-            $table->string('repository_url')->nullable();
-            $table->boolean('is_published')->default(false);
             $table->foreignId('difficulty_level_id')->nullable()
                 ->constrained()->nullOnDelete();
             $table->foreignId('event_status_id')->constrained()->restrictOnDelete();
-            $table->dateTime('started_at')->index();
-            $table->dateTime('ended_at');
-            $table->dateTime('registration_started_at')->nullable();
-            $table->dateTime('registration_ended_at')->nullable();
-            $table->foreignId('event_id')->constrained()->cascadeOnDelete();
             $table->foreignId('event_activity_type_id')->nullable()
                 ->constrained()->nullOnDelete();
+            $table->foreignId('event_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
             $table->index(['event_id', 'is_published']);

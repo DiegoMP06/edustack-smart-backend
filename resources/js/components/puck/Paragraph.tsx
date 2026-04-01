@@ -75,6 +75,11 @@ export const ParagraphConfig: ComponentConfig<ParagraphProps> = {
             ],
         },
     },
-    defaultProps: { children: 'Párrafo', align: 'justify', color: 'default', size: 'base' },
+    defaultProps: {
+        children: 'Párrafo',
+        align: 'justify',
+        color: 'default',
+        size: 'base',
+    },
     render: Paragraph,
 };

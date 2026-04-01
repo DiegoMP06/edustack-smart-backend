@@ -1,13 +1,13 @@
 import { Head, router } from '@inertiajs/react';
 import { ChevronLeft } from 'lucide-react';
+import EditPostForm from '@/components/blog/edit-post/EditPostForm';
+import EditPostGallery from '@/components/blog/edit-post/EditPostGallery';
+import PostOptions from '@/components/blog/edit-post/PostOptions';
 import { Button } from '@/components/ui/shadcn/button';
 import AppLayout from '@/layouts/app-layout';
 import posts from '@/routes/posts';
 import type { BreadcrumbItem } from '@/types';
 import type { Post, PostCategory, PostType } from '@/types/blog';
-import EditPostForm from './EditPost/EditPostForm';
-import EditPostGallery from './EditPost/EditPostGallery';
-import PostOptions from './EditPost/PostOptions';
 
 const breadcrumbs = (post: Post): BreadcrumbItem[] => [
     {

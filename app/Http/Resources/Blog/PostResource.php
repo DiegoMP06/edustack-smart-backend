@@ -18,7 +18,7 @@ class PostResource extends JsonResource
         $data = parent::toArray($request);
 
         $data['media'] = $this->getMedia('gallery')->map(
-            fn ($m) => new MediaResource($m, 'main', [
+            fn($m) => new MediaResource($m, 'main', [
                 'main' => ['width' => 1200, 'height' => 620],
                 'hero' => ['width' => 1920, 'height' => 1080],
             ], ['hero'])

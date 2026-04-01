@@ -2,7 +2,7 @@
 
 namespace App\Models\Projects;
 
-use App\Enums\Projects\RolesOfProjectCollaborators;
+use App\Enums\Projects\ProjectCollaboratorRole;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,7 +18,7 @@ class ProjectCollaborator extends Model
     protected function casts(): array
     {
         return [
-            'role' => RolesOfProjectCollaborators::class,
+            'role' => ProjectCollaboratorRole::class,
         ];
     }
 

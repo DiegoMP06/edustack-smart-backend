@@ -72,7 +72,9 @@ export default function PostForm({
             </div>
 
             <div className="grid gap-2">
-                <Label htmlFor="reading_time_minutes">Tiempo de lectura (minutos):</Label>
+                <Label htmlFor="reading_time_minutes">
+                    Tiempo de lectura (minutos):
+                </Label>
 
                 <Input
                     {...register('reading_time_minutes', {
@@ -80,7 +82,8 @@ export default function PostForm({
                         required: 'El tiempo de lectura es requerido',
                         min: {
                             value: 1,
-                            message: 'El tiempo de lectura debe ser al menos 1 minuto',
+                            message:
+                                'El tiempo de lectura debe ser al menos 1 minuto',
                         },
                     })}
                     id="reading_time_minutes"
@@ -147,16 +150,16 @@ export default function PostForm({
                                         onCheckedChange={(checked) =>
                                             checked
                                                 ? onChange([
-                                                    ...(value || []),
-                                                    category.id,
-                                                ])
+                                                      ...(value || []),
+                                                      category.id,
+                                                  ])
                                                 : onChange(
-                                                    value?.filter(
-                                                        (id) =>
-                                                            id !==
-                                                            category.id,
-                                                    ) || [],
-                                                )
+                                                      value?.filter(
+                                                          (id) =>
+                                                              id !==
+                                                              category.id,
+                                                      ) || [],
+                                                  )
                                         }
                                         defaultChecked={value?.some(
                                             (id) => id === category.id,

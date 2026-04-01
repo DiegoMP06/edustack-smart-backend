@@ -7,6 +7,8 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class CourseCollection extends ResourceCollection
 {
+    public $collects = CourseResource::class;
+
     /**
      * Transform the resource collection into an array.
      *

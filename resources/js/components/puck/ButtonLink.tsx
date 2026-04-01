@@ -10,6 +10,20 @@ type ButtonLinkProps = {
     icon?: string; // emoji o texto corto antes del label
 };
 
+function normalizeHref(href: string): string {
+    const trimmed = href.trim();
+
+    if (trimmed === '') {
+        return '#';
+    }
+
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+        return trimmed;
+    }
+
+    return `https://${trimmed}`;
+}
+
 const VARIANT: Record<string, string> = {
     primary: 'bg-indigo-700 text-white hover:bg-indigo-800 border-transparent',
     secondary:
@@ -42,10 +56,12 @@ export default function ButtonLink({
     newTab,
     icon,
 }: ButtonLinkProps) {
+    const safeHref = normalizeHref(href);
+
     return (
         <div className={`my-4 ${ALIGN_WRAP[align]}`}>
             <a
-                href={href || '#'}
+                href={safeHref}
                 target={newTab ? '_blank' : undefined}
                 rel={newTab ? 'noopener noreferrer' : undefined}
                 className={[

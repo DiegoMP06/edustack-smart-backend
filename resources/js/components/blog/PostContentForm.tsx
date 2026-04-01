@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import PuckInput from '@/components/puck/PuckInput';
 import usePuckContent from '@/hooks/puck/usePuckContent';
 import { db } from '@/lib/dexie';
+import { blogPuckConfig } from '@/lib/puck';
 import posts from '@/routes/posts';
 import type { Post } from '@/types/blog';
 
@@ -54,6 +55,7 @@ export default function PostContentForm({ post, edit }: ContentFormProps) {
     return (
         initialData && (
             <PuckInput
+                config={blogPuckConfig}
                 initialData={initialData}
                 onChange={(data) => debouncedSaveDB(data.content)}
                 processing={processing}

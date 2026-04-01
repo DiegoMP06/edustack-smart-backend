@@ -1,5 +1,14 @@
 import { Link, usePage } from '@inertiajs/react';
-import { CalendarDays, FileCode, Folder, LayoutGrid, NotebookPen, Users2 } from 'lucide-react';
+import {
+    CalendarDays,
+    ClipboardList,
+    FileCode,
+    Folder,
+    GraduationCap,
+    LayoutGrid,
+    NotebookPen,
+    Users2,
+} from 'lucide-react';
 import AppLogo from '@/components/ui/app/app-logo';
 import { NavFooter } from '@/components/ui/app/nav-footer';
 import { NavMain } from '@/components/ui/app/nav-main';
@@ -15,6 +24,7 @@ import {
 } from '@/components/ui/shadcn/sidebar';
 import { dashboard } from '@/routes';
 import events from '@/routes/events';
+import forms from '@/routes/forms';
 import posts from '@/routes/posts';
 import projects from '@/routes/projects';
 import users from '@/routes/admin/users';
@@ -32,9 +42,19 @@ const defaultNavItems: NavItem[] = [
 
 const studentNavItems: NavItem[] = [
     {
+        title: 'Classroom',
+        href: '/classroom/courses',
+        icon: GraduationCap,
+    },
+    {
         title: 'Proyectos',
         href: projects.index({ query: { filter: { search: '' } } }),
         icon: FileCode,
+    },
+    {
+        title: 'Formularios',
+        href: forms.index({ query: { filter: { search: '' } } }),
+        icon: ClipboardList,
     },
 ]
 

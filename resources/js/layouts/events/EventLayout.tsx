@@ -10,7 +10,7 @@ import { cn, getIdealResponsiveMediaLink, toUrl } from '@/lib/utils';
 import events from '@/routes/events';
 import type { Event, NavItem } from '@/types';
 
-const sidebarNavItems: (event: Event) => NavItem[] = (event) => ([
+const sidebarNavItems: (event: Event) => NavItem[] = (event) => [
     {
         title: 'Información',
         href: events.show(event.id),
@@ -21,15 +21,13 @@ const sidebarNavItems: (event: Event) => NavItem[] = (event) => ([
         href: events.activities.index(event.id),
         icon: null,
     },
-    {
-        title: 'Participantes',
-        href: events.show(event.id),
-        icon: null,
-    },
-]);
+];
 
-export default function EventLayout({ children, event }: PropsWithChildren<{
-    event: Event
+export default function EventLayout({
+    children,
+    event,
+}: PropsWithChildren<{
+    event: Event;
 }>) {
     const getInitials = useInitials();
     const { isCurrentOrParentUrl } = useCurrentUrl();
@@ -39,15 +37,15 @@ export default function EventLayout({ children, event }: PropsWithChildren<{
     }
 
     return (
-        <div >
+        <div>
             <div className="mx-auto max-w-4xl">
                 <div className="mx-auto">
                     <img
                         src={
                             event.media.at(0)?.is_processed
                                 ? getIdealResponsiveMediaLink(
-                                    event.media.at(0)!,
-                                )
+                                      event.media.at(0)!,
+                                  )
                                 : event.media.at(0)?.urls.original
                         }
                         alt={event.name}
@@ -68,10 +66,10 @@ export default function EventLayout({ children, event }: PropsWithChildren<{
                                 <AvatarFallback className="rounded-lg bg-indigo-200 text-indigo-700 dark:bg-neutral-700 dark:text-white">
                                     {getInitials(
                                         event.author?.name +
-                                        ' ' +
-                                        event.author?.father_last_name +
-                                        ' ' +
-                                        event.author?.mother_last_name,
+                                            ' ' +
+                                            event.author?.father_last_name +
+                                            ' ' +
+                                            event.author?.mother_last_name,
                                     )}
                                 </AvatarFallback>
                             </Avatar>
@@ -89,7 +87,7 @@ export default function EventLayout({ children, event }: PropsWithChildren<{
                     </div>
                 </div>
 
-                <p className="mb-10 mt-8 text-center leading-normal whitespace-pre-wrap text-muted-foreground">
+                <p className="mt-8 mb-10 text-center leading-normal whitespace-pre-wrap text-muted-foreground">
                     {event.summary}
                 </p>
             </div>
@@ -128,10 +126,8 @@ export default function EventLayout({ children, event }: PropsWithChildren<{
 
                 <Separator className="my-6 lg:hidden" />
 
-                <div className="flex-1 md:max-w-2xl">
-                    <section className="space-y-12">
-                        {children}
-                    </section>
+                <div className="flex-1 md:max-w-6xl">
+                    <section className="space-y-12">{children}</section>
                 </div>
             </div>
         </div>

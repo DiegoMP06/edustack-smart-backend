@@ -27,13 +27,14 @@ class ProjectController extends Controller
 
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Project::class);
+
         $projects = $this->buildQuery(
             $request->user()->projects(),
             defaultIncludes: ['status', 'categories', 'media']
         )->paginate(20)->withQueryString();
 
         return Inertia::render('projects/projects', [
-            ...$this->formData(),
             'projects' => new ProjectCollection($projects),
             'filter' => $request->query('filter'),
             'message' => session()->get('message'),
@@ -42,11 +43,15 @@ class ProjectController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Project::class);
+
         return Inertia::render('projects/create-project', $this->formData());
     }
 
     public function store(StoreProjectRequest $request)
     {
+        $this->authorize('create', Project::class);
+
         $data = $request->validated();
 
         $project = $request->user()->projects()->create([
@@ -74,6 +79,8 @@ class ProjectController extends Controller
 
     public function show(Project $project)
     {
+        $this->authorize('view', $project);
+
         return Inertia::render('projects/show-project', [
             'project' => (new ProjectCollection([$project->load(['collaborators', 'author', 'media', 'categories', 'status'])]))->first(),
         ]);
@@ -81,6 +88,8 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
+        $this->authorize('update', $project);
+
         return Inertia::render('projects/edit-project', [
             ...$this->formData(),
             'project' => (new ProjectCollection([$project->load(['media', 'categories', 'status'])]))->first(),
@@ -90,6 +99,8 @@ class ProjectController extends Controller
 
     public function update(UpdateProjectRequest $request, Project $project)
     {
+        $this->authorize('update', $project);
+
         $data = $request->validated();
 
         $project->update($data);
@@ -100,6 +111,8 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
+        $this->authorize('delete', $project);
+
         $project->delete();
 
         return back()->with('message', 'Proyecto eliminado correctamente.');

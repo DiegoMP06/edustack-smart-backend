@@ -3,43 +3,26 @@
 namespace App\Http\Controllers\Classroom;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Classroom\StoreCourseRequest;
+use App\Http\Requests\Classroom\UpdateCourseRequest;
 use App\Http\Resources\Classroom\CourseCollection;
 use App\Models\Classroom\Course;
 use App\Models\Classroom\CourseCategory;
 use App\Models\Classroom\CourseStatus;
+use App\Traits\ApiQueryable;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class CourseController extends Controller
 {
+    use ApiQueryable;
+
     private function formData(): array
     {
         return [
             'statuses' => CourseStatus::orderBy('order')->get(['id', 'name', 'slug', 'color']),
             'categories' => CourseCategory::orderBy('order')->get(['id', 'name', 'slug', 'color', 'icon']),
-        ];
-    }
-
-    private function rules(bool $isStore = true): array
-    {
-        return [
-            'name' => ['required', 'string', 'max:255'],
-            'cover' => [$isStore ? 'required' : 'nullable', 'image', 'mimes:jpg,png,jpeg,webp'],
-            'summary' => ['required', 'string', 'min:100'],
-            'code' => ['nullable', 'string', 'max:20'],
-            'credits' => ['required', 'integer', 'min:0', 'max:20'],
-            'period' => ['nullable', 'string', 'max:50'],
-            'price' => ['required', 'numeric', 'min:0'],
-            'is_free' => ['required', 'boolean'],
-            'capacity' => ['nullable', 'integer', 'min:1'],
-            'course_status_id' => ['required', 'exists:course_statuses,id'],
-            'course_category_id' => ['nullable', 'exists:course_categories,id'],
-            'start_date' => ['required', 'date', ...($isStore ? ['after:today'] : [])],
-            'end_date' => ['required', 'date', 'after:start_date'],
-            'enrollment_start_date' => ['nullable', 'date', 'before_or_equal:start_date'],
-            'enrollment_end_date' => ['nullable', 'date', 'after:enrollment_start_date', 'before_or_equal:end_date'],
-            'is_published' => ['required', 'boolean'],
         ];
     }
 
@@ -54,18 +37,15 @@ class CourseController extends Controller
 
     public function index(Request $request)
     {
-        $courses = Course::query()
-            ->where('user_id', $request->user()->id)
-            ->with(['status', 'category', 'media'])
-            ->when($request->search, fn ($q, $search) => $q->whereLike('name', "%{$search}%"))
-            ->orderByDesc('id')
-            ->paginate(20)
-            ->withQueryString();
+        $courses = $this->buildQuery(
+            $request->user()->courses(),
+            defaultIncludes: ['status', 'category', 'media']
+        )->paginate(20)->withQueryString();
 
         return Inertia::render('classroom/courses/courses', [
             ...$this->formData(),
             'courses' => new CourseCollection($courses),
-            'search' => $request->string('search', ''),
+            'filter' => $request->query('filter'),
             'message' => $request->session()->get('message'),
         ]);
     }
@@ -75,9 +55,9 @@ class CourseController extends Controller
         return Inertia::render('classroom/courses/create-course', $this->formData());
     }
 
-    public function store(Request $request)
+    public function store(StoreCourseRequest $request)
     {
-        $data = $request->validate($this->rules(isStore: true));
+        $data = $request->validated();
 
         $this->validateBusinessRules($data);
 
@@ -125,9 +105,9 @@ class CourseController extends Controller
         ]);
     }
 
-    public function update(Request $request, Course $course)
+    public function update(UpdateCourseRequest $request, Course $course)
     {
-        $data = $request->validate($this->rules(isStore: false));
+        $data = $request->validated();
 
         $this->validateBusinessRules($data);
 

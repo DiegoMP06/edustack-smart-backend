@@ -2,9 +2,34 @@
 
 namespace App\Models\Classroom;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
+#[Fillable(['name', 'slug', 'icon'])]
 class ResourceType extends Model
 {
-    //
+    use HasSlug, LogsActivity;
+
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logOnlyDirty();
+    }
+
+    public function resources()
+    {
+        return $this->hasMany(CourseResource::class);
+    }
 }

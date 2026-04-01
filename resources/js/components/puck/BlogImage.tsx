@@ -23,7 +23,7 @@ export default function BlogImage({
     shadow = false,
 }: BlogImageProps) {
     if (!url) {
-        return <></>;
+        return <div className="hidden" />;
     }
 
     return (

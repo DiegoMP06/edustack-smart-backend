@@ -23,7 +23,11 @@ type ProjectsProps = {
 
 export default function Projects({ filter, projects }: ProjectsProps) {
     return (
-        <AppLayout breadcrumbs={breadcrumbs} withSearch collectionName='projects'>
+        <AppLayout
+            breadcrumbs={breadcrumbs}
+            withSearch
+            collectionName="projects"
+        >
             <Head title="Proyectos" />
 
             <div className="mb-15">

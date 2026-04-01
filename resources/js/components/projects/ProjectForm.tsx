@@ -37,7 +37,7 @@ export default function ProjectForm({
     return (
         <>
             <div className="grid gap-2">
-                <Label htmlFor="title">Nombre:</Label>
+                <Label htmlFor="name">Nombre:</Label>
 
                 <Input
                     {...register('name', {
@@ -48,7 +48,7 @@ export default function ProjectForm({
                                 'El nombre debe tener al menos 3 caracteres',
                         },
                     })}
-                    id="title"
+                    id="name"
                     type="text"
                     placeholder="Nombre del Proyecto"
                 />

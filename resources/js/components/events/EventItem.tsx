@@ -146,11 +146,11 @@ export default function EventItem({ event }: EventItemProps) {
                                             {event.price === 0
                                                 ? 'Gratis'
                                                 : formatCurrency(
-                                                    event.price *
-                                                    (1 -
-                                                        event.percent_off /
-                                                        100),
-                                                )}
+                                                      event.price *
+                                                          (1 -
+                                                              event.percent_off /
+                                                                  100),
+                                                  )}
                                         </span>
                                     </p>
 

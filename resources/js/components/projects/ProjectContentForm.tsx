@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import PuckInput from '@/components/puck/PuckInput';
 import usePuckContent from '@/hooks/puck/usePuckContent';
 import { db } from '@/lib/dexie';
+import { projectPuckConfig } from '@/lib/puck';
 import projects from '@/routes/projects';
 import type { Project } from '@/types/projects';
 
@@ -57,6 +58,7 @@ export default function ProjectContentForm({
     return (
         initialData && (
             <PuckInput
+                config={projectPuckConfig}
                 initialData={initialData}
                 onChange={(data) => debouncedSaveDB(data.content)}
                 processing={processing}

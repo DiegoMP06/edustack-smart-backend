@@ -13,6 +13,8 @@ class PostGalleryController extends Controller
 {
     public function store(StorePostGalleryRequest $request, Post $post)
     {
+        $this->authorize('update', $post);
+
         $data = $request->validated();
 
         $images = $request->file('images');
@@ -27,6 +29,10 @@ class PostGalleryController extends Controller
 
     public function destroy(Request $request, Post $post, Media $media)
     {
+        $this->authorize('update', $post);
+
+        abort_if($media->model_type !== Post::class || $media->model_id !== $post->id, 404);
+
         if ($post->media()->count() == 1) {
             throw ValidationException::withMessages([
                 'image' => 'El post debe tener al menos una imagen.',

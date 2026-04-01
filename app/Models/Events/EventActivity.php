@@ -40,18 +40,18 @@ use Spatie\Sluggable\SlugOptions;
     'is_competition',
     'price',
     'speakers',
-    'course_id',
-    'project_id',
     'repository_url',
     'is_published',
-    'difficulty_level_id',
-    'event_status_id',
     'started_at',
     'ended_at',
     'registration_started_at',
     'registration_ended_at',
-    'event_id',
+    'course_id',
+    'project_id',
+    'difficulty_level_id',
+    'event_status_id',
     'event_activity_type_id',
+    'event_id',
 ])]
 class EventActivity extends Model implements HasMedia
 {
@@ -94,15 +94,22 @@ class EventActivity extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('screenshots')
+        $this->addMediaCollection('gallery')
             ->useDisk('s3');
     }
 
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('screenshot')
+        $this->addMediaConversion('hero')
             ->fit(Fit::Crop, 1920, 1080)
-            ->quality(85);
+            ->quality(85)
+            ->sharpen(10);
+
+        $this->addMediaConversion('main')
+            ->fit(Fit::Crop, 1200, 620)
+            ->quality(85)
+            ->sharpen(10)
+            ->withResponsiveImages();
     }
 
     public function toSearchableArray(): array

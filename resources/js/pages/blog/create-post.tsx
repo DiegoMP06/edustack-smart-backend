@@ -36,6 +36,7 @@ export default function CreatePost({ types, categories }: CreatePostProps) {
     const initialValues: PostFormData = {
         name: '',
         summary: '',
+        reading_time_minutes: 5,
         images: [],
         post_type_id: 1,
         categories: [],
@@ -67,7 +68,7 @@ export default function CreatePost({ types, categories }: CreatePostProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Crear Proyecto" />
+            <Head title="Crear Post" />
 
             <div className="mb-15">
                 <Button onClick={() => router.visit(posts.index())}>

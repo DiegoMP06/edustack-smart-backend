@@ -7,6 +7,8 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class EventCollection extends ResourceCollection
 {
+    public $collects = EventResource::class;
+
     /**
      * Transform the resource collection into an array.
      *

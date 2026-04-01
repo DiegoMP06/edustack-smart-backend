@@ -20,7 +20,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Users({ users, filter, roles }: UsersProps) {
     return (
-        <AppLayout breadcrumbs={breadcrumbs} withSearch collectionName='users'>
+        <AppLayout breadcrumbs={breadcrumbs} withSearch collectionName="users">
             <Head title="Usuarios" />
 
             {users.data.length > 0 ? (
@@ -35,10 +35,7 @@ export default function Users({ users, filter, roles }: UsersProps) {
                 </p>
             )}
 
-            <Pagination
-                pagination={users}
-                queryParams={{ ...filter }}
-            />
+            <Pagination pagination={users} queryParams={{ ...filter }} />
         </AppLayout>
     );
 }

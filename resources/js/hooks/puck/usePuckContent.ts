@@ -6,7 +6,7 @@ import { db } from '@/lib/dexie';
 import type { TableContent } from '@/lib/dexie';
 import type { ComponentProps } from '@/lib/puck';
 
-type ContentTypes = 'posts' | 'projects' | 'events';
+type ContentTypes = 'posts' | 'projects' | 'events' | 'event-activities' | 'classroom';
 
 type UsePuckContentProps = {
     contentType: ContentTypes;
@@ -104,7 +104,7 @@ export default function usePuckContent({
                 loadServerContent();
             }
         })();
-    }, [DBId, confirmDialog, loadLocalContent, loadServerContent]);
+    }, []);
 
     return {
         DBId,

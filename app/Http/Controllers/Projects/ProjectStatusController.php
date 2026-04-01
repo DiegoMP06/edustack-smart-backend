@@ -13,6 +13,8 @@ class ProjectStatusController extends Controller
      */
     public function __invoke(Project $project)
     {
+        $this->authorize('update', $project);
+
         $project->is_published = ! $project->is_published;
         $project->published_at = $project->is_published ? now() : null;
         $project->save();

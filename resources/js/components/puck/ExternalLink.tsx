@@ -6,7 +6,23 @@ type ExternalLinkProps = {
     href: string;
 };
 
+function normalizeHref(href: string): string {
+    const trimmed = href.trim();
+
+    if (trimmed === '') {
+        return '#';
+    }
+
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+        return trimmed;
+    }
+
+    return `https://${trimmed}`;
+}
+
 export default function ExternalLink({ children, href }: ExternalLinkProps) {
+    const safeHref = normalizeHref(href);
+
     return (
         <a
             target="_blank"
@@ -14,7 +30,7 @@ export default function ExternalLink({ children, href }: ExternalLinkProps) {
             className={cn(
                 'cursor-pointer text-justify text-base leading-relaxed text-sky-400 underline transition-colors hover:text-sky-500',
             )}
-            href={href}
+            href={safeHref}
         >
             {children}
         </a>

@@ -11,6 +11,8 @@ class ProjectContentController extends Controller
 {
     public function edit(Project $project, Request $request)
     {
+        $this->authorize('update', $project);
+
         $edit = $request->boolean('edit', false);
 
         return inertia('projects/project-content', [
@@ -22,6 +24,8 @@ class ProjectContentController extends Controller
 
     public function update(Project $project, UpdateProjectContentRequest $request)
     {
+        $this->authorize('update', $project);
+
         $edit = $request->boolean('edit', false);
         $data = $request->validated();
 

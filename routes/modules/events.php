@@ -1,9 +1,10 @@
 <?php
 
+use App\Http\Controllers\Events\Activity\EventActivityContentController;
+use App\Http\Controllers\Events\Activity\EventActivityController;
+use App\Http\Controllers\Events\Activity\EventActivityStatusController;
 use App\Http\Controllers\Events\CompetitionRoundController;
-use App\Http\Controllers\Events\EventActivityController;
 use App\Http\Controllers\Events\EventActivityRegistrationController;
-use App\Http\Controllers\Events\EventActivityStatusController;
 use App\Http\Controllers\Events\EventContentController;
 use App\Http\Controllers\Events\EventController;
 use App\Http\Controllers\Events\EventRegistrationController;
@@ -18,8 +19,10 @@ Route::middleware([
     'role:member|admin',
 ])->group(function () {
     Route::resource('events', EventController::class);
+
     Route::resource('events.activities', EventActivityController::class)
         ->parameters(['activities' => 'activity']);
+
     Route::resource('events.activities.rounds', CompetitionRoundController::class)
         ->parameters(['activities' => 'activity', 'rounds' => 'round']);
     Route::resource('events.activities.teams', EventTeamController::class)
@@ -29,8 +32,6 @@ Route::middleware([
         ->name('events.activities.teams.join');
     Route::post('events/{event}/activities/{activity}/teams/{team}/leave', [EventTeamController::class, 'leave'])
         ->name('events.activities.teams.leave');
-    Route::patch('events/{event}/activities/{activity}/status', EventActivityStatusController::class)
-        ->name('events.activities.status');
     Route::post('events/{event}/registrations', [EventRegistrationController::class, 'store'])
         ->name('events.registrations.store');
     Route::delete('events/{event}/registrations/{registration}', [EventRegistrationController::class, 'destroy'])
@@ -39,8 +40,13 @@ Route::middleware([
         ->name('events.activities.registrations.store');
     Route::delete('events/{event}/activities/{activity}/registrations/{registration}', [EventActivityRegistrationController::class, 'destroy'])
         ->name('events.activities.registrations.destroy');
-    Route::get('events/{event}/activities/{activity}/content/edit', [EventActivityController::class, 'edit'])
+
+    Route::get('events/{event}/activities/{activity}/content/edit', [EventActivityContentController::class, 'edit'])
         ->name('events.activities.content.edit');
+    Route::patch('events/{event}/activities/{activity}/content', [EventActivityContentController::class, 'update'])
+        ->name('events.activities.content.update');
+    Route::patch('events/{event}/activities/{activity}/status', EventActivityStatusController::class)
+        ->name('events.activities.status');
 
     Route::get('events/{event}/content/edit', [EventContentController::class, 'edit'])->name('events.content.edit');
     Route::patch('events/{event}/content', [EventContentController::class, 'update'])->name('events.content.update');

@@ -171,15 +171,12 @@ export default function PostItem({ post }: PostItemProps) {
                                 Opciones del post
                             </DropdownMenuLabel>
                             <DropdownMenuGroup>
-                                <Link
-                                    href={posts.edit(post.id)}
-                                    disabled={processing}
-                                >
-                                    <DropdownMenuItem>
+                                <DropdownMenuItem asChild disabled={processing}>
+                                    <Link href={posts.edit(post.id)}>
                                         <Pencil />
                                         Editar
-                                    </DropdownMenuItem>
-                                </Link>
+                                    </Link>
+                                </DropdownMenuItem>
 
                                 <DropdownMenuItem
                                     onClick={handlePostStatus}

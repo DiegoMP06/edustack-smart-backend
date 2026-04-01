@@ -14,7 +14,11 @@ export default function AppSidebarLayout({
         <AppShell variant="sidebar">
             <AppSidebar />
             <AppContent variant="sidebar" className="overflow-x-hidden">
-                <AppSidebarHeader breadcrumbs={breadcrumbs} withSearch={withSearch} collectionName={collectionName} />
+                <AppSidebarHeader
+                    breadcrumbs={breadcrumbs}
+                    withSearch={withSearch}
+                    collectionName={collectionName}
+                />
                 <div className="mx-auto w-full max-w-7xl px-4 py-6">
                     {children}
                 </div>

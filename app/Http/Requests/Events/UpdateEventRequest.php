@@ -25,19 +25,44 @@ class UpdateEventRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'logo' => ['nullable', 'image', 'mimes:jpg,png,jpeg,webp'],
-            'summary' => ['required', 'string', 'min:100'],
+            'summary' => ['required', 'string', 'min:50'],
             'price' => ['required', 'numeric', 'min:0'],
             'percent_off' => ['required', 'numeric', 'min:0', 'max:100'],
-            'capacity' => ['nullable', 'numeric', 'min:0'],
+            'capacity' => ['nullable', 'required_if:with_capacity,true', 'numeric', 'min:1'],
             'is_online' => ['required', 'boolean'],
-            'online_link' => ['required_if:is_online,true', 'url', 'max:255'],
-            'location' => ['required_if_declined:is_online', 'string', 'max:255'],
-            'lat' => ['required_if_declined:is_online', 'numeric', 'min:-90', 'max:90'],
-            'lng' => ['required_if_declined:is_online', 'numeric', 'min:-180', 'max:180'],
+            'online_link' => [
+                'nullable',
+                'required_if:is_online,true',
+                'prohibited_if:is_online,false',
+                'url',
+                'max:255',
+            ],
+            'location' => [
+                'nullable',
+                'required_if:is_online,false',
+                'prohibited_if:is_online,true',
+                'string',
+                'max:255',
+            ],
+            'lat' => ['nullable', 'required_if:is_online,false', 'numeric', 'min:-90', 'max:90'],
+            'lng' => ['nullable', 'required_if:is_online,false', 'numeric', 'min:-180', 'max:180'],
             'registration_started_at' => ['required', 'date'],
-            'registration_ended_at' => ['required', 'date', 'after:registration_started_at', 'before:start_date'],
-            'start_date' => ['required', 'date', 'after:registration_ended_at', 'before:end_date'],
-            'end_date' => ['required', 'date', 'after:start_date'],
+            'registration_ended_at' => [
+                'required',
+                'date',
+                'after:registration_started_at',
+                'before:start_date',
+            ],
+            'start_date' => [
+                'required',
+                'date_format:Y-m-d',
+                'after:registration_ended_at',
+            ],
+            'end_date' => [
+                'required',
+                'date_format:Y-m-d',
+                'after_or_equal:start_date',
+            ],
         ];
     }
 }

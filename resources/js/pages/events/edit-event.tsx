@@ -1,11 +1,11 @@
 import { Head, router } from '@inertiajs/react';
 import { ChevronLeft } from 'lucide-react';
+import EditEventForm from '@/components/events/edit-event/EditEventForm';
+import EventOptions from '@/components/events/edit-event/EventOptions';
 import { Button } from '@/components/ui/shadcn/button';
 import AppLayout from '@/layouts/app-layout';
 import events from '@/routes/events';
 import type { BreadcrumbItem, Event } from '@/types';
-import EditEventForm from './EditEvent/EditEventForm';
-import EventOptions from './EditEvent/EventOptions';
 
 type EditEventProps = {
     event: Event;

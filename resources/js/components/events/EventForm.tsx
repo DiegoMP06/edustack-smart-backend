@@ -1,10 +1,6 @@
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
-import type {
-    Control,
-    FieldErrors,
-    UseFormRegister
-} from 'react-hook-form';
+import type { Control, FieldErrors, UseFormRegister } from 'react-hook-form';
 import { Controller, useWatch } from 'react-hook-form';
 import DropzoneInput from '@/components/dropzone/DropzoneInput';
 import LocationMap from '@/components/leaflet/LocationMap';
@@ -20,7 +16,12 @@ import {
 } from '@/components/ui/shadcn/popover';
 import { Switch } from '@/components/ui/shadcn/switch';
 import { Textarea } from '@/components/ui/shadcn/textarea';
-import { applyTimeToDate, cn, formatTime, applyDateKeepingTime } from '@/lib/utils';
+import {
+    applyTimeToDate,
+    cn,
+    formatTime,
+    applyDateKeepingTime,
+} from '@/lib/utils';
 import type { EventFormData } from '@/types/events';
 
 type EventFormProps = {
@@ -103,18 +104,154 @@ export default function EventForm({
                 <InputError message={errors.logo?.message} />
             </div>
 
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 
-            <div className="grid flex-1 gap-2">
-                <Label htmlFor="registration_started_at">
-                    Fecha de inicio del Registro:{' '}
-                </Label>
+                <div className="grid flex-1 gap-2">
+                    <Label htmlFor="registration_started_at">
+                        Fecha de inicio del Registro:{' '}
+                    </Label>
 
-                <Controller
-                    name="registration_started_at"
-                    control={control}
-                    rules={{ required: 'La Fecha es requerida' }}
-                    render={({ field: { value, onChange } }) => (
-                        <div className="space-y-2">
+                    <Controller
+                        name="registration_started_at"
+                        control={control}
+                        rules={{ required: 'La Fecha es requerida' }}
+                        render={({ field: { value, onChange } }) => (
+                            <div className="space-y-2">
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className={cn(
+                                                'w-full justify-start text-left font-normal',
+                                                !value && 'text-muted-foreground',
+                                            )}
+                                        >
+                                            <CalendarIcon className="mr-2 h-4 w-4" />
+                                            {value
+                                                ? format(value, 'PPP')
+                                                : 'Selecciona una fecha'}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent
+                                        className="w-auto p-0"
+                                        align="start"
+                                    >
+                                        <Calendar
+                                            mode="single"
+                                            selected={value}
+                                            onSelect={(selectedDate) => {
+                                                if (selectedDate) {
+                                                    onChange(
+                                                        applyDateKeepingTime(
+                                                            value,
+                                                            selectedDate,
+                                                        ),
+                                                    );
+                                                }
+                                            }}
+                                            autoFocus
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+
+                                <Input
+                                    type="time"
+                                    value={formatTime(value)}
+                                    onChange={(event) =>
+                                        onChange(
+                                            applyTimeToDate(
+                                                value,
+                                                event.target.value,
+                                            ),
+                                        )
+                                    }
+                                />
+                            </div>
+                        )}
+                    />
+
+                    <InputError message={errors.start_date?.message} />
+                </div>
+
+                <div className="grid flex-1 gap-2">
+                    <Label htmlFor="registration_ended_at">
+                        Fecha de fin del Registro:{' '}
+                    </Label>
+
+                    <Controller
+                        name="registration_ended_at"
+                        control={control}
+                        rules={{ required: 'La Fecha es requerida' }}
+                        render={({ field: { value, onChange } }) => (
+                            <div className="space-y-2">
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className={cn(
+                                                'w-full justify-start text-left font-normal',
+                                                !value && 'text-muted-foreground',
+                                            )}
+                                        >
+                                            <CalendarIcon className="mr-2 h-4 w-4" />
+                                            {value
+                                                ? format(value, 'PPP')
+                                                : 'Selecciona una fecha'}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent
+                                        className="w-auto p-0"
+                                        align="start"
+                                    >
+                                        <Calendar
+                                            mode="single"
+                                            selected={value}
+                                            onSelect={(selectedDate) => {
+                                                if (selectedDate) {
+                                                    onChange(
+                                                        applyDateKeepingTime(
+                                                            value,
+                                                            selectedDate,
+                                                        ),
+                                                    );
+                                                }
+                                            }}
+                                            autoFocus
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+
+                                <Input
+                                    type="time"
+                                    value={formatTime(value)}
+                                    onChange={(event) =>
+                                        onChange(
+                                            applyTimeToDate(
+                                                value,
+                                                event.target.value,
+                                            ),
+                                        )
+                                    }
+                                />
+                            </div>
+                        )}
+                    />
+
+                    <InputError message={errors.end_date?.message} />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="grid flex-1 gap-2">
+                    <Label htmlFor="start_date">Fecha de inicio: </Label>
+
+                    <Controller
+                        name="start_date"
+                        control={control}
+                        rules={{ required: 'La Fecha es requerida' }}
+                        render={({ field: { value, onChange } }) => (
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <Button
@@ -138,51 +275,25 @@ export default function EventForm({
                                     <Calendar
                                         mode="single"
                                         selected={value}
-                                        onSelect={(selectedDate) => {
-                                            if (selectedDate) {
-                                                onChange(
-                                                    applyDateKeepingTime(
-                                                        value,
-                                                        selectedDate,
-                                                    ),
-                                                );
-                                            }
-                                        }}
+                                        onSelect={onChange}
                                         autoFocus
                                     />
                                 </PopoverContent>
                             </Popover>
+                        )}
+                    />
 
-                            <Input
-                                type="time"
-                                value={formatTime(value)}
-                                onChange={(event) =>
-                                    onChange(
-                                        applyTimeToDate(
-                                            value,
-                                            event.target.value,
-                                        ),
-                                    )
-                                }
-                            />
-                        </div>
-                    )}
-                />
+                    <InputError message={errors.start_date?.message} />
+                </div>
 
-                <InputError message={errors.start_date?.message} />
-            </div>
+                <div className="grid flex-1 gap-2">
+                    <Label htmlFor="end_date">Fecha de fin: </Label>
 
-            <div className="grid flex-1 gap-2">
-                <Label htmlFor="registration_ended_at">
-                    Fecha de fin del Registro:{' '}
-                </Label>
-
-                <Controller
-                    name="registration_ended_at"
-                    control={control}
-                    rules={{ required: 'La Fecha es requerida' }}
-                    render={({ field: { value, onChange } }) => (
-                        <div className="space-y-2">
+                    <Controller
+                        name="end_date"
+                        control={control}
+                        rules={{ required: 'La Fecha es requerida' }}
+                        render={({ field: { value, onChange } }) => (
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <Button
@@ -206,122 +317,16 @@ export default function EventForm({
                                     <Calendar
                                         mode="single"
                                         selected={value}
-                                        onSelect={(selectedDate) => {
-                                            if (selectedDate) {
-                                                onChange(
-                                                    applyDateKeepingTime(
-                                                        value,
-                                                        selectedDate,
-                                                    ),
-                                                );
-                                            }
-                                        }}
+                                        onSelect={onChange}
                                         autoFocus
                                     />
                                 </PopoverContent>
                             </Popover>
+                        )}
+                    />
 
-                            <Input
-                                type="time"
-                                value={formatTime(value)}
-                                onChange={(event) =>
-                                    onChange(
-                                        applyTimeToDate(
-                                            value,
-                                            event.target.value,
-                                        ),
-                                    )
-                                }
-                            />
-                        </div>
-                    )}
-                />
-
-                <InputError message={errors.end_date?.message} />
-            </div>
-
-            <div className="grid flex-1 gap-2">
-                <Label htmlFor="start_date">Fecha de inicio: </Label>
-
-                <Controller
-                    name="start_date"
-                    control={control}
-                    rules={{ required: 'La Fecha es requerida' }}
-                    render={({ field: { value, onChange } }) => (
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    className={cn(
-                                        'w-full justify-start text-left font-normal',
-                                        !value && 'text-muted-foreground',
-                                    )}
-                                >
-                                    <CalendarIcon className="mr-2 h-4 w-4" />
-                                    {value
-                                        ? format(value, 'PPP')
-                                        : 'Selecciona una fecha'}
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent
-                                className="w-auto p-0"
-                                align="start"
-                            >
-                                <Calendar
-                                    mode="single"
-                                    selected={value}
-                                    onSelect={onChange}
-                                    autoFocus
-                                />
-                            </PopoverContent>
-                        </Popover>
-                    )}
-                />
-
-                <InputError message={errors.start_date?.message} />
-            </div>
-
-            <div className="grid flex-1 gap-2">
-                <Label htmlFor="end_date">Fecha de fin: </Label>
-
-                <Controller
-                    name="end_date"
-                    control={control}
-                    rules={{ required: 'La Fecha es requerida' }}
-                    render={({ field: { value, onChange } }) => (
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    className={cn(
-                                        'w-full justify-start text-left font-normal',
-                                        !value && 'text-muted-foreground',
-                                    )}
-                                >
-                                    <CalendarIcon className="mr-2 h-4 w-4" />
-                                    {value
-                                        ? format(value, 'PPP')
-                                        : 'Selecciona una fecha'}
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent
-                                className="w-auto p-0"
-                                align="start"
-                            >
-                                <Calendar
-                                    mode="single"
-                                    selected={value}
-                                    onSelect={onChange}
-                                    autoFocus
-                                />
-                            </PopoverContent>
-                        </Popover>
-                    )}
-                />
-
-                <InputError message={errors.end_date?.message} />
+                    <InputError message={errors.end_date?.message} />
+                </div>
             </div>
 
             <div className="flex items-center gap-2">
@@ -381,7 +386,7 @@ export default function EventForm({
             </div>
 
             {!is_free && (
-                <>
+                <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
                     <div className="grid gap-2">
                         <Label htmlFor="price">Precio:</Label>
 
@@ -431,7 +436,7 @@ export default function EventForm({
 
                         <InputError message={errors.percent_off?.message} />
                     </div>
-                </>
+                </div>
             )}
 
             <div className="flex items-center gap-2">

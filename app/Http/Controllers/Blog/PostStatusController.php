@@ -13,6 +13,8 @@ class PostStatusController extends Controller
      */
     public function __invoke(Post $post, Request $request)
     {
+        $this->authorize('update', $post);
+
         $post->is_published = ! $post->is_published;
         $post->published_at = $post->is_published ? now() : null;
         $post->save();

@@ -22,7 +22,7 @@ type EventsProps = {
 
 export default function Events({ events, filter }: EventsProps) {
     return (
-        <AppLayout breadcrumbs={breadcrumbs} collectionName='events' withSearch>
+        <AppLayout breadcrumbs={breadcrumbs} collectionName="events" withSearch>
             <Head title="Eventos" />
 
             <div className="mb-15">

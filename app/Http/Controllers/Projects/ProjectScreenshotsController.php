@@ -13,6 +13,8 @@ class ProjectScreenshotsController extends Controller
 {
     public function store(StoreProjectScreenshotsRequest $request, Project $project)
     {
+        $this->authorize('update', $project);
+
         $data = $request->validated();
 
         $images = $request->file('images');
@@ -27,6 +29,10 @@ class ProjectScreenshotsController extends Controller
 
     public function destroy(Request $request, Project $project, Media $media)
     {
+        $this->authorize('update', $project);
+
+        abort_if($media->model_type !== Project::class || $media->model_id !== $project->id, 404);
+
         if ($project->media()->count() == 1) {
             throw ValidationException::withMessages([
                 'image' => 'El proyecto debe tener al menos una imagen.',

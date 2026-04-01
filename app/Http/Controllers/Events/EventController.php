@@ -20,7 +20,7 @@ class EventController extends Controller
     {
         $events = $this->buildQuery(
             $request->user()->events(),
-            defaultIncludes: ['activities', 'status']
+            defaultIncludes: ['status', 'media']
         )
             ->paginate(20)->withQueryString();
 

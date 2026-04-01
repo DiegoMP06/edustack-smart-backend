@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Models\Blog\Post;
+use App\Models\Classroom\Course;
 use App\Models\Events\Event;
+use App\Models\Forms\Form;
 use App\Models\Projects\Project;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -94,6 +96,16 @@ class User extends Authenticatable implements MustVerifyEmail
     public function projects()
     {
         return $this->hasMany(Project::class);
+    }
+
+    public function courses()
+    {
+        return $this->hasMany(Course::class);
+    }
+
+    public function forms()
+    {
+        return $this->hasMany(Form::class);
     }
 
     public function projectsCollaborations()

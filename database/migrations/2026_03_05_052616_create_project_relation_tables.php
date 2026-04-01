@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\Projects\RolesOfProjectCollaborators;
+use App\Enums\Projects\ProjectCollaboratorRole;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,8 +16,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->enum('role', array_column(RolesOfProjectCollaborators::cases(), 'value'))
-                ->default(RolesOfProjectCollaborators::COLLABORATOR->value);
+            $table->enum('role', array_column(ProjectCollaboratorRole::cases(), 'value'))
+                ->default(ProjectCollaboratorRole::COLLABORATOR->value);
             $table->timestamps();
             $table->unique(['project_id', 'user_id']);
             $table->index(['project_id', 'role']);

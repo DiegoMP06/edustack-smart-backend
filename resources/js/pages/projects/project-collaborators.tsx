@@ -9,7 +9,12 @@ import { Button } from '@/components/ui/shadcn/button';
 import AppLayout from '@/layouts/app-layout';
 import projectCollaborators from '@/routes/project-collaborators';
 import projects from '@/routes/projects';
-import type { BreadcrumbItem, PaginationType, UserData, Project } from '@/types';
+import type {
+    BreadcrumbItem,
+    PaginationType,
+    UserData,
+    Project,
+} from '@/types';
 
 type ProjectCollaboratorsProps = {
     users: PaginationType<UserData>;
@@ -23,19 +28,19 @@ type ProjectCollaboratorsProps = {
 const breadcrumbs: (project: Project) => BreadcrumbItem[] = (
     project: Project,
 ) => [
-        {
-            title: 'Proyectos',
-            href: projects.index().url,
-        },
-        {
-            title: project.name,
-            href: projects.show(project.id).url,
-        },
-        {
-            title: `Colaboradores`,
-            href: projectCollaborators.index(project.id).url,
-        },
-    ];
+    {
+        title: 'Proyectos',
+        href: projects.index().url,
+    },
+    {
+        title: project.name,
+        href: projects.show(project.id).url,
+    },
+    {
+        title: `Colaboradores`,
+        href: projectCollaborators.index(project.id).url,
+    },
+];
 
 export default function ProjectCollaborators({
     users,

@@ -54,7 +54,14 @@ export default function CreateEvent() {
         defaultValues: initialValues,
     });
 
-    const handleCreateEvent: SubmitHandler<EventFormData> = ({ latLng, ...data }) => {
+    const handleCreateEvent: SubmitHandler<EventFormData> = ({
+        latLng,
+        start_date,
+        end_date,
+        registration_ended_at,
+        registration_started_at,
+        ...data
+    }) => {
         const formData = {
             ...data,
             logo: data.logo.length > 0 ? data.logo[0] : null,
@@ -65,10 +72,14 @@ export default function CreateEvent() {
             location: data.is_online ? null : data.location,
             lat: data.is_online ? null : latLng.lat,
             lng: data.is_online ? null : latLng.lng,
-            start_date: data.start_date.toISOString().split('T')[0],
-            end_date: data.end_date.toISOString().split('T')[0],
-            registration_started_at: data.registration_started_at.toISOString().split('T')[0],
-            registration_ended_at: data.registration_ended_at.toISOString().split('T')[0],
+            start_date: start_date.toISOString().split('T')[0],
+            end_date: end_date.toISOString().split('T')[0],
+            registration_started_at: registration_started_at
+                .toISOString()
+                .split('T')[0],
+            registration_ended_at: registration_ended_at
+                .toISOString()
+                .split('T')[0],
         };
 
         setProcessing(true);
@@ -81,8 +92,9 @@ export default function CreateEvent() {
             },
             onFinish: () => setProcessing(false),
             onError: (error) => {
-                Object.values(error).forEach((value) => toast.error(value as string));
-                setProcessing(false);
+                Object.values(error).forEach((value) =>
+                    toast.error(value as string),
+                );
             },
         });
     };
