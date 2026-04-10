@@ -2,8 +2,10 @@
 
 namespace App\Models\Forms;
 
+use App\Concerns\HasRelatables;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
@@ -41,7 +43,7 @@ use Spatie\Sluggable\SlugOptions;
 ])]
 class Form extends Model
 {
-    use HasSlug, LogsActivity, SoftDeletes;
+    use HasFactory, HasSlug, LogsActivity, SoftDeletes, HasRelatables;
 
     protected function casts(): array
     {

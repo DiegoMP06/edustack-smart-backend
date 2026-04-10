@@ -14,7 +14,7 @@ use App\Models\Events\EventActivity;
 use App\Models\Events\EventActivityCategory;
 use App\Models\Events\EventActivityType;
 use App\Models\Events\EventStatus;
-use App\Traits\ApiQueryable;
+use App\Concerns\ApiQueryable;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -76,7 +76,7 @@ class EventActivityController extends Controller
             ->withQueryString();
 
         return Inertia::render('events/activities/activities', [
-            'event' => (new EventCollection([$event->load(['status', 'media'])]))->first(),
+            'event' => (new EventCollection([$event->load(['status', 'media', 'author'])]))->first(),
             'activities' => new EventActivityCollection($activities),
             'filter' => $request->query('filter'),
             'message' => $request->session()->get('message'),
@@ -104,8 +104,9 @@ class EventActivityController extends Controller
 
         $activity->categories()->sync($data['categories']);
 
-        foreach ($request->file('images') as $file) {
-            $activity->addMedia($file)->toMediaCollection('gallery');
+        foreach ($data['images'] as $key) {
+            $activity->addMediaFromDisk($key, 's3')
+                ->toMediaCollection('gallery');
         }
 
         return redirect()->intended(
@@ -118,7 +119,7 @@ class EventActivityController extends Controller
         $this->ensureActivityBelongsToEvent($event, $activity);
 
         return Inertia::render('events/activities/show-activity', [
-            'event' => (new EventCollection([$event->load(['status', 'media'])]))->first(),
+            'event' => (new EventCollection([$event->load(['status', 'media', 'author'])]))->first(),
             'activity' => (new EventActivityCollection([$activity->load(['categories', 'difficultyLevel', 'status', 'type', 'media'])]))->first(),
             'message' => $request->session()->get('message'),
         ]);

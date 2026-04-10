@@ -1,11 +1,11 @@
 <?php
 
+use App\Enums\Events\BehaviorType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('color', 7);
-            $table->string('description')->nullable();
+            $table->string('description');
             $table->unsignedTinyInteger('order')->default(0)->index();
             $table->timestamps();
         });
@@ -24,9 +24,9 @@ return new class extends Migration
         Schema::create('difficulty_levels', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('slug')->unique();
+            $table->string('slug');
             $table->string('color', 7);
-            $table->string('description')->nullable();
+            $table->string('description');
             $table->unsignedTinyInteger('order')->default(0)->index();
             $table->timestamps();
         });
@@ -35,18 +35,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->string('description')->nullable();
-            $table->string('icon')->nullable();
-            $table->enum('behavior_type', [
-                'competition',
-                'bootcamp',
-                'workshop',
-                'talk',
-                'open_source',
-                'demo',
-                'code_review',
-                'default',
-            ])->default('default');
+            $table->string('description');
+            $table->string('icon');
+            $table->enum('behavior_type', BehaviorType::cases())->default(BehaviorType::DEFAULT ->value);
             $table->unsignedTinyInteger('order')->default(0)->index();
             $table->timestamps();
         });
@@ -55,8 +46,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->string('description')->nullable();
-            $table->string('color', 7)->nullable();
+            $table->string('description');
+            $table->string('color', 7);
             $table->unsignedTinyInteger('order')->default(0)->index();
             $table->timestamps();
         });

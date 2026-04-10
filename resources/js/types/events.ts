@@ -1,14 +1,20 @@
 import type { Content } from '@puckeditor/core';
 import type { LatLng } from 'leaflet';
+import type { EVENT_COLLABORATOR_ROLE } from '@/consts/events';
 import type { ComponentProps } from '@/lib/puck';
-import type { Media, UserData } from '.';
+import type { Collaborator, Media, PivotType, UserData } from '.';
+
+export type EventCollaboratorRole = keyof typeof EVENT_COLLABORATOR_ROLE;
+
+export type EventCollaboratorRoleValues =
+    (typeof EVENT_COLLABORATOR_ROLE)[EventCollaboratorRole];
 
 export type EventStatus = {
     id: number;
     name: string;
     slug: string;
     color: string;
-    description?: string;
+    description: string;
     order: number;
 };
 
@@ -17,7 +23,7 @@ export type DifficultyLevel = {
     name: string;
     slug: string;
     color: string;
-    description?: string;
+    description: string;
     order: number;
 };
 
@@ -25,8 +31,8 @@ export type EventActivityType = {
     id: number;
     name: string;
     slug: string;
-    description?: string;
-    icon?: string;
+    description: string;
+    icon: string;
     behavior_type: string;
     order: number;
 };
@@ -35,28 +41,39 @@ export type EventActivityCategory = {
     id: number;
     name: string;
     slug: string;
-    description?: string;
-    icon?: string;
+    description: string;
+    icon: string;
     order: number;
-}
+};
 
 export type Speaker = {
-    id: number;
-    exists_in_platform: boolean;
+    id: string;
     name: string;
     father_last_name: string;
     mother_last_name: string;
     email: string;
-    job_title: string;
-    company: string;
     biography: string;
+    job_title?: string;
+    company?: string;
+    social: Record<string, string>;
 };
+
+export type SpeakerFormData = Pick<
+    Speaker,
+    | 'name'
+    | 'father_last_name'
+    | 'mother_last_name'
+    | 'email'
+    | 'job_title'
+    | 'company'
+    | 'biography'
+>;
 
 export type EventActivity = {
     id: number;
     name: string;
     slug: string;
-    summary: string;
+    description: string;
     content: Content<ComponentProps>;
     requirements: string | null;
     is_online: boolean;
@@ -68,7 +85,7 @@ export type EventActivity = {
     requires_team: boolean;
     min_team_size: number | null;
     max_team_size: number | null;
-    max_participants: number | null;
+    capacity: number | null;
     only_students: boolean;
     is_competition: boolean;
     price: number;
@@ -88,13 +105,17 @@ export type EventActivity = {
     created_at: string;
     updated_at: string;
     media: Media[];
-    categories: EventActivityCategory[];
+    categories: PivotType<EventActivityCategory>[];
+    difficultyLevel: DifficultyLevel;
+    status: EventStatus;
+    type: EventActivityType;
+    author: UserData;
 };
 
 export type EventActivityFormData = Pick<
     EventActivity,
     | 'name'
-    | 'summary'
+    | 'description'
     | 'requirements'
     | 'is_online'
     | 'online_link'
@@ -103,7 +124,7 @@ export type EventActivityFormData = Pick<
     | 'requires_team'
     | 'min_team_size'
     | 'max_team_size'
-    | 'max_participants'
+    | 'capacity'
     | 'only_students'
     | 'is_competition'
     | 'price'
@@ -121,14 +142,14 @@ export type EventActivityFormData = Pick<
     registration_started_at: Date;
     registration_ended_at: Date;
     categories: number[];
-    images?: File[]
+    images?: File[];
 };
 
 export type Event = {
     id: number;
     name: string;
     slug: string;
-    summary: string;
+    description: string;
     content: Content<ComponentProps>;
     price: number;
     percent_off: number;
@@ -148,6 +169,7 @@ export type Event = {
     created_at: string;
     updated_at: string;
     activities: EventActivity[];
+    collaborators: Collaborator[];
     author: UserData;
     media: Media[];
 };
@@ -155,7 +177,7 @@ export type Event = {
 export type EventFormData = Pick<
     Event,
     | 'name'
-    | 'summary'
+    | 'description'
     | 'location'
     | 'price'
     | 'percent_off'

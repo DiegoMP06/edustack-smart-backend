@@ -2,6 +2,7 @@ import '../css/app.css';
 
 import { createInertiaApp } from '@inertiajs/react';
 import { configureEcho } from '@laravel/echo-react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -22,6 +23,8 @@ configureEcho({
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
+const queryClient = new QueryClient();
+
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
     resolve: (name) =>
@@ -34,13 +37,15 @@ createInertiaApp({
 
         root.render(
             <StrictMode>
-                <ConfirmDialogProvider>
-                    <TooltipProvider delayDuration={0}>
-                        <App {...props} />
-                        <Toaster richColors />
-                    </TooltipProvider>
-                </ConfirmDialogProvider>
-            </StrictMode>,
+                <QueryClientProvider client={queryClient}>
+                    <ConfirmDialogProvider>
+                        <TooltipProvider delayDuration={0}>
+                            <App {...props} />
+                            <Toaster richColors />
+                        </TooltipProvider>
+                    </ConfirmDialogProvider>
+                </QueryClientProvider>
+            </StrictMode >,
         );
     },
     progress: {

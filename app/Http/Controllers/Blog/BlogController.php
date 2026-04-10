@@ -9,7 +9,7 @@ use App\Http\Resources\Blog\PostCollection;
 use App\Models\Blog\Post;
 use App\Models\Blog\PostCategory;
 use App\Models\Blog\PostType;
-use App\Traits\ApiQueryable;
+use App\Concerns\ApiQueryable;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -61,22 +61,20 @@ class BlogController extends Controller
         $data = $request->validated();
 
         $post = $request->user()->posts()->create([
-            'name' => $data['name'],
-            'summary' => $data['summary'],
+            ...$data,
             'content' => [],
-            'reading_time_minutes' => $data['reading_time_minutes'],
-            'post_type_id' => $data['post_type_id'],
         ]);
 
         $post->categories()->sync($data['categories']);
 
-        foreach ($request->file('images') as $file) {
-            $post->addMedia($file)->toMediaCollection('gallery');
+        foreach ($data['images'] as $key) {
+            $post->addMediaFromDisk($key, 's3')
+                ->toMediaCollection('gallery');
         }
 
         return redirect()->intended(
             route('posts.content.edit', ['post' => $post, 'edit' => false], false)
-        );
+        )->with('message', 'Post creado correctamente.');
     }
 
     /**
@@ -114,12 +112,7 @@ class BlogController extends Controller
 
         $data = $request->validated();
 
-        $post->update([
-            'name' => $data['name'],
-            'summary' => $data['summary'],
-            'reading_time_minutes' => $data['reading_time_minutes'],
-            'post_type_id' => $data['post_type_id'],
-        ]);
+        $post->update($data);
 
         $post->categories()->sync($data['categories']);
 

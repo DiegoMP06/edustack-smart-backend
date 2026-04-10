@@ -35,9 +35,9 @@ class EventContentController extends Controller
         $route = $edit ?
             back() :
             redirect()->intended(route(
-                'events.show',
-                ['event' => $event],
-                absolute: false
+                'event-collaborators.index',
+                ['event' => $event, 'edit' => false],
+                false
             ));
 
         return $route->with('message', 'Contenido guardado correctamente.');

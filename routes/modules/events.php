@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Events\Activity\EventActivityContentController;
 use App\Http\Controllers\Events\Activity\EventActivityController;
+use App\Http\Controllers\Events\Activity\EventActivityGalleryController;
 use App\Http\Controllers\Events\Activity\EventActivityStatusController;
+use App\Http\Controllers\Events\Collaborator\EventCollaboratorsController;
 use App\Http\Controllers\Events\CompetitionRoundController;
 use App\Http\Controllers\Events\EventActivityRegistrationController;
 use App\Http\Controllers\Events\EventContentController;
@@ -45,10 +47,17 @@ Route::middleware([
         ->name('events.activities.content.edit');
     Route::patch('events/{event}/activities/{activity}/content', [EventActivityContentController::class, 'update'])
         ->name('events.activities.content.update');
+
     Route::patch('events/{event}/activities/{activity}/status', EventActivityStatusController::class)
         ->name('events.activities.status');
 
+    Route::post('events/{event}/activities/{activity}/medias', [EventActivityGalleryController::class, 'store'])->name('events.activities.medias.store');
+    Route::delete('events/{event}/activities/{activity}/medias/{media}', [EventActivityGalleryController::class, 'destroy'])->name('events.activities.medias.destroy');
+
     Route::get('events/{event}/content/edit', [EventContentController::class, 'edit'])->name('events.content.edit');
     Route::patch('events/{event}/content', [EventContentController::class, 'update'])->name('events.content.update');
+
+    Route::resource('events/{event}/event-collaborators', EventCollaboratorsController::class)->only(['index', 'store', 'destroy']);
+
     Route::patch('events/{event}/status', EventStatusController::class)->name('events.status');
 });

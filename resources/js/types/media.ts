@@ -29,3 +29,7 @@ export type Media = {
     is_processed: boolean;
     custom_properties: string[];
 };
+
+export type ImageFormData = {
+    images: File[];
+};

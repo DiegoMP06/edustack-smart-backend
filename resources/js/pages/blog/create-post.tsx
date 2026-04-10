@@ -9,6 +9,7 @@ import DropzoneInput from '@/components/dropzone/DropzoneInput';
 import InputError from '@/components/ui/app/input-error';
 import { Button } from '@/components/ui/shadcn/button';
 import { Label } from '@/components/ui/shadcn/label';
+import useMediaUpload from '@/hooks/media/useMediaUpload';
 import AppLayout from '@/layouts/app-layout';
 import posts from '@/routes/posts';
 import type { BreadcrumbItem } from '@/types';
@@ -35,12 +36,14 @@ export default function CreatePost({ types, categories }: CreatePostProps) {
 
     const initialValues: PostFormData = {
         name: '',
-        summary: '',
+        description: '',
         reading_time_minutes: 5,
         images: [],
         post_type_id: 1,
         categories: [],
     };
+
+    const { uploadImages } = useMediaUpload();
 
     const {
         control,
@@ -51,11 +54,18 @@ export default function CreatePost({ types, categories }: CreatePostProps) {
         defaultValues: initialValues,
     });
 
-    const handleCreatePost: SubmitHandler<PostFormData> = (data) => {
-        router.post(posts.store(), data, {
+    const handleCreatePost: SubmitHandler<PostFormData> = async (data) => {
+        setProcessing(true);
+
+        const keys = await uploadImages(data.images || []);
+        const formData = {
+            ...data,
+            images: keys
+        }
+
+        router.post(posts.store(), formData, {
             preserveScroll: true,
             showProgress: true,
-            forceFormData: true,
             onSuccess: (data) => {
                 toast.success(data.props.message as string);
             },
@@ -83,7 +93,6 @@ export default function CreatePost({ types, categories }: CreatePostProps) {
             >
                 <PostForm
                     control={control}
-                    errors={errors}
                     register={register}
                     types={types}
                     categories={categories}

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->text('summary');
+            $table->text('description');
             $table->json('content');
             $table->decimal('price', 10, 2)->default(0);
             $table->decimal('percent_off', 5, 2)->default(0);

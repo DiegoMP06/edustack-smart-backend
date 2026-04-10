@@ -1,65 +1,59 @@
-import type { Dispatch, SubmitEventHandler, SetStateAction } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 import { useEffect } from 'react';
-import type { Control, FieldErrors, UseFormReset } from 'react-hook-form';
-import { Controller } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import DropzoneInput from '@/components/dropzone/DropzoneInput';
 import InputError from '@/components/ui/app/input-error';
 import { Button } from '@/components/ui/shadcn/button';
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/shadcn/dialog';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/shadcn/dialog';
 import { Label } from '@/components/ui/shadcn/label';
-
-export type ImageFormData = {
-    images: File[];
-};
+import type { ImageFormData } from '@/types';
 
 type NewImageModalProps = {
     isModalActive: boolean;
     setIsModalActive: Dispatch<SetStateAction<boolean>>;
-    processing?: boolean;
-    onSubmit: SubmitEventHandler<HTMLFormElement>;
-    control: Control<ImageFormData>;
-    errors: FieldErrors<ImageFormData>;
-    reset: UseFormReset<ImageFormData>;
     multipleFiles?: boolean;
-    title?: string;
-    description?: string;
+    onAddImage: (data: ImageFormData) => void;
+    processing: boolean;
 };
+
+
 
 export default function NewImageModal({
     isModalActive,
     setIsModalActive,
-    processing,
-    onSubmit,
-    control,
-    reset,
-    errors,
     multipleFiles,
-    title = 'Nueva imagen',
-    description = 'Agrega una nueva imagen a la publicación.',
+    onAddImage,
+    processing,
 }: NewImageModalProps) {
+
+    const initialValues: ImageFormData = {
+        images: [],
+    };
+
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+        reset,
+    } = useForm({
+        defaultValues: initialValues,
+    });
+
     useEffect(() => {
         if (!isModalActive) {
             reset();
         }
-    }, [isModalActive, reset]);
+    }, [isModalActive]);
 
     return (
         <Dialog open={isModalActive} onOpenChange={setIsModalActive}>
             <DialogContent className="sm:max-w-xl">
                 <DialogHeader>
-                    <DialogTitle>{title}</DialogTitle>
-                    <DialogDescription>{description}</DialogDescription>
+                    <DialogTitle>Nueva imagen</DialogTitle>
+                    <DialogDescription>Agrega una nueva imagen a la publicación.</DialogDescription>
                 </DialogHeader>
 
-                <form onSubmit={onSubmit} className="grid grid-cols-1 gap-6">
+                <form onSubmit={handleSubmit(onAddImage)} className="grid grid-cols-1 gap-6">
                     <div className="grid gap-2">
                         <Label htmlFor="images">
                             {multipleFiles ? 'Imágenes' : 'Imagen'}:{' '}

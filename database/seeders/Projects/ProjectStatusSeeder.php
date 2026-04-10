@@ -17,37 +17,44 @@ class ProjectStatusSeeder extends Seeder
             [
                 'name' => 'En Desarrollo',
                 'slug' => 'in-development',
-                'color' => '#3b82f6',
-                'description' => 'El proyecto está siendo desarrollado activamente.',
+                'color' => '#2563eb', // Blue 600
+                'description' => 'El proyecto se encuentra en fase de construcción y commits activos.',
                 'order' => 1,
             ],
             [
                 'name' => 'En Revisión',
                 'slug' => 'in-review',
-                'color' => '#f59e0b',
-                'description' => 'El proyecto está siendo evaluado por un maestro o revisor.',
+                'color' => '#ca8a04', // Yellow 600
+                'description' => 'Sometido a evaluación técnica o revisión por pares (Code Review).',
                 'order' => 2,
             ],
             [
                 'name' => 'Publicado',
                 'slug' => 'published',
-                'color' => '#22c55e',
-                'description' => 'El proyecto ha sido aprobado y está visible públicamente.',
+                'color' => '#16a34a', // Green 600
+                'description' => 'Proyecto finalizado, aprobado y visible en el portafolio público.',
                 'order' => 3,
+            ],
+            [
+                'name' => 'En Mantenimiento',
+                'slug' => 'maintenance',
+                'color' => '#0891b2', // Cyan 600
+                'description' => 'Proyecto funcional que recibe actualizaciones menores o corrección de bugs.',
+                'order' => 4,
             ],
             [
                 'name' => 'Archivado',
                 'slug' => 'archived',
-                'color' => '#64748b',
-                'description' => 'El proyecto ya no está en desarrollo activo pero se conserva como referencia.',
-                'order' => 4,
+                'color' => '#475569', // Slate 600
+                'description' => 'Legacy. El proyecto ya no es activo pero permanece como referencia histórica.',
+                'order' => 5,
             ],
             [
-                'name' => 'Rechazado',
+                'name' => 'Rechazado / Ajustes',
                 'slug' => 'rejected',
-                'color' => '#ef4444',
-                'description' => 'El proyecto no cumplió con los criterios de evaluación.',
-                'order' => 5,
+                'color' => '#dc2626', // Red 600
+                'description' => 'No cumple con los estándares mínimos. Requiere cambios estructurales.',
+                'order' => 6,
             ],
         ];
 

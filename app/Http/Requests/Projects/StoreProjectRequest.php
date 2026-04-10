@@ -15,7 +15,7 @@ class StoreProjectRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'summary' => ['required', 'string', 'min:50'],
+            'description' => ['required', 'string', 'min:50'],
             'images' => ['required', 'array', 'min:1', 'max:20'],
             'images.*' => ['required', 'image', 'mimes:jpg,png,jpeg,webp'],
             'repository_url' => ['required', 'url', 'max:255'],

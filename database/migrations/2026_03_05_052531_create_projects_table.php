@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->text('summary');
+            $table->text('description');
             $table->json('content');
             $table->string('repository_url')->nullable();
             $table->string('demo_url')->nullable();

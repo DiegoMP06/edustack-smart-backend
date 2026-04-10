@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Blog;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Blog\StorePostGalleryRequest;
+use App\Http\Requests\Media\StoreModelMediaRequest;
 use App\Models\Blog\Post;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -11,16 +11,14 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class PostGalleryController extends Controller
 {
-    public function store(StorePostGalleryRequest $request, Post $post)
+    public function store(StoreModelMediaRequest $request, Post $post)
     {
         $this->authorize('update', $post);
 
         $data = $request->validated();
 
-        $images = $request->file('images');
-
-        foreach ($images as $file) {
-            $post->addMedia($file)
+        foreach ($data['images'] as $key) {
+            $post->addMediaFromDisk($key, 's3')
                 ->toMediaCollection('gallery');
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Models\Blog;
 
+use App\Concerns\HasRelatables;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -21,7 +22,7 @@ use Spatie\Sluggable\SlugOptions;
 #[Fillable([
     'name',
     'slug',
-    'summary',
+    'description',
     'content',
     'views_count',
     'reading_time_minutes',
@@ -33,7 +34,7 @@ use Spatie\Sluggable\SlugOptions;
 ])]
 class Post extends Model implements HasMedia
 {
-    use HasFactory, HasSlug, InteractsWithMedia, LogsActivity, Searchable, SoftDeletes;
+    use HasFactory, HasSlug, InteractsWithMedia, LogsActivity, Searchable, SoftDeletes, HasRelatables;
 
     protected function casts(): array
     {
@@ -66,7 +67,7 @@ class Post extends Model implements HasMedia
         return [
             'id' => (int) $this->id,
             'name' => $this->name,
-            'summary' => $this->summary,
+            'description' => $this->description,
             'published_at' => $this->published_at,
             'categories' => $this->categories()->pluck('post_categories.name')->toArray(),
             'type' => $this->type()->pluck('name')->toArray(),

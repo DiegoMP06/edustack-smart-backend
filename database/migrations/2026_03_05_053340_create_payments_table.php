@@ -1,11 +1,11 @@
 <?php
 
+use App\Enums\Payments\PaymentStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,30 +13,22 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-
             $table->string('reference_code', 30)->unique();
             $table->text('qr_payload');
-            $table->morphs('payable');
             $table->decimal('amount', 10, 2);
             $table->decimal('discount', 10, 2)->default(0);
             $table->decimal('total', 10, 2);
             $table->string('currency', 3)->default('MXN');
-            $table->enum('status', [
-                'pending',
-                'validating',
-                'validated',
-                'rejected',
-                'expired',
-                'refunded',
-                'waived',
-            ])->default('pending');
+            $table->enum('status', PaymentStatus::cases())
+                ->default(PaymentStatus::PENDING);
+            $table->text('management_notes')->nullable();
             $table->timestamp('expires_at')->nullable();
+            $table->timestamp('validated_at')->nullable();
+            $table->morphs('payable');
             $table->foreignId('validated_by')->nullable()
                 ->constrained('users')->nullOnDelete();
-            $table->timestamp('validated_at')->nullable();
             $table->foreignId('managed_by')->nullable()
                 ->constrained('users')->nullOnDelete();
-            $table->text('management_notes')->nullable();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();

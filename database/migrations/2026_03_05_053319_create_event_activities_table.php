@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->text('summary');
+            $table->text('description');
             $table->json('content');
             $table->text('requirements')->nullable();
             $table->boolean('is_online')->default(false);
@@ -24,9 +24,9 @@ return new class extends Migration {
             $table->decimal('lng', 11, 8)->nullable();
             $table->boolean('has_teams')->default(false);
             $table->boolean('requires_team')->default(false);
-            $table->unsignedSmallInteger('min_team_size')->default(1);
+            $table->unsignedSmallInteger('min_team_size')->nullable();
             $table->unsignedSmallInteger('max_team_size')->nullable();
-            $table->unsignedInteger('max_participants')->nullable();
+            $table->unsignedInteger('capacity')->nullable();
             $table->boolean('only_students')->default(true);
             $table->boolean('is_competition')->default(false);
             $table->decimal('price', 10, 2)->default(0);
@@ -37,10 +37,6 @@ return new class extends Migration {
             $table->dateTime('ended_at');
             $table->dateTime('registration_started_at');
             $table->dateTime('registration_ended_at');
-            $table->foreignId('course_id')->nullable()
-                ->constrained()->nullOnDelete();
-            $table->foreignId('project_id')->nullable()
-                ->constrained()->nullOnDelete();
             $table->foreignId('difficulty_level_id')->nullable()
                 ->constrained()->nullOnDelete();
             $table->foreignId('event_status_id')->constrained()->restrictOnDelete();

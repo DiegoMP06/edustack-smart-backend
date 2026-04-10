@@ -1,11 +1,7 @@
-import { router } from '@inertiajs/react';
 import { useState } from 'react';
-import type { Dispatch, SetStateAction } from 'react';
 import { Item } from 'react-photoswipe-gallery';
-import { toast } from 'sonner';
 import ConfirmDialog from '@/components/ui/app/confirm-dialog';
 import ImageSkeleton from '@/components/ui/app/image-skeleton';
-
 import {
     ContextMenu,
     ContextMenuContent,
@@ -13,51 +9,25 @@ import {
     ContextMenuTrigger,
 } from '@/components/ui/shadcn/context-menu';
 import { getIdealResponsiveMediaLink } from '@/lib/utils';
-import posts from '@/routes/posts';
 import type { Media } from '@/types';
-import type { Post } from '@/types/blog';
 
-type EditPostGalleryItemProps = {
+type EditGalleryItemProps = {
     image: Media;
-    postId: Post['id'];
     processing: boolean;
-    setProcessing: Dispatch<SetStateAction<boolean>>;
-};
+    onDeleteImage: (mediaId: Media['id']) => void;
+    objectType: string;
+}
 
-export default function EditPostGalleryItem({
+export default function EditGalleryItem({
     image,
-    postId,
     processing,
-    setProcessing,
-}: EditPostGalleryItemProps) {
+    onDeleteImage,
+    objectType
+}: EditGalleryItemProps) {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
     const handleDeleteImage = () => {
         setIsDeleteDialogOpen(true);
-    };
-
-    const deleteImage = () => {
-        setProcessing(true);
-        router.delete(
-            posts.medias.destroy({
-                post: postId,
-                media: image.id,
-            }),
-            {
-                preserveScroll: true,
-                showProgress: true,
-                forceFormData: false,
-                onSuccess(data) {
-                    toast.success(data.props.message as string);
-                },
-                onFinish() {
-                    setProcessing(false);
-                },
-                onError(error) {
-                    Object.values(error).forEach((value) => toast.error(value));
-                },
-            },
-        );
     };
 
     return (
@@ -76,7 +46,7 @@ export default function EditPostGalleryItem({
                                     ref={ref}
                                     onClick={open}
                                     src={getIdealResponsiveMediaLink(image)}
-                                    alt={`imagen ${image.id} del post ${postId}`}
+                                    alt={`imagen ${image.id} de ${objectType}`}
                                     width={image.dimensions.main.width}
                                     height={image.dimensions.main.height}
                                 />
@@ -103,12 +73,12 @@ export default function EditPostGalleryItem({
             <ConfirmDialog
                 open={isDeleteDialogOpen}
                 onOpenChange={setIsDeleteDialogOpen}
-                onConfirm={deleteImage}
+                onConfirm={() => onDeleteImage(image.id)}
                 title="¿Eliminar imagen?"
                 description="Esta acción eliminará la imagen de forma permanente."
                 confirmLabel="Sí, eliminar"
                 confirmDisabled={processing}
             />
         </>
-    );
+    )
 }

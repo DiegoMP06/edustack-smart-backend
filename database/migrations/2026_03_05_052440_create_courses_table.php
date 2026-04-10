@@ -21,9 +21,9 @@ return new class extends Migration
             $table->unsignedTinyInteger('credits')->default(0);
             $table->string('period')->nullable();
             $table->boolean('is_published')->default(false);
-            $table->boolean('is_free')->default(true);
             $table->decimal('price', 10, 2)->default(0);
             $table->unsignedInteger('capacity')->nullable();
+            $table->boolean('has_fixed_dates')->default(false);
             $table->date('start_date')->nullable()->index();
             $table->date('end_date')->nullable();
             $table->date('enrollment_start_date')->nullable();

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->text('summary');
+            $table->text('description');
             $table->json('content');
             $table->unsignedInteger('views_count')->default(0);
             $table->unsignedTinyInteger('reading_time_minutes')->default(1);

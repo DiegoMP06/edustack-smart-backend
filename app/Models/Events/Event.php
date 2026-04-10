@@ -2,9 +2,11 @@
 
 namespace App\Models\Events;
 
+use App\Concerns\HasRelatables;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
@@ -20,7 +22,7 @@ use Spatie\Sluggable\SlugOptions;
 #[Fillable([
     'name',
     'slug',
-    'summary',
+    'description',
     'content',
     'price',
     'percent_off',
@@ -40,7 +42,7 @@ use Spatie\Sluggable\SlugOptions;
 ])]
 class Event extends Model implements HasMedia
 {
-    use HasSlug, InteractsWithMedia, LogsActivity, Searchable, SoftDeletes;
+    use HasFactory, HasSlug, InteractsWithMedia, LogsActivity, Searchable, SoftDeletes, HasRelatables;
 
     protected function casts(): array
     {
@@ -83,6 +85,11 @@ class Event extends Model implements HasMedia
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumbnail')
+            ->fit(Fit::Crop, 500, 500)
+            ->quality(85)
+            ->sharpen(10);
+
+        $this->addMediaConversion('main')
             ->fit(Fit::Crop, 1080, 1080)
             ->quality(85)
             ->sharpen(10)
@@ -94,7 +101,7 @@ class Event extends Model implements HasMedia
         return [
             'id' => (int) $this->id,
             'name' => $this->name,
-            'summary' => $this->summary,
+            'description' => $this->description,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
             'location' => $this->location,

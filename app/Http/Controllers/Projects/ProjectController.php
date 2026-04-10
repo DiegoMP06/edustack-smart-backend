@@ -9,7 +9,7 @@ use App\Http\Resources\Projects\ProjectCollection;
 use App\Models\Projects\Project;
 use App\Models\Projects\ProjectCategory;
 use App\Models\Projects\ProjectStatus;
-use App\Traits\ApiQueryable;
+use App\Concerns\ApiQueryable;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -55,21 +55,15 @@ class ProjectController extends Controller
         $data = $request->validated();
 
         $project = $request->user()->projects()->create([
-            'name' => $data['name'],
-            'summary' => $data['summary'],
-            'repository_url' => $data['repository_url'],
-            'demo_url' => $data['demo_url'],
-            'tech_stack' => $data['tech_stack'],
-            'version' => $data['version'],
-            'license' => $data['license'],
-            'project_status_id' => $data['project_status_id'],
+            ...$data,
             'content' => [],
         ]);
 
         $project->categories()->sync($data['categories']);
 
-        foreach ($request->file('images') as $file) {
-            $project->addMedia($file)->toMediaCollection('screenshots');
+        foreach ($data['images'] as $key) {
+            $project->addMediaFromDisk($key, 's3')
+                ->toMediaCollection('screenshots');
         }
 
         return redirect()->intended(

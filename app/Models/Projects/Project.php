@@ -2,6 +2,7 @@
 
 namespace App\Models\Projects;
 
+use App\Concerns\HasRelatables;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -21,7 +22,7 @@ use Spatie\Sluggable\SlugOptions;
 #[Fillable([
     'name',
     'slug',
-    'summary',
+    'description',
     'content',
     'repository_url',
     'demo_url',
@@ -36,7 +37,7 @@ use Spatie\Sluggable\SlugOptions;
 ])]
 class Project extends Model implements HasMedia
 {
-    use HasFactory, HasSlug, InteractsWithMedia, LogsActivity, Searchable, SoftDeletes;
+    use HasFactory, HasSlug, InteractsWithMedia, LogsActivity, Searchable, SoftDeletes, HasRelatables;
 
     public function casts(): array
     {
@@ -68,7 +69,7 @@ class Project extends Model implements HasMedia
         return [
             'id' => (int) $this->id,
             'name' => $this->name,
-            'summary' => $this->summary,
+            'description' => $this->description,
             'repository_url' => $this->repository_url,
             'demo_url' => $this->demo_url,
             'tech_stack' => $this->tech_stack,
@@ -97,6 +98,11 @@ class Project extends Model implements HasMedia
     {
         $this->addMediaConversion('screenshot')
             ->fit(Fit::Crop, 1920, 1080)
+            ->quality(85)
+            ->sharpen(10);
+
+        $this->addMediaConversion('main')
+            ->fit(Fit::Crop, 1200, 620)
             ->quality(85)
             ->sharpen(10)
             ->withResponsiveImages();

@@ -84,6 +84,10 @@ class AppServiceProvider extends ServiceProvider
             if ($media->model_type === EventModel::class) {
                 broadcast(new MediaProcessed($media->model_id, 'event'));
             }
+
+            if ($media->model_type === EventActivity::class) {
+                broadcast(new MediaProcessed($media->model_id, 'event-activity'));
+            }
         });
     }
 }

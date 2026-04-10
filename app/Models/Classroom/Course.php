@@ -2,6 +2,7 @@
 
 namespace App\Models\Classroom;
 
+use App\Concerns\HasRelatables;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
@@ -37,7 +38,7 @@ use Spatie\Sluggable\SlugOptions;
 ])]
 class Course extends Model implements HasMedia
 {
-    use HasSlug, InteractsWithMedia, LogsActivity, SoftDeletes;
+    use HasSlug, InteractsWithMedia, LogsActivity, SoftDeletes, HasRelatables;
 
     protected function casts(): array
     {

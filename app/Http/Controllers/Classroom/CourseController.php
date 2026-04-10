@@ -9,7 +9,7 @@ use App\Http\Resources\Classroom\CourseCollection;
 use App\Models\Classroom\Course;
 use App\Models\Classroom\CourseCategory;
 use App\Models\Classroom\CourseStatus;
-use App\Traits\ApiQueryable;
+use App\Concerns\ApiQueryable;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;

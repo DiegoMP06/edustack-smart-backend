@@ -24,8 +24,8 @@ class StoreEventRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'logo' => ['required', 'image', 'mimes:jpg,png,jpeg,webp'],
-            'summary' => ['required', 'string', 'min:50'],
+            'logo' => ['required', 'string'],
+            'description' => ['required', 'string', 'min:50'],
             'price' => ['required', 'numeric', 'min:0'],
             'percent_off' => ['required', 'numeric', 'min:0', 'max:100'],
             'capacity' => ['nullable', 'required_if:with_capacity,true', 'numeric', 'min:1'],

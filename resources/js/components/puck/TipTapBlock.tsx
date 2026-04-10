@@ -2,13 +2,13 @@ import type { ComponentConfig } from '@puckeditor/core';
 import TipTapEditor, { TipTapViewer } from '@/components/tiptap/TipTapEditor';
 
 type TipTapBlockProps = {
-    content: string;
+    html: string;
 };
 
-export default function TipTapBlock({ content }: TipTapBlockProps) {
+export default function TipTapBlock({ html }: TipTapBlockProps) {
     return (
         <div className="my-2">
-            <TipTapViewer content={content} />
+            <TipTapViewer content={html} />
         </div>
     );
 }
@@ -34,7 +34,7 @@ function TipTapBlockField({
 export const TipTapBlockConfig: ComponentConfig<TipTapBlockProps> = {
     label: 'Editor enriquecido',
     fields: {
-        content: {
+        html: {
             type: 'custom',
             render: ({ value, onChange }) => (
                 <TipTapBlockField
@@ -45,7 +45,7 @@ export const TipTapBlockConfig: ComponentConfig<TipTapBlockProps> = {
         },
     },
     defaultProps: {
-        content: '<p>Escribe aquí...</p>',
+        html: '<p>Escribe aquí...</p>',
     },
     render: TipTapBlock,
 };

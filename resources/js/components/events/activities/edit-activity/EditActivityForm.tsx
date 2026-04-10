@@ -21,12 +21,12 @@ export default function EditActivityForm({ activity, activityTypes, categories, 
     const [processing, setProcessing] = useState(false);
     const defaultValues: EventActivityFormData = {
         name: activity.name,
-        summary: activity.summary,
+        description: activity.description,
         requirements: activity.requirements || '',
         is_free: activity.price === 0,
         price: activity.price,
-        with_capacity: activity.max_participants !== null,
-        max_participants: activity.max_participants,
+        with_capacity: activity.capacity !== null,
+        capacity: activity.capacity,
         is_online: activity.is_online,
         online_link: activity.online_link ?? '',
         location: activity.location ?? '',
@@ -52,7 +52,6 @@ export default function EditActivityForm({ activity, activityTypes, categories, 
     const {
         control,
         register,
-        formState: { errors },
         handleSubmit,
     } = useForm<EventActivityFormData>({
         defaultValues,
@@ -69,7 +68,7 @@ export default function EditActivityForm({ activity, activityTypes, categories, 
         const formData = {
             ...data,
             price: data.is_free ? 0 : data.price,
-            max_participants: data.with_capacity ? data.max_participants : null,
+            capacity: data.with_capacity ? data.capacity : null,
             online_link: data.is_online ? data.online_link : null,
             location: data.is_online ? null : data.location,
             lat: data.is_online ? null : latLng.lat,
@@ -115,7 +114,6 @@ export default function EditActivityForm({ activity, activityTypes, categories, 
         >
             <ActivityForm
                 control={control}
-                errors={errors}
                 register={register}
                 statuses={statuses}
                 difficultyLevels={difficultyLevels}

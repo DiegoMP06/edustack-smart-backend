@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Blog\PostCollection;
 use App\Models\Blog\Post;
-use App\Traits\ApiQueryable;
+use App\Concerns\ApiQueryable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 

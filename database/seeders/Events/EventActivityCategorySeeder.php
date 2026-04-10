@@ -18,103 +18,120 @@ class EventActivityCategorySeeder extends Seeder
             [
                 'name' => 'Desarrollo Web',
                 'slug' => 'web-development',
-                'color' => '#3b82f6',
+                'description' => 'Talleres de frameworks modernos, maquetación avanzada y performance web.',
+                'color' => '#2563eb', // Blue 600
                 'order' => 1,
             ],
             [
                 'name' => 'Desarrollo de Software',
                 'slug' => 'software-development',
-                'color' => '#6366f1',
+                'description' => 'Sesiones sobre lenguajes de backend, algoritmos y paradigmas de programación.',
+                'color' => '#4f46e5', // Indigo 600
                 'order' => 2,
             ],
             [
                 'name' => 'Ciberseguridad',
                 'slug' => 'cybersecurity',
-                'color' => '#ef4444',
+                'description' => 'Competencias CTF, análisis de vulnerabilidades y seguridad en redes.',
+                'color' => '#dc2626', // Red 600
                 'order' => 3,
             ],
             [
                 'name' => 'Inteligencia Artificial',
                 'slug' => 'artificial-intelligence',
-                'color' => '#8b5cf6',
+                'description' => 'Entrenamiento de modelos, procesamiento de lenguaje natural y visión por computadora.',
+                'color' => '#7c3aed', // Violet 600
                 'order' => 4,
             ],
             [
                 'name' => 'Redes e Infraestructura',
                 'slug' => 'networking-and-infrastructure',
-                'color' => '#0ea5e9',
+                'description' => 'Configuración de hardware de red, protocolos y topologías físicas.',
+                'color' => '#0284c7', // Sky 600
                 'order' => 5,
             ],
             [
                 'name' => 'Ciencia de Datos',
                 'slug' => 'data-science',
-                'color' => '#06b6d4',
+                'description' => 'Análisis estadístico, visualización de datos y minería de información.',
+                'color' => '#0891b2', // Cyan 600
                 'order' => 6,
             ],
             [
                 'name' => 'DevOps y Automatización',
                 'slug' => 'devops-and-automation',
-                'color' => '#f97316',
+                'description' => 'Implementación de pipelines CI/CD y automatización de flujos de trabajo.',
+                'color' => '#ea580c', // Orange 600
                 'order' => 7,
             ],
             [
                 'name' => 'Cloud Computing',
                 'slug' => 'cloud-computing',
-                'color' => '#38bdf8',
+                'description' => 'Gestión de servicios en la nube (AWS, Azure, GCP) y serverless.',
+                'color' => '#0ea5e9', // Light Blue
                 'order' => 8,
             ],
             [
                 'name' => 'Internet de las Cosas (IoT)',
                 'slug' => 'internet-of-things',
-                'color' => '#10b981',
+                'description' => 'Prototipado con Arduino, Raspberry Pi y protocolos de comunicación inalámbrica.',
+                'color' => '#059669', // Emerald 600
                 'order' => 9,
             ],
             [
                 'name' => 'Blockchain y Web3',
                 'slug' => 'blockchain-and-web3',
-                'color' => '#f59e0b',
+                'description' => 'Desarrollo de Smart Contracts, dApps y tecnologías descentralizadas.',
+                'color' => '#d97706', // Amber 600
                 'order' => 10,
             ],
             [
                 'name' => 'Desarrollo Móvil',
                 'slug' => 'mobile-development',
-                'color' => '#22c55e',
+                'description' => 'Diseño y despliegue de aplicaciones para dispositivos móviles.',
+                'color' => '#16a34a', // Green 600
                 'order' => 11,
             ],
             [
                 'name' => 'Desarrollo de Videojuegos',
                 'slug' => 'game-development',
-                'color' => '#a855f7',
+                'description' => 'Uso de motores gráficos, diseño de niveles y mecánicas de juego.',
+                'color' => '#9333ea', // Purple 600
                 'order' => 12,
             ],
             [
                 'name' => 'Diseño UI/UX',
                 'slug' => 'ui-ux-design',
-                'color' => '#ec4899',
+                'description' => 'Metodologías de diseño centrado en el usuario y prototipado interactivo.',
+                'color' => '#db2777', // Pink 600
                 'order' => 13,
             ],
             [
                 'name' => 'Calidad de Software (QA)',
                 'slug' => 'quality-assurance',
-                'color' => '#14b8a6',
+                'description' => 'Pruebas automatizadas, unitarias y aseguramiento de la calidad.',
+                'color' => '#0d9488', // Teal 600
                 'order' => 14,
             ],
             [
                 'name' => 'Habilidades Blandas',
                 'slug' => 'soft-skills',
-                'color' => '#84cc16',
+                'description' => 'Taller de oratoria, liderazgo de equipos y marca personal para ingenieros.',
+                'color' => '#65a30d', // Lime 600
                 'order' => 15,
             ],
             [
                 'name' => 'Gestión de Proyectos TI',
                 'slug' => 'it-management',
-                'color' => '#64748b',
+                'description' => 'Planificación estratégica y metodologías de gestión técnica.',
+                'color' => '#475569', // Slate 600
                 'order' => 16,
             ],
             [
                 'name' => 'Cultura Open Source',
                 'slug' => 'open-source-culture',
-                'color' => '#16a34a',
+                'description' => 'Contribución a proyectos comunitarios y licencias de software libre.',
+                'color' => '#15803d', // Dark Green
                 'order' => 17,
             ],
         ];

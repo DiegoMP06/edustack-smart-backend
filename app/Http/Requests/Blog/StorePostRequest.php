@@ -15,9 +15,9 @@ class StorePostRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'summary' => ['required', 'string', 'min:50'],
-            'images' => ['required', 'array', 'min:1', 'max:20'],
-            'images.*' => ['required', 'image', 'mimes:jpg,png,jpeg,webp'],
+            'description' => ['required', 'string', 'min:50'],
+            'images' => ['required', 'array', 'min:1'],
+            'images.*' => ['required', 'string'],
             'reading_time_minutes' => ['required', 'integer', 'min:1'],
             'post_type_id' => ['required', 'integer', 'exists:post_types,id'],
             'categories' => ['required', 'array', 'min:1'],

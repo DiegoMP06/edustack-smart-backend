@@ -17,50 +17,50 @@ class EventStatusSeeder extends Seeder
             [
                 'name' => 'Borrador',
                 'slug' => 'draft',
-                'color' => '#94a3b8',
-                'description' => 'El evento está siendo configurado, no es visible para el público.',
+                'color' => '#64748b', // Slate 600
+                'description' => 'El evento está en fase de planificación y no es visible para el público.',
                 'order' => 1,
             ],
             [
-                'name' => 'Próximo',
+                'name' => 'Próximamente',
                 'slug' => 'upcoming',
-                'color' => '#3b82f6',
-                'description' => 'El evento está publicado y visible, pero las inscripciones aún no han abierto.',
+                'color' => '#2563eb', // Blue 600
+                'description' => 'Evento anunciado y visible, pero el registro de asistentes aún no ha iniciado.',
                 'order' => 2,
             ],
             [
-                'name' => 'Inscripciones abiertas',
+                'name' => 'Inscripciones Abiertas',
                 'slug' => 'open',
-                'color' => '#22c55e',
-                'description' => 'Las inscripciones están disponibles para los usuarios.',
+                'color' => '#16a34a', // Green 600
+                'description' => 'El registro está activo. Los usuarios pueden inscribirse a las actividades.',
                 'order' => 3,
             ],
             [
-                'name' => 'Inscripciones cerradas',
+                'name' => 'Inscripciones Cerradas',
                 'slug' => 'closed',
-                'color' => '#f97316',
-                'description' => 'El periodo de inscripción ha concluido.',
+                'color' => '#ea580c', // Orange 600
+                'description' => 'El cupo se ha completado o el periodo de registro ha finalizado.',
                 'order' => 4,
             ],
             [
                 'name' => 'En Curso',
                 'slug' => 'ongoing',
-                'color' => '#10b981',
-                'description' => 'El evento se está llevando a cabo en este momento.',
+                'color' => '#0891b2', // Cyan 600
+                'description' => 'El evento se está desarrollando actualmente.',
                 'order' => 5,
             ],
             [
                 'name' => 'Finalizado',
                 'slug' => 'finished',
-                'color' => '#64748b',
-                'description' => 'El evento ha concluido exitosamente.',
+                'color' => '#1e293b', // Slate 800
+                'description' => 'El evento ha concluido. El material y memorias pueden estar disponibles.',
                 'order' => 6,
             ],
             [
                 'name' => 'Cancelado',
                 'slug' => 'cancelled',
-                'color' => '#ef4444',
-                'description' => 'El evento fue cancelado.',
+                'color' => '#dc2626', // Red 600
+                'description' => 'El evento fue suspendido de forma definitiva.',
                 'order' => 7,
             ],
         ];

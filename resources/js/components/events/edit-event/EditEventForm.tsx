@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import EventForm from '@/components/events/EventForm';
 import { Button } from '@/components/ui/shadcn/button';
+import useMediaUpload from '@/hooks/media/useMediaUpload';
 import events from '@/routes/events';
 import type { Event, EventFormData } from '@/types';
 
@@ -19,7 +20,7 @@ export default function EditEventForm({ event }: EditEventFormProps) {
     const initialValues: EventFormData = {
         name: event.name,
         logo: [],
-        summary: event.summary,
+        description: event.description,
         is_free: event.price === 0,
         price: event.price,
         percent_off: event.percent_off,
@@ -35,6 +36,8 @@ export default function EditEventForm({ event }: EditEventFormProps) {
         registration_started_at: new Date(event.registration_started_at),
     };
 
+    const { uploadImages } = useMediaUpload();
+
     const {
         control,
         register,
@@ -44,7 +47,7 @@ export default function EditEventForm({ event }: EditEventFormProps) {
         defaultValues: initialValues,
     });
 
-    const handleEditEvent: SubmitHandler<EventFormData> = ({
+    const handleEditEvent: SubmitHandler<EventFormData> = async ({
         latLng,
         start_date,
         end_date,
@@ -52,9 +55,18 @@ export default function EditEventForm({ event }: EditEventFormProps) {
         registration_started_at,
         ...data
     }) => {
+        setProcessing(true);
+        let keys: string[] = [];
+
+        if (data.logo.length > 0) {
+            keys = ((await uploadImages(data.logo)) || []) as string[];
+        }
+
+        console.log(keys)
+
         const formData = {
             ...data,
-            logo: data.logo.length > 0 ? data.logo[0] : null,
+            logo: keys.length > 0 ? keys[0] : null,
             price: data.is_free ? 0 : data.price,
             percent_off: data.is_free ? 0 : data.percent_off,
             capacity: data.with_capacity ? data.capacity : null,
@@ -72,16 +84,10 @@ export default function EditEventForm({ event }: EditEventFormProps) {
                 .split('T')[0],
         };
 
-        setProcessing(true);
-        router.post(
-            events.update(event.id, {
-                query: {
-                    _method: 'PUT',
-                },
-            }),
+        router.patch(
+            events.update(event.id),
             formData,
             {
-                forceFormData: true,
                 preserveScroll: true,
                 showProgress: true,
                 onSuccess: (data) => {

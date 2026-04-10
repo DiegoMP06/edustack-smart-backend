@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Classroom\LessonType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,18 +15,18 @@ return new class extends Migration
         Schema::create('course_lessons', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->text('description')->nullable();
+            $table->json('content');
             $table->string('slug')->unique();
             $table->text('summary')->nullable();
-            $table->json('content')->nullable();
-            $table->enum('type', ['text', 'video', 'activity', 'live'])
-                ->default('text');
             $table->string('video_url')->nullable();
             $table->unsignedInteger('video_duration_seconds')->nullable();
             $table->unsignedSmallInteger('order')->default(0);
             $table->unsignedSmallInteger('estimated_minutes')->default(10);
             $table->boolean('is_published')->default(false);
-            $table->boolean('is_preview')->default(false)
-                ->comment('true = visible sin inscripción al curso');
+            $table->boolean('is_preview')->default(false);
+            $table->enum('type', LessonType::cases())
+                ->default(LessonType::TEXT);
             $table->foreignId('course_section_id')->constrained()->cascadeOnDelete();
             $table->foreignId('course_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
@@ -50,10 +51,10 @@ return new class extends Migration
 
         Schema::create('lesson_completions', function (Blueprint $table) {
             $table->id();
+            $table->timestamp('completed_at')->useCurrent();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('course_lesson_id')->constrained()->cascadeOnDelete();
             $table->foreignId('course_id')->constrained()->cascadeOnDelete();
-            $table->timestamp('completed_at')->useCurrent();
             $table->timestamps();
             $table->unique(['user_id', 'course_lesson_id']);
             $table->index(['user_id', 'course_id']);

@@ -2,6 +2,7 @@
 
 use App\Models\Blog\Post;
 use App\Models\Events\Event;
+use App\Models\Events\EventActivity;
 use App\Models\Projects\Project;
 use Illuminate\Support\Facades\Broadcast;
 
@@ -19,4 +20,8 @@ Broadcast::channel('project.{id}', function ($user, $id) {
 
 Broadcast::channel('event.{id}', function ($user, $id) {
     return (int) $user->id === (int) Event::find($id)->user_id;
+});
+
+Broadcast::channel('event-activity.{id}', function ($user, $id) {
+    return (int) $user->id === (int) EventActivity::find($id)->event->user_id;
 });

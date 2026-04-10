@@ -1,6 +1,6 @@
 import { Head, router } from '@inertiajs/react';
 import { Render } from '@puckeditor/core';
-import { ChevronLeft, GitBranch, Link2 } from 'lucide-react';
+import { ChevronLeft, GitBranch, Link2, Pencil } from 'lucide-react';
 import GalleryContent from '@/components/ui/app/gallery-content';
 import {
     Avatar,
@@ -48,10 +48,21 @@ export default function ShowProject({ project }: ShowProjectProps) {
         <AppLayout breadcrumbs={breadcrumbs(project)}>
             <Head title={project.name} />
 
-            <div className="mb-15">
-                <Button onClick={() => router.visit(projects.index())}>
+            <div className="mb-15 flex items-center justify-between">
+                <Button
+                    variant="default"
+                    onClick={() => router.visit(projects.index())}
+                >
                     <ChevronLeft />
                     Volver
+                </Button>
+
+                <Button
+                    onClick={() => router.visit(projects.edit({ project: project.id }))}
+                    variant="outline"
+                >
+                    <Pencil />
+                    Editar Proyecto
                 </Button>
             </div>
 
@@ -63,7 +74,7 @@ export default function ShowProject({ project }: ShowProjectProps) {
                         </h1>
 
                         <p className="my-6 text-justify leading-normal whitespace-pre-wrap text-muted-foreground">
-                            {project.summary}
+                            {project.description}
                         </p>
                     </main>
 
@@ -87,10 +98,10 @@ export default function ShowProject({ project }: ShowProjectProps) {
                             <AvatarFallback className="rounded-lg bg-indigo-200 text-indigo-700 dark:bg-neutral-700 dark:text-white">
                                 {getInitials(
                                     project.author?.name +
-                                        ' ' +
-                                        project.author?.father_last_name +
-                                        ' ' +
-                                        project.author?.mother_last_name,
+                                    ' ' +
+                                    project.author?.father_last_name +
+                                    ' ' +
+                                    project.author?.mother_last_name,
                                 )}
                             </AvatarFallback>
                         </Avatar>
@@ -122,10 +133,10 @@ export default function ShowProject({ project }: ShowProjectProps) {
                                                         <AvatarFallback className="rounded-lg bg-indigo-200 text-indigo-700 dark:bg-neutral-700 dark:text-white">
                                                             {getInitials(
                                                                 collaborator?.name +
-                                                                    ' ' +
-                                                                    collaborator?.father_last_name +
-                                                                    ' ' +
-                                                                    collaborator?.mother_last_name,
+                                                                ' ' +
+                                                                collaborator?.father_last_name +
+                                                                ' ' +
+                                                                collaborator?.mother_last_name,
                                                             )}
                                                         </AvatarFallback>
                                                     </Avatar>
@@ -136,10 +147,10 @@ export default function ShowProject({ project }: ShowProjectProps) {
                                                             <AvatarFallback className="rounded-lg bg-indigo-200 text-indigo-700 dark:bg-neutral-700 dark:text-white">
                                                                 {getInitials(
                                                                     collaborator.name +
-                                                                        ' ' +
-                                                                        collaborator.father_last_name +
-                                                                        ' ' +
-                                                                        collaborator.mother_last_name,
+                                                                    ' ' +
+                                                                    collaborator.father_last_name +
+                                                                    ' ' +
+                                                                    collaborator.mother_last_name,
                                                                 )}
                                                             </AvatarFallback>
                                                         </Avatar>
@@ -221,7 +232,7 @@ export default function ShowProject({ project }: ShowProjectProps) {
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                <GitBranch className="flex-shrink-0" />
+                                <GitBranch className="shrink-0" />
                                 <span className="block">
                                     {project.repository_url}
                                 </span>
@@ -233,7 +244,7 @@ export default function ShowProject({ project }: ShowProjectProps) {
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                <Link2 className="flex-shrink-0" />
+                                <Link2 className="shrink-0" />
                                 <span className="block">
                                     {project.demo_url}
                                 </span>

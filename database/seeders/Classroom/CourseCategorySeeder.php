@@ -17,81 +17,81 @@ class CourseCategorySeeder extends Seeder
             [
                 'name' => 'Programación',
                 'slug' => 'programming',
-                'color' => '#6366f1',
-                'icon' => 'code-bracket',
-                'description' => 'Cursos de lenguajes de programación y algoritmos.',
+                'color' => '#4f46e5', // Indigo 600
+                'icon' => 'code-2',
+                'description' => 'Domina los fundamentos, lógica y algoritmos en los lenguajes más demandados.',
                 'order' => 1,
             ],
             [
                 'name' => 'Desarrollo Web',
                 'slug' => 'web-development',
-                'color' => '#3b82f6',
-                'icon' => 'globe-alt',
-                'description' => 'Frontend, backend y desarrollo full-stack.',
+                'color' => '#2563eb', // Blue 600
+                'icon' => 'monitor-play',
+                'description' => 'Arquitectura frontend, backend y despliegue de aplicaciones full-stack modernas.',
                 'order' => 2,
             ],
             [
                 'name' => 'Bases de Datos',
                 'slug' => 'databases',
-                'color' => '#f59e0b',
-                'icon' => 'circle-stack',
-                'description' => 'SQL, NoSQL, modelado y administración de datos.',
+                'color' => '#d97706', // Amber 600
+                'icon' => 'database',
+                'description' => 'Modelado relacional y NoSQL, optimización de queries y administración de datos.',
                 'order' => 3,
             ],
             [
                 'name' => 'Inteligencia Artificial',
                 'slug' => 'artificial-intelligence',
-                'color' => '#a855f7',
-                'icon' => 'cpu-chip',
-                'description' => 'Machine learning, deep learning e IA aplicada.',
+                'color' => '#9333ea', // Purple 600
+                'icon' => 'cpu',
+                'description' => 'Implementación de modelos de Machine Learning, Deep Learning e IA generativa.',
                 'order' => 4,
             ],
             [
                 'name' => 'Ciberseguridad',
                 'slug' => 'cybersecurity',
-                'color' => '#ef4444',
+                'color' => '#dc2626', // Red 600
                 'icon' => 'shield-check',
-                'description' => 'Seguridad informática, ethical hacking y protección de datos.',
+                'description' => 'Técnicas de seguridad informática, hacking ético y protección de infraestructuras.',
                 'order' => 5,
             ],
             [
                 'name' => 'Redes e Infraestructura',
                 'slug' => 'networking',
-                'color' => '#0ea5e9',
+                'color' => '#0284c7', // Sky 600
                 'icon' => 'server',
-                'description' => 'Redes, sistemas operativos y administración de servidores.',
+                'description' => 'Configuración de redes, protocolos de comunicación y administración de servidores.',
                 'order' => 6,
             ],
             [
                 'name' => 'DevOps y Cloud',
                 'slug' => 'devops-cloud',
-                'color' => '#f97316',
-                'icon' => 'cloud',
-                'description' => 'CI/CD, Docker, Kubernetes y servicios en la nube.',
+                'color' => '#ea580c', // Orange 600
+                'icon' => 'cloud-cog',
+                'description' => 'Cultura CI/CD, contenedorización con Docker y orquestación en la nube.',
                 'order' => 7,
             ],
             [
                 'name' => 'Desarrollo Móvil',
                 'slug' => 'mobile-development',
-                'color' => '#22c55e',
-                'icon' => 'device-phone-mobile',
-                'description' => 'Apps nativas e híbridas para iOS y Android.',
+                'color' => '#16a34a', // Green 600
+                'icon' => 'smartphone',
+                'description' => 'Creación de aplicaciones nativas e híbridas para ecosistemas iOS y Android.',
                 'order' => 8,
             ],
             [
                 'name' => 'Gestión de Proyectos TI',
                 'slug' => 'it-project-management',
-                'color' => '#64748b',
-                'icon' => 'clipboard-document-list',
-                'description' => 'Metodologías ágiles, Scrum, Kanban y PMI.',
+                'color' => '#475569', // Slate 600
+                'icon' => 'kanban',
+                'description' => 'Metodologías ágiles, Scrum y marcos de trabajo para equipos de ingeniería.',
                 'order' => 9,
             ],
             [
                 'name' => 'Habilidades Blandas',
                 'slug' => 'soft-skills',
-                'color' => '#84cc16',
-                'icon' => 'users',
-                'description' => 'Comunicación, liderazgo y trabajo en equipo para ingenieros.',
+                'color' => '#65a30d', // Lime 600
+                'icon' => 'users-round',
+                'description' => 'Liderazgo, comunicación efectiva y resolución de conflictos en entornos técnicos.',
                 'order' => 10,
             ],
         ];

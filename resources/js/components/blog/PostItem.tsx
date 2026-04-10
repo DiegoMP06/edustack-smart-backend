@@ -151,7 +151,7 @@ export default function PostItem({ post }: PostItemProps) {
                     </ItemTitle>
 
                     <ItemDescription>
-                        {post.summary.substring(0, 100)}...
+                        {post.description.substring(0, 100)}...
                     </ItemDescription>
                 </ItemContent>
 
@@ -170,6 +170,7 @@ export default function PostItem({ post }: PostItemProps) {
                             <DropdownMenuLabel>
                                 Opciones del post
                             </DropdownMenuLabel>
+
                             <DropdownMenuGroup>
                                 <DropdownMenuItem asChild disabled={processing}>
                                     <Link href={posts.edit(post.id)}>

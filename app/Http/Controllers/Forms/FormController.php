@@ -8,7 +8,7 @@ use App\Http\Requests\Forms\UpdateFormRequest;
 use App\Http\Resources\Forms\FormCollection;
 use App\Models\Forms\Form;
 use App\Models\Forms\FormType;
-use App\Traits\ApiQueryable;
+use App\Concerns\ApiQueryable;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;

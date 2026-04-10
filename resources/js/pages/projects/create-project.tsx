@@ -9,6 +9,7 @@ import ProjectForm from '@/components/projects/ProjectForm';
 import InputError from '@/components/ui/app/input-error';
 import { Button } from '@/components/ui/shadcn/button';
 import { Label } from '@/components/ui/shadcn/label';
+import useMediaUpload from '@/hooks/media/useMediaUpload';
 import AppLayout from '@/layouts/app-layout';
 import projects from '@/routes/projects';
 import type { BreadcrumbItem } from '@/types';
@@ -53,6 +54,8 @@ export default function CreateProject({
         project_status_id: 1,
     };
 
+    const { uploadImages } = useMediaUpload();
+
     const {
         control,
         register,
@@ -62,9 +65,16 @@ export default function CreateProject({
         defaultValues: initialValues,
     });
 
-    const handleCreateProject: SubmitHandler<ProjectFormData> = (data) => {
+    const handleCreateProject: SubmitHandler<ProjectFormData> = async (data) => {
         setProcessing(true);
-        router.post(projects.store(), data, {
+
+        const keys = await uploadImages(data.images || []);
+        const formData = {
+            ...data,
+            images: keys
+        }
+
+        router.post(projects.store(), formData, {
             preserveScroll: true,
             showProgress: true,
             forceFormData: true,
@@ -98,7 +108,6 @@ export default function CreateProject({
                     statuses={statuses}
                     control={control}
                     register={register}
-                    errors={errors}
                 />
 
                 <div className="grid gap-2">

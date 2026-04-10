@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Events\RoundStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,6 +15,7 @@ return new class extends Migration
         Schema::create('competition_rounds', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->text('description');
             $table->json('content');
             $table->unsignedSmallInteger('round_number')->default(1);
             $table->unsignedInteger('participants_per_round')->nullable();
@@ -21,8 +23,9 @@ return new class extends Migration
             $table->unsignedInteger('qualified_participants')->default(1);
             $table->unsignedInteger('winners_count')->default(1);
             $table->boolean('is_the_final')->default(false);
-            $table->enum('status', ['pending', 'active', 'completed', 'cancelled'])
-                ->default('pending');
+            $table->boolean('rate_by_part')->default(false);
+            $table->enum('status', RoundStatus::cases())
+                ->default(RoundStatus::PENDING);
             $table->dateTime('started_at');
             $table->dateTime('ended_at');
             $table->foreignId('event_activity_id')->constrained()->cascadeOnDelete();

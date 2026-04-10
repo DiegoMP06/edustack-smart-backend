@@ -18,23 +18,30 @@ class DifficultyLevelSeeder extends Seeder
             [
                 'name' => 'Principiante',
                 'slug' => 'beginner',
-                'color' => '#10b981',
-                'description' => 'No se requieren conocimientos previos. Ideal para quienes inician.',
+                'color' => '#16a34a', // Green 600
+                'description' => 'Introducción desde cero. No se requieren conocimientos previos en el área.',
                 'order' => 1,
             ],
             [
                 'name' => 'Intermedio',
                 'slug' => 'intermediate',
-                'color' => '#f59e0b',
-                'description' => 'Se requieren conocimientos básicos de programación o tecnología.',
+                'color' => '#ca8a04', // Yellow 600
+                'description' => 'Requiere comprensión básica de los fundamentos y conceptos técnicos del tema.',
                 'order' => 2,
             ],
             [
                 'name' => 'Avanzado',
                 'slug' => 'advanced',
-                'color' => '#ef4444',
-                'description' => 'Dirigido a participantes con experiencia sólida en el área.',
+                'color' => '#ea580c', // Orange 600
+                'description' => 'Enfocado en profundizar en técnicas complejas y arquitecturas avanzadas.',
                 'order' => 3,
+            ],
+            [
+                'name' => 'Experto',
+                'slug' => 'expert',
+                'color' => '#dc2626', // Red 600
+                'description' => 'Especialización de alto nivel. Requiere años de experiencia o dominio total del área.',
+                'order' => 4,
             ],
         ];
 

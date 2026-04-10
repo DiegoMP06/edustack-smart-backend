@@ -24,7 +24,7 @@
         "league/flysystem-aws-s3-v3": "*",
         "meilisearch/meilisearch-php": "*",
         "pusher/pusher-php-server": "*",
-        "spatie/laravel-activitylog": "*",
+        "spatie/laravel-activitylog": "^4.0",
         "spatie/laravel-medialibrary": "*",
         "spatie/laravel-permission": "*",
         "spatie/laravel-query-builder": "*",
@@ -64,7 +64,7 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "pnpm dlx concurrently -c \"#93c5fd,#c4b5fd,#fdba74\" \"php artisan serve\" \"php artisan reverb:start --debug --port=8008\" \"php artisan queue:work --queue=default,media_processing --tries=1\" \"pnpm run dev\" --names='server,reverb,queue,vite'"
+            "pnpm dlx concurrently -c \"#93c5fd,#c4b5fd,#fdba74\" \"php artisan serve --host=0.0.0.0 --port=8000\" \"php artisan reverb:start --debug --port=8008\" \"php artisan queue:work --queue=default,media_processing --tries=1\" \"pnpm run dev -- --host\" --names='server,reverb,queue,vite'"
         ],
         "dev:ssr": [
             "npm run build:ssr",
@@ -95,8 +95,7 @@
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
-            "@php artisan lang:update",
-            "@php artisan boost:update --ansi"
+            "@php artisan lang:update"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""

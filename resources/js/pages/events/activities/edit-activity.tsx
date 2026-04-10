@@ -2,6 +2,7 @@ import { Head, router } from '@inertiajs/react';
 import { ChevronLeft } from 'lucide-react';
 import ActivityOptions from '@/components/events/activities/edit-activity/ActivityOptions';
 import EditActivityForm from '@/components/events/activities/edit-activity/EditActivityForm';
+import EditActivityGallery from '@/components/events/activities/edit-activity/EditActivityGallery';
 import { Button } from '@/components/ui/shadcn/button';
 import AppLayout from '@/layouts/app-layout';
 import events from '@/routes/events';
@@ -91,7 +92,11 @@ export default function EditActivity({
                 </aside>
             </div>
 
-
+            <EditActivityGallery
+                eventId={event.id}
+                activityId={activity.id}
+                gallery={activity.media}
+            />
         </AppLayout>
     );
 }

@@ -9,7 +9,7 @@ use App\Http\Resources\UserCollection;
 use App\Models\Projects\Project;
 use App\Models\Projects\ProjectCollaborator;
 use App\Models\User;
-use App\Traits\ApiQueryable;
+use App\Concerns\ApiQueryable;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Projects;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Projects\StoreProjectScreenshotsRequest;
+use App\Http\Requests\Media\StoreModelMediaRequest;
 use App\Models\Projects\Project;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -11,16 +11,14 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ProjectScreenshotsController extends Controller
 {
-    public function store(StoreProjectScreenshotsRequest $request, Project $project)
+    public function store(StoreModelMediaRequest $request, Project $project)
     {
         $this->authorize('update', $project);
 
         $data = $request->validated();
 
-        $images = $request->file('images');
-
-        foreach ($images as $file) {
-            $project->addMedia($file)
+        foreach ($data['images'] as $key) {
+            $project->addMediaFromDisk($key, 's3')
                 ->toMediaCollection('screenshots');
         }
 

@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react';
+import type { z } from 'zod';
+import type { LinkMetaPaginationSchema, PaginationSchema } from '@/schemas';
 import type { BreadcrumbItem } from '@/types/navigation';
 
 export type AppLayoutProps = {
@@ -17,23 +19,8 @@ export type AuthLayoutProps = {
     description?: string;
 };
 
-type LinkPagination = {
-    url: null | string;
-    label: string;
-    page: null | number;
-    active: boolean;
-};
+export type LinkMetaPagination = z.infer<typeof LinkMetaPaginationSchema>;
 
-export type PaginationType<T = unknown> = {
-    meta: {
-        current_page: number;
-        from: number;
-        last_page: number;
-        links: LinkPagination[];
-        path: string;
-        per_page: number;
-        to: number;
-        total: number;
-    };
+export type PaginationType<T = unknown> = z.infer<typeof PaginationSchema> & {
     data: T[];
 };

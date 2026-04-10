@@ -1,6 +1,6 @@
 import { Head, router } from '@inertiajs/react';
 import { Render } from '@puckeditor/core';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/shadcn/button';
 import AppLayout from '@/layouts/app-layout';
 import EventLayout from '@/layouts/events/EventLayout';
@@ -28,10 +28,21 @@ export default function ShowEvent({ event }: ShowEventProps) {
         <AppLayout breadcrumbs={breadcrumbs(event)}>
             <Head title={event.name} />
 
-            <div className="mb-15">
-                <Button onClick={() => router.visit(events.index())}>
+            <div className="mb-15 flex items-center justify-between">
+                <Button
+                    variant="default"
+                    onClick={() => router.visit(events.index())}
+                >
                     <ChevronLeft />
                     Volver
+                </Button>
+
+                <Button
+                    onClick={() => router.visit(events.edit({ event: event.id }))}
+                    variant="outline"
+                >
+                    <Pencil />
+                    Editar Evento
                 </Button>
             </div>
 

@@ -10,6 +10,7 @@ import ActivityForm from '@/components/events/activities/ActivityForm';
 import InputError from '@/components/ui/app/input-error';
 import { Button } from '@/components/ui/shadcn/button';
 import { Label } from '@/components/ui/shadcn/label';
+import useMediaUpload from '@/hooks/media/useMediaUpload';
 import AppLayout from '@/layouts/app-layout';
 import events from '@/routes/events';
 import type { BreadcrumbItem } from '@/types';
@@ -60,7 +61,7 @@ export default function CreateActivity({
 
     const defaultValues: EventActivityFormData = {
         name: '',
-        summary: '',
+        description: '',
         requirements: '',
         images: [],
         is_online: false,
@@ -72,7 +73,7 @@ export default function CreateActivity({
         min_team_size: 0,
         max_team_size: 0,
         with_capacity: false,
-        max_participants: 0,
+        capacity: 0,
         only_students: false,
         is_competition: false,
         is_free: false,
@@ -89,6 +90,8 @@ export default function CreateActivity({
         categories: [],
     };
 
+    const { uploadImages } = useMediaUpload();
+
     const {
         control,
         register,
@@ -98,7 +101,7 @@ export default function CreateActivity({
         defaultValues,
     });
 
-    const handleCreateActivity: SubmitHandler<EventActivityFormData> = ({
+    const handleCreateActivity: SubmitHandler<EventActivityFormData> = async ({
         latLng,
         started_at,
         ended_at,
@@ -106,10 +109,15 @@ export default function CreateActivity({
         registration_started_at,
         ...data
     }) => {
+        setProcessing(true);
+
+        const keys = await uploadImages(data.images || []);
+
         const formData = {
             ...data,
+            images: keys,
             price: data.is_free ? 0 : data.price,
-            max_participants: data.with_capacity ? data.max_participants : null,
+            capacity: data.with_capacity ? data.capacity : null,
             online_link: data.is_online ? data.online_link : null,
             location: data.is_online ? null : data.location,
             lat: data.is_online ? null : latLng.lat,
@@ -126,7 +134,6 @@ export default function CreateActivity({
                 .toISOString().split('T')[0],
         };
 
-        setProcessing(true);
         router.post(
             events.activities.store(event.id), formData, {
             preserveScroll: true,
@@ -163,7 +170,6 @@ export default function CreateActivity({
             >
                 <ActivityForm
                     control={control}
-                    errors={errors}
                     register={register}
                     statuses={statuses}
                     difficultyLevels={difficultyLevels}

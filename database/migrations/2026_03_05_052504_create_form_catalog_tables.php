@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->text('description')->nullable();
-            $table->string('icon')->nullable();
-            $table->string('color', 7)->nullable();
+            $table->text('description');
+            $table->string('icon');
+            $table->string('color', 7);
             $table->boolean('is_gradable')->default(false);
             $table->boolean('is_active')->default(true);
             $table->unsignedTinyInteger('order')->default(0)->index();

@@ -10,6 +10,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/shadcn/card';
+import eventCollaborators from '@/routes/event-collaborators';
 import events from '@/routes/events';
 import type { Event } from '@/types';
 
@@ -69,6 +70,59 @@ export default function EventOptions({
                         disabled={processing}
                     >
                         Editar
+                    </Button>
+                </CardFooter>
+            </Card>
+
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Gestionar Colaboradores</CardTitle>
+                    <CardDescription>
+                        Puedes gestionar los colaboradores de tu evento. Solo
+                        haz click en el botón de gestionar.
+                    </CardDescription>
+                </CardHeader>
+                <CardFooter>
+                    <Button
+                        variant="outline"
+                        onClick={() =>
+                            router.visit(
+                                eventCollaborators.index(eventId, {
+                                    query: { edit: true },
+                                }),
+                            )
+                        }
+                        disabled={processing}
+                    >
+                        Gestionar
+                    </Button>
+                </CardFooter>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>
+                        Administrar Actividades
+                    </CardTitle>
+                    <CardDescription>
+                        Puedes crear, editar y eliminar actividades. Las Actividades son los
+                        contenidos de tu evento. Solo haz click en el botón de
+                        Administrar.
+                    </CardDescription>
+                </CardHeader>
+
+                <CardFooter>
+                    <Button
+                        variant="outline"
+                        onClick={() =>
+                            router.visit(
+                                events.activities.index(eventId),
+                            )
+                        }
+                        disabled={processing}
+                    >
+                        Administrar
                     </Button>
                 </CardFooter>
             </Card>

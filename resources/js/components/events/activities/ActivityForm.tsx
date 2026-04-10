@@ -2,10 +2,9 @@ import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import type {
     Control,
-    FieldErrors,
     UseFormRegister,
 } from 'react-hook-form';
-import { useWatch } from 'react-hook-form';
+import { useFormState, useWatch } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 import LocationMap from '@/components/leaflet/LocationMap';
 import InputError from '@/components/ui/app/input-error';
@@ -35,7 +34,6 @@ import ActivitySpeakersInput from './ActivitySpeakersInput';
 type ActivityFormProps = {
     control: Control<EventActivityFormData>;
     register: UseFormRegister<EventActivityFormData>;
-    errors: FieldErrors<EventActivityFormData>;
     statuses: EventStatus[];
     difficultyLevels: DifficultyLevel[];
     activityTypes: EventActivityType[];
@@ -45,7 +43,6 @@ type ActivityFormProps = {
 export default function ActivityForm({
     control,
     register,
-    errors,
     statuses,
     difficultyLevels,
     activityTypes,
@@ -56,6 +53,7 @@ export default function ActivityForm({
     const is_online = useWatch({ control, name: 'is_online' });
     const with_capacity = useWatch({ control, name: 'with_capacity' });
     const max_team_size = useWatch({ control, name: 'max_team_size' });
+    const { errors } = useFormState({ control })
 
     return (
         <>
@@ -77,10 +75,10 @@ export default function ActivityForm({
             </div>
 
             <div className="grid gap-2">
-                <Label htmlFor="summary">Resumen:</Label>
+                <Label htmlFor="description">Resumen:</Label>
 
                 <Textarea
-                    {...register('summary', {
+                    {...register('description', {
                         required: 'El resumen es requerido',
                         minLength: {
                             value: 50,
@@ -88,12 +86,12 @@ export default function ActivityForm({
                                 'El resumen debe tener al menos 100 caracteres',
                         },
                     })}
-                    id="summary"
+                    id="description"
                     placeholder="Resumen de la actividad"
                     className="h-60"
                 />
 
-                <InputError message={errors.summary?.message} />
+                <InputError message={errors.description?.message} />
             </div>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -395,6 +393,19 @@ export default function ActivityForm({
                 />
             </div>
 
+
+            <div className="grid gap-2">
+                <Label htmlFor="speakers">Ponentes:</Label>
+
+                <Controller
+                    control={control}
+                    name="speakers"
+                    render={({ field: { onChange, value } }) => (
+                        <ActivitySpeakersInput onChange={onChange} value={value} />
+                    )}
+                />
+            </div>
+
             <div className="grid gap-2">
                 <Label htmlFor="event_status_id">Estado:</Label>
 
@@ -672,10 +683,10 @@ export default function ActivityForm({
 
             {with_capacity && (
                 <div className="grid gap-2">
-                    <Label htmlFor="max_participants">Capacidad:</Label>
+                    <Label htmlFor="capacity">Capacidad:</Label>
 
                     <Input
-                        {...register('max_participants', {
+                        {...register('capacity', {
                             required: 'La capacidad es requerida',
                             min: {
                                 value: 1,
@@ -683,18 +694,16 @@ export default function ActivityForm({
                             },
                             valueAsNumber: true,
                         })}
-                        id="max_participants"
+                        id="capacity"
                         type="number"
                         step={1}
                         min={1}
                         placeholder="Capacidad de la Actividad"
                     />
 
-                    <InputError message={errors.max_participants?.message} />
+                    <InputError message={errors.capacity?.message} />
                 </div>
             )}
-
-
 
             <div className="grid gap-2">
                 <p className="leading-none font-bold text-foreground select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50">
@@ -824,26 +833,6 @@ export default function ActivityForm({
                     </div>
                 </>
             )}
-
-
-            <div className="grid gap-2">
-                <Label htmlFor="speakers">Ponentes:</Label>
-
-                <Controller
-                    control={control}
-                    name="speakers"
-                    rules={{
-                        validate: (value) =>
-                            value!.length > 0 ||
-                            'Debe seleccionar al menos una tecnología',
-                    }}
-                    render={({ field: { onChange, value } }) => (
-                        <ActivitySpeakersInput onChange={onChange} value={value} />
-                    )}
-                />
-
-                <InputError message={errors.speakers?.message} />
-            </div>
         </>
     );
 }

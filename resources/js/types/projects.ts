@@ -1,29 +1,18 @@
 import type { Content } from '@puckeditor/core';
-import type {
-    ROLE_COLLABORATORS,
-    PROJECT_STATUS_SLUG,
-    PROJECT_LICENSE,
-} from '@/consts/projects';
+import type { PROJECT_COLLABORATOR_ROLE } from '@/consts/projects';
 import type { ComponentProps } from '@/lib/puck';
-import type { Media, PivotType, UserData } from '.';
+import type { Collaborator, Media, PivotType, UserData } from '.';
 
-export type RoleCollaborators = keyof typeof ROLE_COLLABORATORS;
-export type RoleCollaboratorsValues =
-    (typeof ROLE_COLLABORATORS)[RoleCollaborators];
-
-export type ProjectStatusSlug = keyof typeof PROJECT_STATUS_SLUG;
-export type ProjectStatusSlugValue =
-    (typeof PROJECT_STATUS_SLUG)[ProjectStatusSlug];
-
-export type ProjectLicense = keyof typeof PROJECT_LICENSE;
-export type ProjectLicenseValue = (typeof PROJECT_LICENSE)[ProjectLicense];
+export type ProjectCollaboratorRole = keyof typeof PROJECT_COLLABORATOR_ROLE;
+export type ProjectCollaboratorRoleValues =
+    (typeof PROJECT_COLLABORATOR_ROLE)[ProjectCollaboratorRole];
 
 export type ProjectStatus = {
     id: number;
     name: string;
     slug: string;
-    description?: string;
-    color?: string;
+    description: string;
+    color: string;
     order: number;
 };
 
@@ -31,8 +20,8 @@ export type ProjectCategory = {
     id: number;
     name: string;
     slug: string;
-    description?: string;
-    icon?: string;
+    description: string;
+    icon: string;
     order: number;
 };
 
@@ -40,7 +29,7 @@ export type Project = {
     id: number;
     name: string;
     slug: string;
-    summary: string;
+    description: string;
     content: Content<ComponentProps>;
     repository_url: string;
     demo_url: string;
@@ -57,19 +46,14 @@ export type Project = {
     media: Media[];
     categories: PivotType<ProjectCategory>[];
     status: ProjectStatus;
-    collaborators: PivotType<
-        UserData,
-        {
-            role: RoleCollaborators;
-        }
-    >[];
+    collaborators: Collaborator[];
     author: UserData;
 };
 
 export type ProjectFormData = Pick<
     Project,
     | 'name'
-    | 'summary'
+    | 'description'
     | 'repository_url'
     | 'demo_url'
     | 'tech_stack'

@@ -24,8 +24,6 @@ import type Paragraph from '@/components/puck/Paragraph';
 import { ParagraphConfig } from '@/components/puck/Paragraph';
 import type Quote from '@/components/puck/Quote';
 import { QuoteConfig } from '@/components/puck/Quote';
-import type RichTextBlock from '@/components/puck/RichTextBlock';
-import { RichTextBlockConfig } from '@/components/puck/RichTextBlock';
 import type StatsGrid from '@/components/puck/StatsGrid';
 import { StatsGridConfig } from '@/components/puck/StatsGrid';
 import type Timeline from '@/components/puck/Timeline';
@@ -47,7 +45,6 @@ export type ComponentProps = {
     ExternalLink: React.ComponentProps<typeof ExternalLink>;
     CalloutBox: React.ComponentProps<typeof CalloutBox>;
     ButtonLink: React.ComponentProps<typeof ButtonLink>;
-    RichTextBlock: React.ComponentProps<typeof RichTextBlock>;
     TipTapBlock: React.ComponentProps<typeof TipTapBlock>;
     Gallery: React.ComponentProps<typeof Gallery>;
     Accordion: React.ComponentProps<typeof Accordion>;
@@ -67,7 +64,6 @@ const allComponents: Config['components'] = {
     ExternalLink: ExternalLinkConfig,
     CalloutBox: CalloutBoxConfig,
     ButtonLink: ButtonLinkConfig,
-    RichTextBlock: RichTextBlockConfig,
     TipTapBlock: TipTapBlockConfig,
     Gallery: GalleryConfig,
     Accordion: AccordionConfig,
@@ -106,7 +102,6 @@ export const blogPuckConfig: Config = {
     components: pickComponents([
         'Heading',
         'Paragraph',
-        'RichTextBlock',
         'TipTapBlock',
         'Quote',
         'BlogImage',
@@ -125,7 +120,6 @@ export const projectPuckConfig: Config = {
     components: pickComponents([
         'Heading',
         'Paragraph',
-        'RichTextBlock',
         'TipTapBlock',
         'Gallery',
         'VideoEmbed',
@@ -145,7 +139,6 @@ export const eventPuckConfig: Config = {
     components: pickComponents([
         'Heading',
         'Paragraph',
-        'RichTextBlock',
         'TipTapBlock',
         'Timeline',
         'StatsGrid',
@@ -165,7 +158,6 @@ export const classroomPuckConfig: Config = {
     components: pickComponents([
         'Heading',
         'Paragraph',
-        'RichTextBlock',
         'TipTapBlock',
         'VideoEmbed',
         'CodeBlock',

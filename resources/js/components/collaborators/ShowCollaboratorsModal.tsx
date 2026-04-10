@@ -9,21 +9,27 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/shadcn/dialog';
-import type { Project } from '@/types';
+import type { Collaborator, UserData } from '@/types';
 import UserCollaboratorItem from './UserCollaboratorItem';
 
 type ProjectCollaboratorsModalProps = {
     isModalActive: boolean;
+    collaborators: Collaborator[];
+    processing: boolean;
+    roles: Record<string, string>;
     setIsModalActive: Dispatch<SetStateAction<boolean>>;
-    collaborators: Project['collaborators'];
-    projectId: Project['id'];
+    onAddCollaborator: (userId: UserData['id'], role: string) => void
+    onDeleteCollaborator: (userId: UserData['id']) => void
 };
 
-export default function ProjectCollaboratorsModal({
+export default function ShowCollaboratorsModal({
     isModalActive,
-    setIsModalActive,
     collaborators,
-    projectId,
+    processing,
+    roles,
+    setIsModalActive,
+    onAddCollaborator,
+    onDeleteCollaborator,
 }: ProjectCollaboratorsModalProps) {
     return (
         <Dialog open={isModalActive} onOpenChange={setIsModalActive}>
@@ -31,7 +37,7 @@ export default function ProjectCollaboratorsModal({
                 <DialogHeader>
                     <DialogTitle>Colaboradores</DialogTitle>
                     <DialogDescription>
-                        Aquí puedes gestionar los colaboradores de tu proyecto
+                        Aquí puedes gestionar los colaboradores
                     </DialogDescription>
                 </DialogHeader>
 
@@ -42,14 +48,17 @@ export default function ProjectCollaboratorsModal({
                                 key={collaborator.id}
                                 user={collaborator}
                                 collaborators={collaborators}
-                                projectId={projectId}
+                                onAddCollaborator={onAddCollaborator}
+                                onDeleteCollaborator={onDeleteCollaborator}
                                 variant="default"
+                                processing={processing}
+                                roles={roles}
                             />
                         ))}
                     </div>
                 ) : (
                     <p className="my-20 text-center text-accent-foreground">
-                        No hay colaboradores en este proyecto
+                        No hay colaboradores
                     </p>
                 )}
 

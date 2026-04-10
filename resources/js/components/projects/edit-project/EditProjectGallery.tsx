@@ -1,14 +1,10 @@
-import 'photoswipe/dist/photoswipe.css';
-
 import { router } from '@inertiajs/react';
-import { useEcho } from '@laravel/echo-react';
-import { Plus } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { Gallery } from 'react-photoswipe-gallery';
-import EditProjectGalleryItem from '@/components/projects/EditProjectGalleryItem';
-import { Button } from '@/components/ui/shadcn/button';
-import type { Project } from '@/types/projects';
-import NewProjectImageModal from './NewProjectImageModal';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import EditGallery from '@/components/gallery/EditGallery';
+import useMediaUpload from '@/hooks/media/useMediaUpload';
+import projects from '@/routes/projects';
+import type { ImageFormData, Media, Project } from '@/types';
 
 type EditProjectGalleryProps = {
     gallery: Project['media'];
@@ -19,50 +15,69 @@ export default function EditProjectGallery({
     gallery,
     projectId,
 }: EditProjectGalleryProps) {
-    const [isModalActive, setIsModalActive] = useState(false);
     const [processing, setProcessing] = useState(false);
-    const echo = useEcho(`project.${projectId}`, 'MediaProcessed', () => {
-        router.reload({ only: ['project'] });
-    });
+    const [isModalActive, setIsModalActive] = useState(false);
 
-    useEffect(() => {
-        echo.listen();
+    const { uploadImages } = useMediaUpload()
 
-        return () => echo.leave();
-    }, [echo]);
+    const handleAddImage = async (data: ImageFormData) => {
+        setProcessing(true);
+
+        const keys = await uploadImages(data.images);
+        const formData = {
+            images: keys
+        }
+
+        router.post(projects.medias.store(projectId), formData, {
+            preserveScroll: true,
+            showProgress: true,
+            onSuccess: (data) => {
+                setIsModalActive(false);
+                toast.success(data.props.message as string);
+            },
+            onFinish: () => setProcessing(false),
+            onError: (error) => {
+                Object.values(error).forEach((value) => toast.error(value));
+            },
+        });
+    }
+
+    const handleDeleteImage = (mediaId: Media['id']) => {
+        setProcessing(true);
+        router.delete(
+            projects.medias.destroy({
+                project: projectId,
+                media: mediaId,
+            }),
+            {
+                preserveScroll: true,
+                showProgress: true,
+                forceFormData: false,
+                onSuccess(data) {
+                    toast.success(data.props.message as string);
+                },
+                onFinish() {
+                    setProcessing(false);
+                },
+                onError(error) {
+                    Object.values(error).forEach((value) => toast.error(value));
+                },
+            },
+        );
+    }
 
     return (
-        <>
-            <div className="mt-15">
-                <h2 className="mb-4 text-xl font-semibold">Imágenes:</h2>
-
-                <div className="mt-10">
-                    <Button onClick={() => setIsModalActive(true)}>
-                        <Plus />
-                        Agregar Imagen
-                    </Button>
-                </div>
-
-                <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-                    <Gallery>
-                        {gallery.map((image) => (
-                            <EditProjectGalleryItem
-                                key={image.id}
-                                processing={processing}
-                                setProcessing={setProcessing}
-                                image={image}
-                                projectId={projectId}
-                            />
-                        ))}
-                    </Gallery>
-                </div>
-            </div>
-
-            <NewProjectImageModal
-                projectId={projectId}
-                isModalActive={isModalActive}
-                setIsModalActive={setIsModalActive}
-            />
-        </>
+        <EditGallery
+            gallery={gallery}
+            objectId={projectId}
+            objectType="Project"
+            objectKey="project"
+            multipleFiles
+            processing={processing}
+            onAddImage={handleAddImage}
+            onDeleteImage={handleDeleteImage}
+            isModalActive={isModalActive}
+            setIsModalActive={setIsModalActive}
+        />
     );
 }

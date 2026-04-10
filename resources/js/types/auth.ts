@@ -1,4 +1,7 @@
+import type { z } from 'zod';
 import type { ROLES } from '@/consts/roles';
+import type { UserSchema } from '@/schemas';
+import type { EventCollaboratorRole, PivotType, ProjectCollaboratorRole } from './index';
 
 export type Roles = keyof typeof ROLES;
 export type RolesValues = (typeof ROLES)[Roles];
@@ -40,34 +43,6 @@ export type TwoFactorSecretKey = {
     secretKey: string;
 };
 
-export type AuthForm = {
-    name: string;
-    father_last_name: string;
-    mother_last_name: string;
-    email: string;
-    password: string;
-    password_confirmation: string;
-    remember: boolean;
-    role: number;
-};
-
-export type RegisterAuthForm = Pick<
-    AuthForm,
-    | 'name'
-    | 'father_last_name'
-    | 'mother_last_name'
-    | 'email'
-    | 'password'
-    | 'password_confirmation'
-    | 'role'
->;
-
-export type LoginAuthForm = Pick<AuthForm, 'email' | 'password' | 'remember'>;
-
-export type ChangeRoleForm = {
-    role: Role['name'];
-};
-
 export type UserData = Pick<
     User,
     | 'id'
@@ -80,3 +55,12 @@ export type UserData = Pick<
     | 'is_active'
     | 'roles'
 >;
+
+export type Collaborator = PivotType<
+    UserData,
+    {
+        role: ProjectCollaboratorRole | EventCollaboratorRole;
+    }
+>;
+
+export type UserFromAPI = z.infer<typeof UserSchema>;

@@ -1,8 +1,5 @@
-import { router } from '@inertiajs/react';
 import type { Dispatch, SetStateAction } from 'react';
-import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { toast } from 'sonner';
 import InputError from '@/components/ui/app/input-error';
 import { Button } from '@/components/ui/shadcn/button';
 import {
@@ -22,31 +19,31 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/shadcn/select';
-import { ROLE_COLLABORATORS } from '@/consts/projects';
-import projectCollaborators from '@/routes/project-collaborators';
 import type { UserData } from '@/types';
-import type { Project, RoleCollaborators } from '@/types/projects';
 
 type AddCollaboratorModalProps = {
     userId: UserData['id'];
     isModalActive: boolean;
+    roles: Record<string, string>
+    processing: boolean;
     setIsModalActive: Dispatch<SetStateAction<boolean>>;
-    projectId: Project['id'];
+    onAddCollaborator: (userId: UserData['id'], role: string) => void
 };
 
 type AddCollaboratorFormData = {
-    role: RoleCollaborators;
+    role: string;
 };
 
 export default function AddCollaboratorModal({
     isModalActive,
-    projectId,
     userId,
+    roles,
+    processing,
+    onAddCollaborator,
     setIsModalActive,
 }: AddCollaboratorModalProps) {
-    const [processing, setProcessing] = useState(false);
     const initialValues: AddCollaboratorFormData = {
-        role: 'collaborator',
+        role: Object.keys(roles)[0],
     };
 
     const {
@@ -57,28 +54,10 @@ export default function AddCollaboratorModal({
         defaultValues: initialValues,
     });
 
-    const onSubmit = (data: AddCollaboratorFormData) => {
-        const formData = {
-            user_id: userId,
-            ...data,
-        };
-
-        router.post(projectCollaborators.store(projectId), formData, {
-            preserveScroll: true,
-            forceFormData: false,
-            showProgress: true,
-            onError(error) {
-                Object.values(error).forEach((value) => toast.error(value));
-            },
-            onSuccess(data) {
-                toast.success(data.props.message as string);
-                setIsModalActive(false);
-            },
-            onFinish() {
-                setProcessing(false);
-            },
-        });
-    };
+    const onSubmit = ({ role }: AddCollaboratorFormData) => {
+        onAddCollaborator(userId, role);
+        setIsModalActive(false);
+    }
 
     return (
         <Dialog open={isModalActive} onOpenChange={setIsModalActive}>
@@ -86,7 +65,7 @@ export default function AddCollaboratorModal({
                 <DialogHeader>
                     <DialogTitle>Agregar Colaborador</DialogTitle>
                     <DialogDescription>
-                        Aquí puedes agregar un nuevo colaborador a tu proyecto
+                        Aquí puedes agregar un nuevo colaborador
                     </DialogDescription>
                 </DialogHeader>
 
@@ -110,7 +89,7 @@ export default function AddCollaboratorModal({
                                         <SelectValue placeholder="Selecciona un rol" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {Object.entries(ROLE_COLLABORATORS).map(
+                                        {Object.entries(roles).map(
                                             ([key, role]) => (
                                                 <SelectItem
                                                     key={key}

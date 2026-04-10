@@ -8,6 +8,7 @@ type SpotlightSearchProps = {
     setIsOpen: (isOpen: boolean) => void,
     collectionName: string
 }
+
 export default function SpotlightSearch({ isOpen, setIsOpen, collectionName }: SpotlightSearchProps) {
     const filters = (usePage().props?.filter as { [key: string]: string }) || {}
     const [search, setSearch] = useState(filters.search || '')
@@ -37,7 +38,7 @@ export default function SpotlightSearch({ isOpen, setIsOpen, collectionName }: S
                     preserveState: true,
                     showProgress: true,
                     replace: true,
-                    only: [collectionName],
+                    only: [collectionName, 'filter'],
                 })
         }
     }, [query])

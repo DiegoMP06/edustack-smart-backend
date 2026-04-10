@@ -8,6 +8,7 @@ use App\Models\Forms\FormAttachment;
 use App\Models\Projects\Project;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
@@ -23,7 +24,7 @@ use Spatie\Sluggable\SlugOptions;
 #[Fillable([
     'name',
     'slug',
-    'summary',
+    'description',
     'content',
     'requirements',
     'is_online',
@@ -55,7 +56,7 @@ use Spatie\Sluggable\SlugOptions;
 ])]
 class EventActivity extends Model implements HasMedia
 {
-    use HasSlug, InteractsWithMedia, LogsActivity, Searchable, SoftDeletes;
+    use HasFactory, HasSlug, InteractsWithMedia, LogsActivity, Searchable, SoftDeletes;
 
     protected function casts(): array
     {
@@ -117,7 +118,7 @@ class EventActivity extends Model implements HasMedia
         return [
             'id' => (int) $this->id,
             'name' => $this->name,
-            'summary' => $this->summary,
+            'description' => $this->description,
             'event' => $this->event->name,
             'type' => $this->type?->name,
             'status' => $this->status->name,

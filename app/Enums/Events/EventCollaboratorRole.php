@@ -9,4 +9,5 @@ enum EventCollaboratorRole: string
     case MENTOR = 'mentor';
     case JUDGE = 'judge';
     case VOLUNTEER = 'volunteer';
+    case COLLABORATOR = 'collaborator';
 }

@@ -15,7 +15,7 @@ class UpdatePostRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'summary' => ['required', 'string', 'min:50'],
+            'description' => ['required', 'string', 'min:50'],
             'reading_time_minutes' => ['required', 'integer', 'min:1'],
             'post_type_id' => ['required', 'integer', 'exists:post_types,id'],
             'categories' => ['required', 'array', 'min:1'],

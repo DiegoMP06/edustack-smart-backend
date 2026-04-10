@@ -66,10 +66,10 @@ export default function EventForm({
             </div>
 
             <div className="grid gap-2">
-                <Label htmlFor="summary">Resumen:</Label>
+                <Label htmlFor="description">Resumen:</Label>
 
                 <Textarea
-                    {...register('summary', {
+                    {...register('description', {
                         required: 'El resumen es requerido',
                         minLength: {
                             value: 50,
@@ -77,12 +77,12 @@ export default function EventForm({
                                 'El resumen debe tener al menos 100 caracteres',
                         },
                     })}
-                    id="summary"
+                    id="description"
                     placeholder="Resumen del Evento"
                     className="h-60"
                 />
 
-                <InputError message={errors.summary?.message} />
+                <InputError message={errors.description?.message} />
             </div>
 
             <div className="grid gap-2">

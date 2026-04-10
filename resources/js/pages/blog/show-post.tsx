@@ -1,6 +1,6 @@
 import { Head, router } from '@inertiajs/react';
 import { Render } from '@puckeditor/core';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Pencil } from 'lucide-react';
 import GalleryContent from '@/components/ui/app/gallery-content';
 import { Icon } from '@/components/ui/app/icon';
 import { Avatar, AvatarFallback } from '@/components/ui/shadcn/avatar';
@@ -36,10 +36,21 @@ export default function ShowPost({ post }: ShowPostProps) {
         <AppLayout breadcrumbs={breadcrumbs(post)}>
             <Head title={post.name} />
 
-            <div className="mb-15">
-                <Button onClick={() => router.visit(posts.index())}>
+            <div className="mb-15 flex items-center justify-between">
+                <Button
+                    variant="default"
+                    onClick={() => router.visit(posts.index())}
+                >
                     <ChevronLeft />
                     Volver
+                </Button>
+
+                <Button
+                    onClick={() => router.visit(posts.edit({ post: post.id }))}
+                    variant="outline"
+                >
+                    <Pencil />
+                    Editar Publicación
                 </Button>
             </div>
 
@@ -51,7 +62,7 @@ export default function ShowPost({ post }: ShowPostProps) {
                         </h1>
 
                         <p className="my-6 text-justify leading-normal whitespace-pre-wrap text-muted-foreground">
-                            {post.summary}
+                            {post.description}
                         </p>
                     </main>
 
@@ -75,10 +86,10 @@ export default function ShowPost({ post }: ShowPostProps) {
                             <AvatarFallback className="rounded-lg bg-indigo-200 text-indigo-700 dark:bg-neutral-700 dark:text-white">
                                 {getInitials(
                                     post.author?.name +
-                                        ' ' +
-                                        post.author?.father_last_name +
-                                        ' ' +
-                                        post.author?.mother_last_name,
+                                    ' ' +
+                                    post.author?.father_last_name +
+                                    ' ' +
+                                    post.author?.mother_last_name,
                                 )}
                             </AvatarFallback>
                         </Avatar>

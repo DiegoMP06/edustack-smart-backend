@@ -1,9 +1,10 @@
 export const EVENT_COLLABORATOR_ROLE = {
-    organizer: 'organizer',
-    speaker: 'speaker',
-    mentor: 'mentor',
-    judge: 'judge',
-    volunteer: 'volunteer',
+    organizer: 'Organizador',
+    speaker: 'Ponente',
+    mentor: 'Mentor',
+    judge: 'Juez',
+    volunteer: 'Voluntario',
+    collaborator: 'Colaborador',
 } as const;
 
 export const EVENT_ACTIVITY_TYPE_SLUG = {

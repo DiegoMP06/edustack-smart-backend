@@ -15,7 +15,7 @@ class UpdateProjectRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'summary' => ['required', 'string', 'min:50'],
+            'description' => ['required', 'string', 'min:50'],
             'repository_url' => ['required', 'url', 'max:255'],
             'demo_url' => ['required', 'url', 'max:255'],
             'tech_stack' => ['required', 'array', 'min:1'],

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('course_announcements', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->text('description')->nullable();
             $table->json('content');
             $table->boolean('is_pinned')->default(false);
             $table->boolean('notify_students')->default(true);
@@ -22,7 +23,6 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
-
             $table->index(['course_id', 'is_pinned', 'published_at']);
         });
 
@@ -38,7 +38,6 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
-
             $table->index(['course_id', 'is_closed', 'created_at']);
         });
 

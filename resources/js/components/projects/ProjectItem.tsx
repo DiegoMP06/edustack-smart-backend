@@ -171,6 +171,7 @@ export default function ProjectItem({ project }: ProjectItemProps) {
                                             {project.version}
                                         </Badge>
                                     </p>
+                                    
                                     <p className="flex flex-wrap items-center gap-2 text-sm font-semibold">
                                         Stack:
                                         {project.tech_stack.map((item) => (
@@ -185,7 +186,7 @@ export default function ProjectItem({ project }: ProjectItemProps) {
                     </ItemTitle>
 
                     <ItemDescription>
-                        {project.summary.substring(0, 100)}...
+                        {project.description.substring(0, 100)}...
                     </ItemDescription>
                 </ItemContent>
 

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserCollection;
 use App\Models\User;
-use App\Traits\ApiQueryable;
+use App\Concerns\ApiQueryable;
 use Illuminate\Http\Request;
 
 class ApiUsersController extends Controller
@@ -20,7 +20,7 @@ class ApiUsersController extends Controller
             User::where(fn($query)  =>
                 $query->whereNot('id', '=', $request->user()?->id)
                     ->where('is_active', '=', true)
-            ), 
+            ),
             defaultIncludes: ['roles']
         )->paginate(20)->withQueryString();
 

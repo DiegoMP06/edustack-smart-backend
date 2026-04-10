@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import EventForm from '@/components/events/EventForm';
 import { Button } from '@/components/ui/shadcn/button';
+import useMediaUpload from '@/hooks/media/useMediaUpload';
 import AppLayout from '@/layouts/app-layout';
 import events from '@/routes/events';
 import type { BreadcrumbItem } from '@/types';
@@ -29,7 +30,7 @@ export default function CreateEvent() {
     const initialValues: EventFormData = {
         name: '',
         logo: [],
-        summary: '',
+        description: '',
         is_free: true,
         price: 0,
         percent_off: 0,
@@ -45,6 +46,8 @@ export default function CreateEvent() {
         end_date: new Date(),
     };
 
+    const { uploadImages } = useMediaUpload();
+
     const {
         control,
         register,
@@ -54,7 +57,7 @@ export default function CreateEvent() {
         defaultValues: initialValues,
     });
 
-    const handleCreateEvent: SubmitHandler<EventFormData> = ({
+    const handleCreateEvent: SubmitHandler<EventFormData> = async ({
         latLng,
         start_date,
         end_date,
@@ -62,9 +65,13 @@ export default function CreateEvent() {
         registration_started_at,
         ...data
     }) => {
+        setProcessing(true);
+        
+        const keys = await uploadImages(data.logo || []);
+
         const formData = {
             ...data,
-            logo: data.logo.length > 0 ? data.logo[0] : null,
+            logo: keys && keys.length > 0 ? keys[0] : null,
             price: data.is_free ? 0 : data.price,
             percent_off: data.is_free ? 0 : data.percent_off,
             capacity: data.with_capacity ? data.capacity : null,
@@ -82,7 +89,6 @@ export default function CreateEvent() {
                 .split('T')[0],
         };
 
-        setProcessing(true);
         router.post(events.store(), formData, {
             preserveScroll: true,
             showProgress: true,

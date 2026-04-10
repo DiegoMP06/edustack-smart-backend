@@ -4,7 +4,6 @@ import ActivityItem from '@/components/events/activities/ActivityItem';
 import Pagination from '@/components/ui/app/pagination';
 import { Button } from '@/components/ui/shadcn/button';
 import AppLayout from '@/layouts/app-layout';
-import EventLayout from '@/layouts/events/EventLayout';
 import events from '@/routes/events';
 import type { BreadcrumbItem, PaginationType } from '@/types';
 import type { Event, EventActivity } from '@/types/events';
@@ -43,41 +42,39 @@ export default function Activities({
         >
             <Head title={`Actividades de ${event.name}`} />
 
-            <EventLayout event={event}>
-                <div className="mb-15">
-                    <Button
-                        onClick={() =>
-                            router.visit(events.activities.create(event.id))
-                        }
-                    >
-                        <Plus />
-                        Crear Actividad
-                    </Button>
+            <div className="mb-15">
+                <Button
+                    onClick={() =>
+                        router.visit(events.activities.create(event.id))
+                    }
+                >
+                    <Plus />
+                    Crear Actividad
+                </Button>
+            </div>
+
+            {activities.data.length > 0 ? (
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {activities.data.map((activity) => (
+                        <ActivityItem
+                            key={activity.id}
+                            activity={activity}
+                            eventId={event.id}
+                        />
+                    ))}
                 </div>
+            ) : (
+                <p className="my-20 text-center text-accent-foreground">
+                    No Hay Actividades
+                </p>
+            )}
 
-                {activities.data.length > 0 ? (
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {activities.data.map((activity) => (
-                            <ActivityItem
-                                key={activity.id}
-                                activity={activity}
-                                eventId={event.id}
-                            />
-                        ))}
-                    </div>
-                ) : (
-                    <p className="my-20 text-center text-accent-foreground">
-                        No Hay Actividades
-                    </p>
-                )}
-
-                <Pagination
-                    pagination={activities}
-                    queryParams={{
-                        ...filter,
-                    }}
-                />
-            </EventLayout>
+            <Pagination
+                pagination={activities}
+                queryParams={{
+                    ...filter,
+                }}
+            />
         </AppLayout>
     );
 }

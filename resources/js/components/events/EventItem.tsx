@@ -166,7 +166,7 @@ export default function EventItem({ event }: EventItemProps) {
                     </ItemTitle>
 
                     <ItemDescription>
-                        {event.summary.substring(0, 100)}...
+                        {event.description.substring(0, 100)}...
                     </ItemDescription>
                 </ItemContent>
 

@@ -6,8 +6,8 @@ export type PostType = {
     id: number;
     name: string;
     slug: string;
-    description?: string;
-    icon?: string;
+    description: string;
+    icon: string;
     order: number;
 };
 
@@ -15,8 +15,8 @@ export type PostCategory = {
     id: number;
     name: string;
     slug: string;
-    description?: string;
-    color?: string;
+    description: string;
+    color: string;
     order: number;
 };
 
@@ -24,7 +24,7 @@ export type Post = {
     id: number;
     name: string;
     slug: string;
-    summary: string;
+    description: string;
     content: Content<ComponentProps>;
     views_count: number;
     reading_time_minutes: number;
@@ -43,7 +43,7 @@ export type Post = {
 
 export type PostFormData = Pick<
     Post,
-    'name' | 'summary' | 'post_type_id' | 'reading_time_minutes'
+    'name' | 'description' | 'post_type_id' | 'reading_time_minutes'
 > & {
     categories: number[];
     images?: File[];

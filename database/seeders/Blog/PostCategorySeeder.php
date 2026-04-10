@@ -17,67 +17,78 @@ class PostCategorySeeder extends Seeder
             [
                 'name' => 'Tecnología',
                 'slug' => 'technology',
-                'color' => '#3b82f6',
+                'description' => 'Exploración de las últimas tendencias y avances en el ecosistema digital global.',
+                'color' => '#2563eb', // Blue 600
                 'order' => 1,
             ],
             [
                 'name' => 'Programación',
                 'slug' => 'programming',
-                'color' => '#6366f1',
+                'description' => 'Fundamentos, lógica y lenguajes para la resolución de problemas mediante código.',
+                'color' => '#4f46e5', // Indigo 600
                 'order' => 2,
             ],
             [
                 'name' => 'Desarrollo Web',
                 'slug' => 'web-development',
-                'color' => '#0ea5e9',
+                'description' => 'Construcción de aplicaciones modernas utilizando stacks modernos y frameworks reactivos.',
+                'color' => '#0891b2', // Cyan 600
                 'order' => 3,
             ],
             [
                 'name' => 'Arquitectura de Software',
                 'slug' => 'software-architecture',
-                'color' => '#8b5cf6',
+                'description' => 'Diseño de sistemas escalables, patrones de diseño y estructuras de alto nivel.',
+                'color' => '#7c3aed', // Violet 600
                 'order' => 4,
             ],
             [
-                'name' => 'Buenas Prácticas de Desarrollo',
+                'name' => 'Buenas Prácticas',
                 'slug' => 'best-practices',
-                'color' => '#10b981',
+                'description' => 'Clean Code, SOLID, Testing y metodologías para un desarrollo profesional.',
+                'color' => '#059669', // Emerald 600
                 'order' => 5,
             ],
             [
                 'name' => 'Inteligencia Artificial',
                 'slug' => 'artificial-intelligence',
-                'color' => '#a855f7',
+                'description' => 'Machine Learning, redes neuronales y automatización inteligente de procesos.',
+                'color' => '#9333ea', // Purple 600
                 'order' => 6,
             ],
             [
                 'name' => 'Bases de Datos',
                 'slug' => 'databases',
-                'color' => '#f59e0b',
+                'description' => 'Modelado, optimización y gestión de datos en sistemas relacionales y NoSQL.',
+                'color' => '#d97706', // Amber 600
                 'order' => 7,
             ],
             [
                 'name' => 'Ciberseguridad',
                 'slug' => 'cybersecurity',
-                'color' => '#ef4444',
+                'description' => 'Protección de infraestructuras, cifrado de datos y prevención de vulnerabilidades.',
+                'color' => '#dc2626', // Red 600
                 'order' => 8,
             ],
             [
                 'name' => 'Internet de las Cosas (IoT)',
                 'slug' => 'internet-of-things',
-                'color' => '#14b8a6',
+                'description' => 'Interconectividad de dispositivos físicos y sensores mediante redes digitales.',
+                'color' => '#0d9488', // Teal 600
                 'order' => 9,
             ],
             [
                 'name' => 'Proyectos Tecnológicos',
                 'slug' => 'tech-projects',
-                'color' => '#f97316',
+                'description' => 'Gestión, planificación y ejecución de soluciones técnicas en entornos reales.',
+                'color' => '#ea580c', // Orange 600
                 'order' => 10,
             ],
             [
-                'name' => 'Ingeniería en Tecnologías de la Información',
+                'name' => 'Ingeniería TI',
                 'slug' => 'information-technology-engineering',
-                'color' => '#64748b',
+                'description' => 'Administración de sistemas complejos e infraestructura crítica de TI.',
+                'color' => '#475569', // Slate 600
                 'order' => 11,
             ],
         ];

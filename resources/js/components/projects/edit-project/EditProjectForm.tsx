@@ -27,7 +27,7 @@ export default function EditProjectForm({
     const [processing, setProcessing] = useState(false);
     const initialValues: ProjectFormData = {
         name: project.name,
-        summary: project.summary,
+        description: project.description,
         repository_url: project.repository_url,
         demo_url: project.demo_url,
         tech_stack: project.tech_stack,
@@ -41,7 +41,6 @@ export default function EditProjectForm({
         handleSubmit,
         control,
         register,
-        formState: { errors },
     } = useForm({
         defaultValues: initialValues,
     });
@@ -79,7 +78,6 @@ export default function EditProjectForm({
                 categories={categories}
                 statuses={statuses}
                 control={control}
-                errors={errors}
                 register={register}
             />
 

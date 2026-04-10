@@ -22,7 +22,7 @@ export default function EditPostForm({
     const [processing, setProcessing] = useState(false);
     const initialValues: PostFormData = {
         name: post.name,
-        summary: post.summary,
+        description: post.description,
         reading_time_minutes: post.reading_time_minutes,
         post_type_id: post.post_type_id,
         categories: post.categories.map((category) => category.id),
@@ -32,7 +32,6 @@ export default function EditPostForm({
         control,
         register,
         handleSubmit,
-        formState: { errors },
     } = useForm({
         defaultValues: initialValues,
     });
@@ -65,7 +64,6 @@ export default function EditPostForm({
                 categories={categories}
                 register={register}
                 control={control}
-                errors={errors}
             />
 
             <Button type="submit" disabled={processing}>

@@ -1,5 +1,5 @@
-import type { Control, FieldErrors, UseFormRegister } from 'react-hook-form';
-import { Controller } from 'react-hook-form';
+import type { Control, UseFormRegister } from 'react-hook-form';
+import { Controller, useFormState } from 'react-hook-form';
 import InputError from '@/components/ui/app/input-error';
 import { Checkbox } from '@/components/ui/shadcn/checkbox';
 import { Input } from '@/components/ui/shadcn/input';
@@ -19,16 +19,16 @@ type PostFormProps = {
     categories: PostCategory[];
     register: UseFormRegister<PostFormData>;
     control: Control<PostFormData>;
-    errors: FieldErrors<PostFormData>;
 };
 
 export default function PostForm({
     types,
     register,
     control,
-    errors,
     categories,
 }: PostFormProps) {
+    const { errors } = useFormState({ control })
+
     return (
         <>
             <div className="grid gap-2">
@@ -52,10 +52,10 @@ export default function PostForm({
             </div>
 
             <div className="grid gap-2">
-                <Label htmlFor="summary">Resumen:</Label>
+                <Label htmlFor="description">Resumen:</Label>
 
                 <Textarea
-                    {...register('summary', {
+                    {...register('description', {
                         required: 'El resumen es requerido',
                         minLength: {
                             value: 50,
@@ -63,12 +63,12 @@ export default function PostForm({
                                 'El resumen debe tener al menos 50 caracteres',
                         },
                     })}
-                    id="summary"
+                    id="description"
                     placeholder="Resumen del Post"
                     className="h-60"
                 />
 
-                <InputError message={errors.summary?.message} />
+                <InputError message={errors.description?.message} />
             </div>
 
             <div className="grid gap-2">
@@ -150,16 +150,16 @@ export default function PostForm({
                                         onCheckedChange={(checked) =>
                                             checked
                                                 ? onChange([
-                                                      ...(value || []),
-                                                      category.id,
-                                                  ])
+                                                    ...(value || []),
+                                                    category.id,
+                                                ])
                                                 : onChange(
-                                                      value?.filter(
-                                                          (id) =>
-                                                              id !==
-                                                              category.id,
-                                                      ) || [],
-                                                  )
+                                                    value?.filter(
+                                                        (id) =>
+                                                            id !==
+                                                            category.id,
+                                                    ) || [],
+                                                )
                                         }
                                         defaultChecked={value?.some(
                                             (id) => id === category.id,

@@ -1,7 +1,5 @@
-import { router } from '@inertiajs/react';
 import { MoreHorizontalIcon, UserMinus2, UserPlus2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { toast } from 'sonner';
 import { Badge } from '@/components/ui/shadcn/badge';
 import { Button } from '@/components/ui/shadcn/button';
 import {
@@ -19,38 +17,35 @@ import {
     ItemDescription,
     ItemTitle,
 } from '@/components/ui/shadcn/item';
-import { ROLE_COLLABORATORS } from '@/consts/projects';
-import projectCollaborators from '@/routes/project-collaborators';
-import type { UserData } from '@/types';
-import type { Project } from '@/types/projects';
+import type { Collaborator, UserData } from '@/types';
 import AddCollaboratorModal from './AddCollaboratorModal';
 
 type UserCollaboratorItemProps = {
     user: UserData;
-    collaborators: Project['collaborators'];
-    projectId: Project['id'];
+    collaborators: Collaborator[];
     variant?: 'default' | 'outline' | 'muted' | null | undefined;
+    processing: boolean;
+    roles: Record<string, string>;
+    onAddCollaborator: (userId: UserData['id'], role: string) => void
+    onDeleteCollaborator: (userId: UserData['id']) => void
 };
 
 export default function UserCollaboratorItem({
     user,
     collaborators,
-    projectId,
     variant = 'outline',
+    processing,
+    roles,
+    onAddCollaborator,
+    onDeleteCollaborator,
 }: UserCollaboratorItemProps) {
-    const [processing, setProcessing] = useState(false);
     const [isModalActive, setIsModalActive] = useState(false);
 
     const isCollaborator = useMemo(
         () => collaborators.some((collaborator) => collaborator.id === user.id),
         [collaborators, user],
     );
-    const collaboratorIndex = useMemo(
-        () =>
-            collaborators.find((collaborator) => collaborator.id === user.id)
-                ?.pivot.id || -1,
-        [collaborators, user],
-    );
+
     const userRole = useMemo(
         () =>
             collaborators.find((collaborator) => collaborator.id === user.id)
@@ -60,34 +55,10 @@ export default function UserCollaboratorItem({
 
     const handleCollaborator = () => {
         if (isCollaborator) {
-            handleDeleteCollaborator();
+            onDeleteCollaborator(user.id);
         } else {
             setIsModalActive(true);
         }
-    };
-
-    const handleDeleteCollaborator = () => {
-        setProcessing(true);
-        router.delete(
-            projectCollaborators.destroy({
-                project: projectId,
-                project_collaborator: collaboratorIndex,
-            }),
-            {
-                preserveScroll: true,
-                forceFormData: false,
-                showProgress: true,
-                onError(error) {
-                    Object.values(error).forEach((value) => toast.error(value));
-                },
-                onSuccess(data) {
-                    toast.success(data.props.message as string);
-                },
-                onFinish() {
-                    setProcessing(false);
-                },
-            },
-        );
     };
 
     return (
@@ -99,7 +70,7 @@ export default function UserCollaboratorItem({
                         {user.mother_last_name}
                         {isCollaborator && (
                             <Badge variant="secondary">
-                                {ROLE_COLLABORATORS[userRole!]}
+                                {roles[userRole!]}
                             </Badge>
                         )}
                     </ItemTitle>
@@ -152,9 +123,11 @@ export default function UserCollaboratorItem({
 
             <AddCollaboratorModal
                 isModalActive={isModalActive}
-                setIsModalActive={setIsModalActive}
-                projectId={projectId}
                 userId={user.id}
+                roles={roles}
+                processing={processing}
+                setIsModalActive={setIsModalActive}
+                onAddCollaborator={onAddCollaborator}
             />
         </>
     );

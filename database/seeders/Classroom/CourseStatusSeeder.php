@@ -17,44 +17,51 @@ class CourseStatusSeeder extends Seeder
             [
                 'name' => 'Borrador',
                 'slug' => 'draft',
-                'color' => '#94a3b8',
-                'description' => 'El curso está en construcción, no visible para estudiantes.',
+                'color' => '#64748b', // Slate 500 (Neutral)
+                'description' => 'El contenido está en preparación. Solo es visible para el instructor y administradores.',
                 'order' => 1,
             ],
             [
-                'name' => 'Activo',
-                'slug' => 'active',
-                'color' => '#22c55e',
-                'description' => 'El curso está disponible e inscripciones abiertas.',
+                'name' => 'Próximamente',
+                'slug' => 'upcoming',
+                'color' => '#0284c7', // Sky 600 (Información)
+                'description' => 'El curso ha sido anunciado, pero las inscripciones aún no están abiertas.',
                 'order' => 2,
             ],
             [
-                'name' => 'En Curso',
-                'slug' => 'ongoing',
-                'color' => '#10b981',
-                'description' => 'El curso ya inició y está en progreso.',
+                'name' => 'Inscripciones Abiertas',
+                'slug' => 'enrollment-open',
+                'color' => '#2563eb', // Blue 600 (Acción primaria)
+                'description' => 'El curso está activo y aceptando nuevos estudiantes.',
                 'order' => 3,
+            ],
+            [
+                'name' => 'En Progreso',
+                'slug' => 'in-progress',
+                'color' => '#16a34a', // Green 600 (En curso/Éxito)
+                'description' => 'Las clases han comenzado. El acceso está restringido a estudiantes inscritos.',
+                'order' => 4,
             ],
             [
                 'name' => 'Finalizado',
                 'slug' => 'finished',
-                'color' => '#64748b',
-                'description' => 'El curso ha concluido.',
-                'order' => 4,
-            ],
-            [
-                'name' => 'Archivado',
-                'slug' => 'archived',
-                'color' => '#475569',
-                'description' => 'El curso está archivado, solo lectura para consulta.',
+                'color' => '#0f172a', // Slate 900 (Concluido)
+                'description' => 'El periodo lectivo ha terminado. El contenido queda disponible como consulta.',
                 'order' => 5,
             ],
             [
                 'name' => 'Cancelado',
                 'slug' => 'cancelled',
-                'color' => '#ef4444',
-                'description' => 'El curso fue cancelado antes de iniciar.',
+                'color' => '#dc2626', // Red 600 (Error/Peligro)
+                'description' => 'El curso fue suspendido y no se impartirá.',
                 'order' => 6,
+            ],
+            [
+                'name' => 'Archivado',
+                'slug' => 'archived',
+                'color' => '#475569', // Slate 600 (Histórico)
+                'description' => 'Curso fuera del catálogo principal, conservado para fines históricos o de auditoría.',
+                'order' => 7,
             ],
         ];
 
