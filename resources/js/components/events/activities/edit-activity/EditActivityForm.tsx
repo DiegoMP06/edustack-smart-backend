@@ -6,18 +6,17 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/shadcn/button";
 import events from "@/routes/events";
-import type { DifficultyLevel, EventActivity, EventActivityCategory, EventActivityFormData, EventActivityType, EventStatus } from "@/types";
+import type { DifficultyLevel, EventActivity, EventActivityCategory, EventActivityFormData, EventActivityType } from "@/types";
 import ActivityForm from "../ActivityForm";
 
 type EditActivityFormProps = {
     activity: EventActivity;
-    statuses: EventStatus[];
     difficultyLevels: DifficultyLevel[];
     activityTypes: EventActivityType[];
     categories: EventActivityCategory[];
 };
 
-export default function EditActivityForm({ activity, activityTypes, categories, difficultyLevels, statuses }: EditActivityFormProps) {
+export default function EditActivityForm({ activity, activityTypes, categories, difficultyLevels }: EditActivityFormProps) {
     const [processing, setProcessing] = useState(false);
     const defaultValues: EventActivityFormData = {
         name: activity.name,
@@ -31,7 +30,6 @@ export default function EditActivityForm({ activity, activityTypes, categories, 
         online_link: activity.online_link ?? '',
         location: activity.location ?? '',
         latLng: new LatLng(Number(activity.lat), Number(activity.lng)),
-        is_competition: activity.is_competition,
         has_teams: activity.has_teams,
         requires_team: activity.requires_team,
         min_team_size: activity.min_team_size || 0,
@@ -42,7 +40,6 @@ export default function EditActivityForm({ activity, activityTypes, categories, 
         ended_at: new Date(activity.ended_at),
         registration_started_at: new Date(activity.registration_started_at),
         registration_ended_at: new Date(activity.registration_ended_at),
-        event_status_id: activity.event_status_id,
         event_activity_type_id: activity.event_activity_type_id,
         difficulty_level_id: activity.difficulty_level_id,
         speakers: activity.speakers,
@@ -115,7 +112,6 @@ export default function EditActivityForm({ activity, activityTypes, categories, 
             <ActivityForm
                 control={control}
                 register={register}
-                statuses={statuses}
                 difficultyLevels={difficultyLevels}
                 activityTypes={activityTypes}
                 categories={categories}

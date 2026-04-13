@@ -28,13 +28,12 @@ import {
 import { Switch } from '@/components/ui/shadcn/switch';
 import { Textarea } from '@/components/ui/shadcn/textarea';
 import { applyTimeToDate, cn, formatTime, applyDateKeepingTime } from '@/lib/utils';
-import type { DifficultyLevel, EventActivityCategory, EventActivityFormData, EventActivityType, EventStatus } from '@/types/events';
+import type { DifficultyLevel, EventActivityCategory, EventActivityFormData, EventActivityType } from '@/types/events';
 import ActivitySpeakersInput from './ActivitySpeakersInput';
 
 type ActivityFormProps = {
     control: Control<EventActivityFormData>;
     register: UseFormRegister<EventActivityFormData>;
-    statuses: EventStatus[];
     difficultyLevels: DifficultyLevel[];
     activityTypes: EventActivityType[];
     categories: EventActivityCategory[];
@@ -43,7 +42,6 @@ type ActivityFormProps = {
 export default function ActivityForm({
     control,
     register,
-    statuses,
     difficultyLevels,
     activityTypes,
     categories,
@@ -407,40 +405,6 @@ export default function ActivityForm({
             </div>
 
             <div className="grid gap-2">
-                <Label htmlFor="event_status_id">Estado:</Label>
-
-                <Controller
-                    name="event_status_id"
-                    control={control}
-                    rules={{ required: 'El estado es requerido' }}
-                    render={({ field: { value, onChange } }) => (
-                        <Select
-                            onValueChange={onChange}
-                            value={value?.toString()}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Selecciona un estado" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {statuses.map((status) => (
-                                    <SelectItem
-                                        key={status.id}
-                                        value={status.id.toString()}
-                                    >
-                                        {status.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    )}
-                />
-
-                <InputError
-                    message={errors.event_status_id?.message}
-                />
-            </div>
-
-            <div className="grid gap-2">
                 <Label htmlFor="event_activity_type_id">
                     Tipo de Actividad:
                 </Label>
@@ -510,6 +474,64 @@ export default function ActivityForm({
                 />
             </div>
 
+            <div className="grid gap-2">
+                <p className="leading-none font-bold text-foreground select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50">
+                    Categorías:
+                </p>
+
+                <Controller
+                    control={control}
+                    name="categories"
+                    rules={{
+                        validate: (value) =>
+                            value!.length > 0 ||
+                            'Debe seleccionar al menos una categoría',
+                    }}
+                    render={({ field: { value, onChange, disabled } }) => (
+                        <div className="grid grid-cols-1 gap-1">
+                            {categories.map((category) => (
+                                <div
+                                    className="flex items-center gap-2"
+                                    key={category.id}
+                                >
+                                    <Checkbox
+                                        onCheckedChange={(checked) =>
+                                            checked
+                                                ? onChange([
+                                                    ...(value || []),
+                                                    category.id,
+                                                ])
+                                                : onChange(
+                                                    value?.filter(
+                                                        (id) =>
+                                                            id !==
+                                                            category.id,
+                                                    ) || [],
+                                                )
+                                        }
+                                        defaultChecked={value?.some(
+                                            (id) => id === category.id,
+                                        )}
+                                        id={category.slug}
+                                        disabled={disabled}
+                                        value={category.id}
+                                    />
+
+                                    <Label
+                                        className="text-base font-normal"
+                                        htmlFor={category.slug}
+                                    >
+                                        {category.name}
+                                    </Label>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                />
+
+                <InputError message={errors.categories?.message} />
+            </div>
+
             <div className="flex items-center gap-2">
                 <Controller
                     name="is_free"
@@ -549,21 +571,6 @@ export default function ActivityForm({
                     <InputError message={errors.price?.message} />
                 </div>
             )}
-
-            <div className="flex items-center gap-2">
-                <Controller
-                    name="is_competition"
-                    control={control}
-                    render={({ field: { value, onChange } }) => (
-                        <Switch
-                            id="is_competition"
-                            checked={value}
-                            onCheckedChange={onChange}
-                        />
-                    )}
-                />
-                <Label htmlFor="is_competition">Es una Competencia</Label>
-            </div>
 
             <div className="flex items-center gap-2">
                 <Controller
@@ -649,7 +656,6 @@ export default function ActivityForm({
                 </div>
             )}
 
-
             <div className="flex items-center gap-2">
                 <Controller
                     name="only_students"
@@ -704,65 +710,6 @@ export default function ActivityForm({
                     <InputError message={errors.capacity?.message} />
                 </div>
             )}
-
-            <div className="grid gap-2">
-                <p className="leading-none font-bold text-foreground select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50">
-                    Categorías:
-                </p>
-
-                <Controller
-                    control={control}
-                    name="categories"
-                    rules={{
-                        validate: (value) =>
-                            value!.length > 0 ||
-                            'Debe seleccionar al menos una categoría',
-                    }}
-                    render={({ field: { value, onChange, disabled } }) => (
-                        <div className="grid grid-cols-1 gap-1">
-                            {categories.map((category) => (
-                                <div
-                                    className="flex items-center gap-2"
-                                    key={category.id}
-                                >
-                                    <Checkbox
-                                        onCheckedChange={(checked) =>
-                                            checked
-                                                ? onChange([
-                                                    ...(value || []),
-                                                    category.id,
-                                                ])
-                                                : onChange(
-                                                    value?.filter(
-                                                        (id) =>
-                                                            id !==
-                                                            category.id,
-                                                    ) || [],
-                                                )
-                                        }
-                                        defaultChecked={value?.some(
-                                            (id) => id === category.id,
-                                        )}
-                                        id={category.slug}
-                                        disabled={disabled}
-                                        value={category.id}
-                                    />
-
-                                    <Label
-                                        className="text-base font-normal"
-                                        htmlFor={category.slug}
-                                    >
-                                        {category.name}
-                                    </Label>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                />
-
-                <InputError message={errors.categories?.message} />
-            </div>
-
 
             <div className="flex items-center gap-2">
                 <Controller

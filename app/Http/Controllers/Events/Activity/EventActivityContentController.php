@@ -37,7 +37,7 @@ class EventActivityContentController extends Controller
         $route = $edit ?
             back() :
             redirect()->intended(route(
-                'events.activities.show',
+                'events.activities.edit',
                 ['event' => $event, 'activity' => $activity],
                 absolute: false
             ));

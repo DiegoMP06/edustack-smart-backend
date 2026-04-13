@@ -120,7 +120,7 @@ class EventActivity extends Model implements HasMedia
             'name' => $this->name,
             'description' => $this->description,
             'event' => $this->event->name,
-            'type' => $this->type?->name,
+            'type' => $this->type->name,
             'status' => $this->status->name,
         ];
     }
@@ -177,16 +177,6 @@ class EventActivity extends Model implements HasMedia
     public function categories()
     {
         return $this->belongsToMany(EventActivityCategory::class, 'event_activity_category');
-    }
-
-    public function course()
-    {
-        return $this->belongsTo(Course::class);
-    }
-
-    public function project()
-    {
-        return $this->belongsTo(Project::class);
     }
 
     public function teams()

@@ -29,6 +29,7 @@ export default function ActivitySpeakerModal({ isModalOpen, setIsModalOpen, hand
         job_title: '',
         company: '',
         biography: '',
+        social: [],
     }
 
     const { register, control, handleSubmit, setValue, reset } = useForm({
@@ -70,6 +71,7 @@ export default function ActivitySpeakerModal({ isModalOpen, setIsModalOpen, hand
             setValue('job_title', editingSpeaker.job_title);
             setValue('company', editingSpeaker.company);
             setValue('biography', editingSpeaker.biography);
+            setValue('social', editingSpeaker.social);
         } else {
             reset();
         }

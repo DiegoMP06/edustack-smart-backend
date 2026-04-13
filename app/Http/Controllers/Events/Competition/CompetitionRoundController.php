@@ -1,11 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Events;
+namespace App\Http\Controllers\Events\Competition;
 
+use App\Concerns\ApiQueryable;
 use App\Enums\Events\RoundStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Events\StoreCompetitionRoundRequest;
 use App\Http\Requests\Events\UpdateCompetitionRoundRequest;
+use App\Http\Resources\Events\CompetitionRoundCollection;
+use App\Http\Resources\Events\EventActivityCollection;
+use App\Http\Resources\Events\EventCollection;
 use App\Models\Events\CompetitionRound;
 use App\Models\Events\Event;
 use App\Models\Events\EventActivity;
@@ -15,6 +19,8 @@ use Inertia\Inertia;
 
 class CompetitionRoundController extends Controller
 {
+    use ApiQueryable;
+
     private function ensureRoundBelongsToActivity(EventActivity $activity, CompetitionRound $round): void
     {
         abort_if($round->event_activity_id !== $activity->id, 404);
@@ -35,10 +41,14 @@ class CompetitionRoundController extends Controller
     {
         $this->validateCompetition($event, $activity);
 
+        $rounds = $this->buildQuery(
+            $activity->rounds()
+        )->paginate(20)->withQueryString();
+
         return Inertia::render('events/activities/rounds/index', [
-            'event' => $event,
-            'activity' => $activity,
-            'rounds' => $activity->rounds()->orderBy('round_number')->paginate(20),
+            'event' => (new EventCollection([$event->load(['status', 'media', 'author'])]))->first(),
+            'activity' => (new EventActivityCollection([$activity->load(['status', 'media'])]))->first(),
+            'rounds' => new CompetitionRoundCollection($rounds),
             'message' => $request->session()->get('message'),
         ]);
     }

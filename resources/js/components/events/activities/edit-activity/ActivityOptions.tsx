@@ -17,6 +17,7 @@ type ActivityOptionsProps = {
     isPublished: EventActivity['is_published'];
     activityId: EventActivity['id'];
     eventId: Event['id'];
+    isCompetition: EventActivity['is_competition'];
 };
 
 
@@ -24,6 +25,7 @@ export default function ActivityOptions({
     isPublished,
     activityId,
     eventId,
+    isCompetition,
 }: ActivityOptionsProps) {
     const [processing, setProcessing] = useState(false);
 
@@ -75,6 +77,31 @@ export default function ActivityOptions({
                     </Button>
                 </CardFooter>
             </Card>
+
+            {isCompetition && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Administrar Rondas</CardTitle>
+                        <CardDescription>
+                            Puedes administrar las rondas de tu actividad. Solo
+                            haz click en el botón de administrar.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardFooter>
+                        <Button
+                            variant="outline"
+                            onClick={() =>
+                                router.visit(
+                                    events.activities.rounds.index({ event: eventId, activity: activityId }),
+                                )
+                            }
+                            disabled={processing}
+                        >
+                            Administrar
+                        </Button>
+                    </CardFooter>
+                </Card>
+            )}
 
             <Card>
                 <CardHeader>

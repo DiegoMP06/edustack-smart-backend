@@ -20,12 +20,10 @@ import type {
     EventActivityCategory,
     EventActivityFormData,
     EventActivityType,
-    EventStatus,
 } from '@/types/events';
 
 type CreateActivityProps = {
     event: Event;
-    statuses: EventStatus[];
     difficultyLevels: DifficultyLevel[];
     activityTypes: EventActivityType[];
     categories: EventActivityCategory[];
@@ -52,7 +50,6 @@ const breadcrumbs = (event: Event): BreadcrumbItem[] => [
 
 export default function CreateActivity({
     event,
-    statuses,
     difficultyLevels,
     activityTypes,
     categories,
@@ -75,7 +72,6 @@ export default function CreateActivity({
         with_capacity: false,
         capacity: 0,
         only_students: false,
-        is_competition: false,
         is_free: false,
         price: 0,
         speakers: [],
@@ -84,7 +80,6 @@ export default function CreateActivity({
         ended_at: new Date(),
         registration_started_at: new Date(),
         registration_ended_at: new Date(),
-        event_status_id: 1,
         event_activity_type_id: 1,
         difficulty_level_id: 1,
         categories: [],
@@ -171,7 +166,6 @@ export default function CreateActivity({
                 <ActivityForm
                     control={control}
                     register={register}
-                    statuses={statuses}
                     difficultyLevels={difficultyLevels}
                     activityTypes={activityTypes}
                     categories={categories}

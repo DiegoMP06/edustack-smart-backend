@@ -13,13 +13,11 @@ import type {
     EventActivity,
     EventActivityCategory,
     EventActivityType,
-    EventStatus,
 } from '@/types/events';
 
 type EditActivityProps = {
     event: Event;
     activity: EventActivity;
-    statuses: EventStatus[];
     difficultyLevels: DifficultyLevel[];
     activityTypes: EventActivityType[];
     categories: EventActivityCategory[];
@@ -56,7 +54,6 @@ const breadcrumbs = (
 export default function EditActivity({
     event,
     activity,
-    statuses,
     difficultyLevels,
     activityTypes,
     categories,
@@ -77,7 +74,6 @@ export default function EditActivity({
             <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:gap-10">
                 <EditActivityForm
                     activity={activity}
-                    statuses={statuses}
                     difficultyLevels={difficultyLevels}
                     activityTypes={activityTypes}
                     categories={categories}
@@ -88,6 +84,7 @@ export default function EditActivity({
                         eventId={event.id}
                         activityId={activity.id}
                         isPublished={activity.is_published}
+                        isCompetition={activity.is_competition}
                     />
                 </aside>
             </div>

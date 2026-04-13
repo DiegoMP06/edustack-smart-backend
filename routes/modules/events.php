@@ -5,7 +5,7 @@ use App\Http\Controllers\Events\Activity\EventActivityController;
 use App\Http\Controllers\Events\Activity\EventActivityGalleryController;
 use App\Http\Controllers\Events\Activity\EventActivityStatusController;
 use App\Http\Controllers\Events\Collaborator\EventCollaboratorsController;
-use App\Http\Controllers\Events\CompetitionRoundController;
+use App\Http\Controllers\Events\Competition\CompetitionRoundController;
 use App\Http\Controllers\Events\EventActivityRegistrationController;
 use App\Http\Controllers\Events\EventContentController;
 use App\Http\Controllers\Events\EventController;
@@ -27,6 +27,8 @@ Route::middleware([
 
     Route::resource('events.activities.rounds', CompetitionRoundController::class)
         ->parameters(['activities' => 'activity', 'rounds' => 'round']);
+
+
     Route::resource('events.activities.teams', EventTeamController::class)
         ->parameters(['activities' => 'activity', 'teams' => 'team'])
         ->only(['store', 'update']);

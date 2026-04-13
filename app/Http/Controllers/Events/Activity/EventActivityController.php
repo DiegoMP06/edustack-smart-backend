@@ -13,7 +13,6 @@ use App\Models\Events\Event;
 use App\Models\Events\EventActivity;
 use App\Models\Events\EventActivityCategory;
 use App\Models\Events\EventActivityType;
-use App\Models\Events\EventStatus;
 use App\Concerns\ApiQueryable;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -32,7 +31,6 @@ class EventActivityController extends Controller
     private function formData(): array
     {
         return [
-            'statuses' => EventStatus::orderBy('order')->get(['id', 'name', 'slug', 'color']),
             'difficultyLevels' => DifficultyLevel::orderBy('order')->get(['id', 'name', 'slug', 'color']),
             'activityTypes' => EventActivityType::orderBy('order')->get(['id', 'name', 'slug', 'behavior_type', 'icon']),
             'categories' => EventActivityCategory::orderBy('order')->get(['id', 'name', 'slug', 'color']),
@@ -50,19 +48,6 @@ class EventActivityController extends Controller
             throw ValidationException::withMessages([
                 'started_at' => 'Las fechas de la actividad deben estar dentro del rango del evento.',
             ]);
-        }
-
-        if ((bool) $data['is_competition'] === true) {
-            $type = EventActivityType::find($data['event_activity_type_id']);
-
-            if (
-                ($type?->behavior_type instanceof BehaviorType && $type->behavior_type !== BehaviorType::COMPETITION)
-                || ($type?->behavior_type instanceof BehaviorType === false && $type?->behavior_type !== BehaviorType::COMPETITION->value)
-            ) {
-                throw ValidationException::withMessages([
-                    'event_activity_type_id' => 'El tipo de actividad debe ser de competencia.',
-                ]);
-            }
         }
     }
 
@@ -94,12 +79,18 @@ class EventActivityController extends Controller
     public function store(StoreEventActivityRequest $request, Event $event)
     {
         $data = $request->validated();
+        $type = EventActivityType::find($data['event_activity_type_id']);
+        $data['is_competition'] = $type->behavior_type === BehaviorType::COMPETITION;
 
         $this->validateBusinessRules($event, $data);
 
+
         $activity = $event->activities()->create([
             ...$data,
+
             'content' => [],
+            'speakers' => isset($data['speakers']) ? $data['speakers'] : [],
+            'event_status_id' => 1,
         ]);
 
         $activity->categories()->sync($data['categories']);
@@ -142,10 +133,25 @@ class EventActivityController extends Controller
         $this->ensureActivityBelongsToEvent($event, $activity);
 
         $data = $request->validated();
+        $type = EventActivityType::find($data['event_activity_type_id']);
+        $data['is_competition'] = $type->behavior_type === BehaviorType::COMPETITION;
 
         $this->validateBusinessRules($event, $data);
 
-        $activity->update($data);
+        if (!$data['is_competition']) {
+            $rounds = $activity->rounds()->count();
+
+            if ($rounds > 0) {
+                throw ValidationException::withMessages([
+                    'event_activity_type_id' => 'La actividad debe ser de tipo competencia por que tiene rondas asociadas.',
+                ]);
+            }
+        }
+
+        $activity->update([
+            ...$data,
+            'speakers' => isset($data['speakers']) ? $data['speakers'] : [],
+        ]);
         $activity->categories()->sync($data['categories'] ?? []);
 
         return back()->with('message', 'Actividad actualizada correctamente.');

@@ -1,4 +1,4 @@
-import { Code, Plus } from 'lucide-react';
+import { Code, Pencil, Plus, Trash } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { FC } from 'react';
 import InputError from '@/components/ui/app/input-error';
@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/shadcn/button';
 import { Input } from '@/components/ui/shadcn/input';
 import {
     Item,
+    ItemActions,
     ItemContent,
     ItemMedia,
     ItemTitle,
@@ -16,30 +17,51 @@ interface TechStackInputProps {
     value: string[];
 }
 
+type TechItem = {
+    id: number;
+    value: string;
+}
+
 const TechStackInput: FC<TechStackInputProps> = ({ onChange, value }) => {
-    const [items, setItems] = useState<
-        {
-            id: number;
-            value: string;
-        }[]
-    >(() =>
-        value.map((tech) => ({
-            id: Date.now() * Math.random(),
-            value: tech,
-        })),
-    );
+    const initialItems = () => value.map((tech) => ({
+        id: Date.now() * Math.random(),
+        value: tech,
+    }));
+
+    const [items, setItems] = useState<TechItem[]>(initialItems());
+    const [editItem, setEditItem] = useState<TechItem | null>(null);
     const [item, setItem] = useState('');
     const [error, setError] = useState<undefined | string>(undefined);
 
-    const handleAddItem = () => {
+    const handleSaveItem = () => {
         if (item.trim() !== '') {
-            setItems([...items, { id: Date.now(), value: item.trim() }]);
-            setItem('');
+            addItem()
             setError(undefined);
         } else {
             setError('El campo no puede estar vacío');
         }
     };
+
+    const handleSetEditItem = (item: TechItem) => {
+        setItem(item.value);
+        setEditItem(item);
+    };
+
+    const addItem = () => {
+        if (editItem) {
+            const newItems = items.map((itemObj) =>
+                itemObj.id === editItem.id ?
+                    { ...itemObj, value: item.trim() } : itemObj
+            )
+
+            setItems(newItems);
+        } else {
+            setItems([...items, { id: Date.now(), value: item.trim() }]);
+        }
+
+        setItem('');
+        setEditItem(null);
+    }
 
     const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
         const pasteData = e.clipboardData.getData('text');
@@ -84,7 +106,7 @@ const TechStackInput: FC<TechStackInputProps> = ({ onChange, value }) => {
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                                 e.preventDefault();
-                                handleAddItem();
+                                handleSaveItem();
                             }
                         }}
                     />
@@ -93,9 +115,13 @@ const TechStackInput: FC<TechStackInputProps> = ({ onChange, value }) => {
                         className="flex-0"
                         variant="secondary"
                         type="button"
-                        onClick={handleAddItem}
+                        onClick={handleSaveItem}
                     >
-                        <Plus />
+                        {editItem ? (
+                            <Pencil className='size-4' />
+                        ) : (
+                            <Plus className='size-4' />
+                        )}
                     </Button>
                 </div>
 
@@ -109,7 +135,7 @@ const TechStackInput: FC<TechStackInputProps> = ({ onChange, value }) => {
                             variant="muted"
                             className="w-fit gap-1 overflow-hidden p-0"
                             key={item.id}
-                            onDoubleClick={() => handleRemoveItem(item.id)}
+                            onDoubleClick={() => handleSetEditItem(item)}
                         >
                             <ItemMedia variant="icon" className="bg-accent p-2">
                                 <Code className="size-6" />
@@ -117,6 +143,17 @@ const TechStackInput: FC<TechStackInputProps> = ({ onChange, value }) => {
                             <ItemContent className="p-2">
                                 <ItemTitle>{item.value}</ItemTitle>
                             </ItemContent>
+
+                            <ItemActions className="p-2">
+                                <Button
+                                    className="flex-0"
+                                    variant="destructive"
+                                    type="button"
+                                    onClick={() => handleRemoveItem(item.id)}
+                                >
+                                    <Trash className='size-4' />
+                                </Button>
+                            </ItemActions>
                         </Item>
                     ))}
                 </div>

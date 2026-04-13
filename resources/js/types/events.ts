@@ -55,7 +55,10 @@ export type Speaker = {
     biography: string;
     job_title?: string;
     company?: string;
-    social: Record<string, string>;
+    social: {
+        name: string;
+        url: string;
+    }[];
 };
 
 export type SpeakerFormData = Pick<
@@ -67,6 +70,7 @@ export type SpeakerFormData = Pick<
     | 'job_title'
     | 'company'
     | 'biography'
+    | 'social'
 >;
 
 export type EventActivity = {
@@ -126,11 +130,9 @@ export type EventActivityFormData = Pick<
     | 'max_team_size'
     | 'capacity'
     | 'only_students'
-    | 'is_competition'
     | 'price'
     | 'speakers'
     | 'repository_url'
-    | 'event_status_id'
     | 'event_activity_type_id'
     | 'difficulty_level_id'
 > & {

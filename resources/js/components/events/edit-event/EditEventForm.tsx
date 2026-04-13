@@ -62,8 +62,6 @@ export default function EditEventForm({ event }: EditEventFormProps) {
             keys = ((await uploadImages(data.logo)) || []) as string[];
         }
 
-        console.log(keys)
-
         const formData = {
             ...data,
             logo: keys.length > 0 ? keys[0] : null,

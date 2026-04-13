@@ -1,10 +1,11 @@
 import type { Control, UseFormRegister } from "react-hook-form";
-import { useFormState, } from "react-hook-form";
+import { Controller, useFormState, } from "react-hook-form";
 import InputError from "@/components/ui/app/input-error";
 import { Input } from "@/components/ui/shadcn/input";
 import { Label } from "@/components/ui/shadcn/label";
 import { Textarea } from "@/components/ui/shadcn/textarea";
 import type { SpeakerFormData } from "@/types";
+import SocialInput from "./SocialInput";
 
 type SpeakerFormProps = {
     register: UseFormRegister<SpeakerFormData>
@@ -130,6 +131,25 @@ export default function SpeakerForm({ register, control }: SpeakerFormProps) {
                 />
 
                 <InputError message={errors.company?.message} />
+            </div>
+
+            <div className="grid gap-2">
+                <Label htmlFor="social">Redes Sociales:</Label>
+
+                <Controller
+                    control={control}
+                    name="social"
+                    rules={{
+                        validate: (value) =>
+                            value!.length > 0 ||
+                            'Debe seleccionar al menos una red social',
+                    }}
+                    render={({ field: { onChange, value } }) => (
+                        <SocialInput onChange={onChange} value={value} />
+                    )}
+                />
+
+                <InputError message={errors.social?.message} />
             </div>
         </>
 

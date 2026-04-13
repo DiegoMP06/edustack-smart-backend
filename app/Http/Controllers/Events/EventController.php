@@ -87,7 +87,7 @@ class EventController extends Controller
 
         $event->update($data);
 
-        if ($request->has('logo')) {
+        if ($request->filled('logo')) {
             $event->clearMediaCollection('logo');
             $event->addMediaFromDisk($data['logo'], 's3')
                 ->toMediaCollection('logo');

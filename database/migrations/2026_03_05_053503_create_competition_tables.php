@@ -30,6 +30,7 @@ return new class extends Migration
             $table->dateTime('ended_at');
             $table->foreignId('event_activity_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
+            $table->softDeletes();
             $table->unique(['event_activity_id', 'round_number']);
             $table->index(['event_activity_id', 'status']);
         });
@@ -45,6 +46,7 @@ return new class extends Migration
                 ->constrained()->nullOnDelete();
             $table->foreignId('competition_round_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
+            $table->softDeletes();
             $table->index(['competition_round_id', 'order']);
         });
     }
