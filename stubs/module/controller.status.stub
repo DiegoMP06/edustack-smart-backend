@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Modules\{{ module }}\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use App\Modules\{{ module }}\Services\{{ model }}StatusService;
+use {{ modelNamespace }};
+
+class {{ label }} extends Controller
+{
+    public function __construct(
+        private {{ model }}StatusService $statusService,
+    ) {}
+
+    /**
+     * Toggle the model status flag.
+     */
+    public function __invoke({{ model }} ${{ modelVariable }})
+    {
+        $this->authorize('update', ${{ modelVariable }});
+
+        $this->statusService->toggle(${{ modelVariable }});
+
+        return back()->with('message', '{{ model }} status updated successfully.');
+    }
+}

@@ -1,0 +1,22 @@
+<?php
+
+use App\Modules\{{ module }}\Http\Controllers\{{ model }}Controller;
+use Illuminate\Support\Facades\Route;
+
+// Authenticated routes.
+Route::middleware(['web', 'auth'])->prefix('{{ routePrefix }}')->name('{{ routeName }}.')->group(function () {
+
+    Route::get('/', [{{ model }}Controller::class, 'index'])->name('index');
+    Route::get('/create', [{{ model }}Controller::class, 'create'])->name('create');
+    Route::post('/', [{{ model }}Controller::class, 'store'])->name('store');
+    Route::get('/{{{ modelVariable }}}', [{{ model }}Controller::class, 'show'])->name('show');
+    Route::get('/{{{ modelVariable }}}/edit', [{{ model }}Controller::class, 'edit'])->name('edit');
+    Route::put('/{{{ modelVariable }}}', [{{ model }}Controller::class, 'update'])->name('update');
+    Route::delete('/{{{ modelVariable }}}', [{{ model }}Controller::class, 'destroy'])->name('destroy');
+
+});
+
+// Admin routes.
+// Route::middleware(['web', 'auth', 'role:admin'])->prefix('admin/{{ routePrefix }}')->name('admin.{{ routeName }}.')->group(function () {
+//     //
+// });

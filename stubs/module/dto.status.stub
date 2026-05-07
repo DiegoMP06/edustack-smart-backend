@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Modules\{{ module }}\DTOs;
+
+use {{ modelNamespace }};
+
+readonly class {{ model }}StatusData
+{
+    public function __construct(
+        public bool $isActive,
+    ) {}
+
+    public static function fromModel({{ model }} ${{ modelVariable }}): self
+    {
+        return new self(
+            isActive: ! ${{ modelVariable }}->{{ statusField }},
+        );
+    }
+}

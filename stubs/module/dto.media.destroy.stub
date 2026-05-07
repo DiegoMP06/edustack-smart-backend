@@ -1,0 +1,12 @@
+<?php
+
+namespace App\Modules\{{ module }}\DTOs;
+
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+
+readonly class {{ model }}MediaDeletionData
+{
+    public function __construct(
+        public Media $media,
+    ) {}
+}

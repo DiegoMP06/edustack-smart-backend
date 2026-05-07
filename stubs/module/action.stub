@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Modules\{{ module }}\Actions;
+
+use {{ modelNamespace }};
+
+class {{ label }}Action
+{
+    /**
+     * Execute the action.
+     */
+    public function execute({{ model }} ${{ modelVariable }}): void
+    {
+        // Handle the action logic.
+    }
+}

@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Modules\{{ module }}\Actions;
+
+use {{ modelNamespace }};
+use Illuminate\Support\Facades\DB;
+
+class Delete{{ model }}Action
+{
+    /**
+     * Delete the model in a transaction.
+     */
+    public function execute({{ model }} ${{ modelVariable }}): void
+    {
+        DB::transaction(function () use (${{ modelVariable }}) {
+            // Example: ${{ modelVariable }}->clearMediaCollection();
+            ${{ modelVariable }}->deleteOrFail();
+        });
+    }
+}

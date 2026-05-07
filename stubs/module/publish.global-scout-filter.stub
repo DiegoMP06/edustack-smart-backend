@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Modules\{{ module }}\Queries\Filters;
+
+use Illuminate\Database\Eloquent\Builder;
+use Spatie\QueryBuilder\Filters\Filter;
+
+class GlobalScoutFilter implements Filter
+{
+    public function __invoke(Builder $query, mixed $value, string $property): void
+    {
+        $modelClass = get_class($query->getModel());
+
+        if (empty($value)) {
+            return;
+        }
+
+        $ids = $modelClass::search($value)->keys();
+
+        $query->whereIn($query->getModel()->getQualifiedKeyName(), $ids);
+    }
+}

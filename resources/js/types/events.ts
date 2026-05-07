@@ -46,6 +46,40 @@ export type EventActivityCategory = {
     order: number;
 };
 
+export type CompetitionRound = {
+    id: number;
+    name: string;
+    description: string;
+    content: Content<ComponentProps>;
+    round_number: number;
+    participants_per_round: number | null;
+    starting_from_scratch: boolean;
+    qualified_participants: number;
+    winners_count: number;
+    is_the_final: boolean;
+    rate_by_part: boolean;
+    status: string;
+    started_at: string;
+    ended_at: string;
+    event_activity_id: number;
+};
+
+export type CompetitionRoundFormData = Pick<
+    CompetitionRound,
+    | 'name'
+    | 'description'
+    | 'participants_per_round'
+    | 'starting_from_scratch'
+    | 'qualified_participants'
+    | 'winners_count'
+    | 'is_the_final'
+    | 'rate_by_part'
+> & {
+    per_parts: boolean;
+    started_at: Date;
+    ended_at: Date;
+};
+
 export type Speaker = {
     id: string;
     name: string;

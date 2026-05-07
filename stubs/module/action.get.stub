@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Modules\{{ module }}\Actions;
+
+use {{ modelNamespace }};
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
+class Get{{ model }}Action
+{
+    /**
+     * Retrieve a model by its primary key.
+     *
+     * @throws ModelNotFoundException
+     */
+    public function execute(int $id): {{ model }}
+    {
+        ${{ modelVariable }} = {{ model }}::find($id);
+
+        if (!${{ modelVariable }}) {
+            throw new ModelNotFoundException("The record with ID {$id} was not found.");
+        }
+
+        // If you prefer returning a DTO, map it here and adjust the return type.
+
+        return ${{ modelVariable }};
+    }
+}

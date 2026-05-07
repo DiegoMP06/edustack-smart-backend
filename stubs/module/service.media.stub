@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Modules\{{ module }}\Services;
+
+use {{ modelNamespace }};
+use App\Modules\{{ module }}\Actions\Delete{{ model }}MediaAction;
+use App\Modules\{{ module }}\Actions\Store{{ model }}MediaAction;
+use App\Modules\{{ module }}\DTOs\{{ model }}MediaData;
+use App\Modules\{{ module }}\DTOs\{{ model }}MediaDeletionData;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+
+class {{ model }}MediaService
+{
+    public function __construct(
+        private Store{{ model }}MediaAction $storeMediaAction,
+        private Delete{{ model }}MediaAction $deleteMediaAction,
+    ) {}
+
+    public function store({{ model }} ${{ modelVariable }}, {{ model }}MediaData $data): void
+    {
+        $this->storeMediaAction->execute(${{ modelVariable }}, $data);
+    }
+
+    public function destroy({{ model }} ${{ modelVariable }}, Media $media): void
+    {
+        $this->deleteMediaAction->execute(
+            ${{ modelVariable }},
+            new {{ model }}MediaDeletionData($media),
+        );
+    }
+}

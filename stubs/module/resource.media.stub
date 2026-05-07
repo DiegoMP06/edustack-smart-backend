@@ -1,0 +1,46 @@
+<?php
+
+namespace App\Modules\{{ module }}\Http\Resources;
+
+use App\Http\Resources\MediaResource;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Collection;
+
+class {{ label }}Resource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        $data = parent::toArray($request);
+
+        if (method_exists($this->resource, 'getMedia')) {
+            $data['media'] = $this->mapMedia($this->getMedia('gallery'));
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param  Collection<int, mixed>  $media
+     * @param  array<string, array{width:int,height:int}>  $dimensions
+     * @param  array<int, string>  $extraConversions
+     * @return array<int, array<string, mixed>>
+     */
+    protected function mapMedia(
+        Collection $media,
+        string $mainConversion = 'main',
+        array $dimensions = ['main' => ['width' => 1200, 'height' => 620], 'hero' => ['width' => 1920, 'height' => 1080]],
+        array $extraConversions = ['hero']
+    ): array
+    {
+        return $media
+            ->map(fn ($item): array => new MediaResource($item, $mainConversion, $dimensions, $extraConversions)->toArray(request()))
+            ->values()
+            ->all();
+    }
+}

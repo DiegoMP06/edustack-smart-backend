@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Modules\{{ module }}\Services;
+
+use {{ modelNamespace }};
+use App\Modules\{{ module }}\Actions\Update{{ model }}ContentAction;
+use App\Modules\{{ module }}\DTOs\{{ model }}ContentData;
+
+class {{ model }}ContentService
+{
+    public function __construct(
+        private Update{{ model }}ContentAction $updateContentAction,
+    ) {}
+
+    public function update({{ model }} ${{ modelVariable }}, {{ model }}ContentData $data): {{ model }}
+    {
+        return $this->updateContentAction->execute(${{ modelVariable }}, $data);
+    }
+}

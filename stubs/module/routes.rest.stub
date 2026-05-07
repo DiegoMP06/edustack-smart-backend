@@ -1,0 +1,15 @@
+<?php
+
+use App\Modules\{{ module }}\Http\Controllers\{{ model }}Controller;
+use Illuminate\Support\Facades\Route;
+
+Route::middleware(['api', 'auth:sanctum'])
+    ->prefix('api/{{ routePrefix }}')
+    ->name('api.{{ routeName }}.')
+    ->group(function () {
+        Route::get('/', [{{ model }}Controller::class, 'index'])->name('index');
+        Route::post('/', [{{ model }}Controller::class, 'store'])->name('store');
+        Route::get('/{{{ modelVariable }}}', [{{ model }}Controller::class, 'show'])->name('show');
+        Route::match(['put', 'patch'], '/{{{ modelVariable }}}', [{{ model }}Controller::class, 'update'])->name('update');
+        Route::delete('/{{{ modelVariable }}}', [{{ model }}Controller::class, 'destroy'])->name('destroy');
+});

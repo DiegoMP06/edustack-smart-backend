@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Modules\{{ module }}\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Media\{{ mediaStoreRequest }};
+use App\Modules\{{ module }}\DTOs\{{ model }}MediaData;
+use App\Modules\{{ module }}\Services\{{ model }}MediaService;
+use {{ modelNamespace }};
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+
+class {{ label }} extends Controller
+{
+    public function __construct(
+        private {{ model }}MediaService $mediaService,
+    ) {}
+
+    /**
+     * Add uploaded media keys to the model collection.
+     */
+    public function store({{ mediaStoreRequest }} $request, {{ model }} ${{ modelVariable }})
+    {
+        $this->authorize('update', ${{ modelVariable }});
+
+        $data = {{ model }}MediaData::fromArray($request->validated());
+        $this->mediaService->store(${{ modelVariable }}, $data);
+
+        return back()->with('message', '{{ model }} media updated successfully.');
+    }
+
+    /**
+     * Remove media from the model collection.
+     */
+    public function destroy({{ model }} ${{ modelVariable }}, Media $media)
+    {
+        $this->authorize('update', ${{ modelVariable }});
+
+        $this->mediaService->destroy(${{ modelVariable }}, $media);
+
+        return back()->with('message', '{{ model }} media updated successfully.');
+    }
+}

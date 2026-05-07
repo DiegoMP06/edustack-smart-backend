@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+
+#[Fillable([
+    //
+])]
+class {{ model }} extends Model implements HasMedia
+{
+    use InteractsWithMedia;
+
+    /**
+     * Register media collections for this model.
+     */
+    public function registerMediaCollections(): void
+    {
+        // Example: $this->addMediaCollection('default')->singleFile();
+    }
+
+    // Define model relationships and scopes here.
+}

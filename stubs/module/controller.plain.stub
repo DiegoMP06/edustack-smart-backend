@@ -1,0 +1,9 @@
+<?php
+
+namespace App\Modules\{{ module }}\Http\Controllers;
+
+use Illuminate\Routing\Controller;
+
+class {{ label }}Controller extends Controller
+{
+}

@@ -1,0 +1,17 @@
+<?php
+
+namespace App\Modules\{{ module }}\Actions;
+
+use {{ modelNamespace }};
+use App\Modules\{{ module }}\DTOs\{{ model }}ContentData;
+
+class Update{{ model }}ContentAction
+{
+    public function execute({{ model }} ${{ modelVariable }}, {{ model }}ContentData $data): {{ model }}
+    {
+        ${{ modelVariable }}->content = $data->content;
+        ${{ modelVariable }}->save();
+
+        return ${{ modelVariable }};
+    }
+}

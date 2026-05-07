@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Modules\{{ module }}\Actions;
+
+use {{ modelNamespace }};
+use App\Modules\{{ module }}\DTOs\{{ model }}Data;
+use Illuminate\Support\Facades\DB;
+
+class Create{{ model }}Action
+{
+    /**
+     * Persist a new model using DTO data.
+     */
+    public function execute({{ model }}Data $data, int $userId): {{ model }}
+    {
+        return DB::transaction(function () use ($data, $userId) {
+            ${{ modelVariable }} = {{ model }}::create([
+                // Map DTO properties to model attributes.
+                'user_id' => $userId,
+            ]);
+
+            // Example: ${{ modelVariable }}->addMedia($data->file)->toMediaCollection('default');
+
+            return ${{ modelVariable }};
+        });
+    }
+}

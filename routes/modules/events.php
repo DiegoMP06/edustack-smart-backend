@@ -5,6 +5,7 @@ use App\Http\Controllers\Events\Activity\EventActivityController;
 use App\Http\Controllers\Events\Activity\EventActivityGalleryController;
 use App\Http\Controllers\Events\Activity\EventActivityStatusController;
 use App\Http\Controllers\Events\Collaborator\EventCollaboratorsController;
+use App\Http\Controllers\Events\Competition\CompetitionRoundContentController;
 use App\Http\Controllers\Events\Competition\CompetitionRoundController;
 use App\Http\Controllers\Events\EventActivityRegistrationController;
 use App\Http\Controllers\Events\EventContentController;
@@ -28,7 +29,6 @@ Route::middleware([
     Route::resource('events.activities.rounds', CompetitionRoundController::class)
         ->parameters(['activities' => 'activity', 'rounds' => 'round']);
 
-
     Route::resource('events.activities.teams', EventTeamController::class)
         ->parameters(['activities' => 'activity', 'teams' => 'team'])
         ->only(['store', 'update']);
@@ -44,6 +44,11 @@ Route::middleware([
         ->name('events.activities.registrations.store');
     Route::delete('events/{event}/activities/{activity}/registrations/{registration}', [EventActivityRegistrationController::class, 'destroy'])
         ->name('events.activities.registrations.destroy');
+
+    Route::get('events/{event}/activities/{activity}/rounds/{round}/content/edit', [CompetitionRoundContentController::class, 'edit'])
+        ->name('events.activities.rounds.content.edit');
+    Route::patch('events/{event}/activities/{activity}/rounds/{round}/content', [CompetitionRoundContentController::class, 'update'])
+        ->name('events.activities.rounds.content.update');
 
     Route::get('events/{event}/activities/{activity}/content/edit', [EventActivityContentController::class, 'edit'])
         ->name('events.activities.content.edit');

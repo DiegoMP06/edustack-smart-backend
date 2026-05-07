@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Modules\{{ module }}\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use App\Modules\{{ module }}\DTOs\{{ model }}ContentData;
+use App\Modules\{{ module }}\Http\Requests\{{ updateContentRequest }};
+use App\Modules\{{ module }}\Services\{{ model }}ContentService;
+use {{ modelNamespace }};
+use Illuminate\Http\Request;
+
+class {{ label }} extends Controller
+{
+    public function __construct(
+        private {{ model }}ContentService $contentService,
+    ) {}
+
+    /**
+     * Show the content editor for the given model.
+     */
+    public function edit({{ model }} ${{ modelVariable }}, Request $request)
+    {
+        $this->authorize('update', ${{ modelVariable }});
+
+        return inertia('{{ inertiaPage }}', [
+            '{{ modelVariable }}' => ${{ modelVariable }},
+            'edit' => $request->boolean('edit', false),
+            'message' => $request->session()->get('message'),
+        ]);
+    }
+
+    /**
+     * Persist editor content for the given model.
+     */
+    public function update({{ model }} ${{ modelVariable }}, {{ updateContentRequest }} $request)
+    {
+        $this->authorize('update', ${{ modelVariable }});
+
+        $data = {{ model }}ContentData::fromArray($request->validated());
+        $this->contentService->update(${{ modelVariable }}, $data);
+
+        return back()->with('message', '{{ model }} content saved successfully.');
+    }
+}

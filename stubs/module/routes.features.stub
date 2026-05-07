@@ -1,0 +1,12 @@
+<?php
+
+use App\Modules\{{ module }}\Http\Controllers\{{ model }}ContentController;
+use App\Modules\{{ module }}\Http\Controllers\{{ model }}GalleryController;
+use App\Modules\{{ module }}\Http\Controllers\{{ model }}StatusController;
+use Illuminate\Support\Facades\Route;
+
+{{ contentRoutes }}
+
+{{ statusRoutes }}
+
+{{ mediaRoutes }}

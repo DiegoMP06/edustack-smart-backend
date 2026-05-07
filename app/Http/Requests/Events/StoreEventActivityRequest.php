@@ -72,7 +72,7 @@ class StoreEventActivityRequest extends FormRequest
             'ended_at' => [
                 'required',
                 'date',
-                'after_or_equal:started_at',
+                'after:started_at',
             ],
             'event_activity_type_id' => ['required', Rule::exists('event_activity_types', 'id')],
             'difficulty_level_id' => ['nullable', Rule::exists('difficulty_levels', 'id')],

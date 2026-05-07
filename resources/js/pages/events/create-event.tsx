@@ -51,7 +51,6 @@ export default function CreateEvent() {
     const {
         control,
         register,
-        formState: { errors },
         handleSubmit,
     } = useForm({
         defaultValues: initialValues,
@@ -66,7 +65,7 @@ export default function CreateEvent() {
         ...data
     }) => {
         setProcessing(true);
-        
+
         const keys = await uploadImages(data.logo || []);
 
         const formData = {
@@ -122,7 +121,6 @@ export default function CreateEvent() {
             >
                 <EventForm
                     control={control}
-                    errors={errors}
                     register={register}
                 />
 

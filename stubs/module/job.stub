@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Modules\{{ module }}\Jobs;
+
+use {{ modelNamespace }};
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Log;
+
+class {{ name }}Job
+{
+    use Dispatchable;
+
+    /**
+     * Create a new job instance.
+     */
+    public function __construct(
+        public readonly {{ model }} ${{ modelVariable }},
+    ) {}
+
+    /**
+     * Execute the job.
+     */
+    public function handle(): void
+    {
+        // Execute the queued job logic.
+    }
+
+    public function failed(\Throwable $e): void
+    {
+        Log::error("{{ name }}Job failed for {{ model }} #{$this->{{ modelVariable }}->id}: {$e->getMessage()}");
+    }
+}

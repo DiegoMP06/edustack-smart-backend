@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Modules\{{ module }}\Services;
+
+use {{ modelNamespace }};
+use App\Modules\{{ module }}\Actions\Create{{ model }}Action;
+use App\Modules\{{ module }}\Actions\Update{{ model }}Action;
+use App\Modules\{{ module }}\Actions\Delete{{ model }}Action;
+use App\Modules\{{ module }}\DTOs\{{ model }}Data;
+use Illuminate\Pagination\LengthAwarePaginator;
+
+class {{ model }}Service
+{
+    public function __construct(
+        private Create{{ model }}Action $createAction,
+        private Update{{ model }}Action $updateAction,
+        private Delete{{ model }}Action $deleteAction,
+    ) {}
+
+    public function list(array $filters = []): LengthAwarePaginator
+    {
+        return {{ model }}::query()
+            ->with([])
+            ->when($filters['search'] ?? null, fn ($query, $value) => $query->where('title', 'like', "%{$value}%"))
+            ->latest()
+            ->paginate(15);
+    }
+
+    public function findOrFail(int $id): {{ model }}
+    {
+        return {{ model }}::with([])->findOrFail($id);
+    }
+
+    public function create({{ model }}Data $data, int $userId): {{ model }}
+    {
+        return $this->createAction->execute($data, $userId);
+    }
+
+    public function update({{ model }} ${{ modelVariable }}, {{ model }}Data $data): {{ model }}
+    {
+        return $this->updateAction->execute(${{ modelVariable }}, $data);
+    }
+
+    public function delete({{ model }} ${{ modelVariable }}): void
+    {
+        $this->deleteAction->execute(${{ modelVariable }});
+    }
+}

@@ -1,7 +1,11 @@
 import type { z } from 'zod';
 import type { ROLES } from '@/consts/roles';
 import type { UserSchema } from '@/schemas';
-import type { EventCollaboratorRole, PivotType, ProjectCollaboratorRole } from './index';
+import type {
+    EventCollaboratorRole,
+    PivotType,
+    ProjectCollaboratorRole,
+} from '.';
 
 export type Roles = keyof typeof ROLES;
 export type RolesValues = (typeof ROLES)[Roles];
@@ -26,7 +30,7 @@ export type User = {
     is_active: boolean;
     created_at: string;
     updated_at: string;
-    roles: Role[];
+    roles: Roles[];
     [key: string]: unknown;
 };
 

@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Modules\{{ module }}\Actions;
+
+use {{ modelNamespace }};
+use App\Modules\{{ module }}\DTOs\{{ model }}MediaDeletionData;
+use Illuminate\Validation\ValidationException;
+
+class Delete{{ model }}MediaAction
+{
+    public function execute({{ model }} ${{ modelVariable }}, {{ model }}MediaDeletionData $data): void
+    {
+        $media = $data->media;
+
+        abort_if($media->model_type !== {{ model }}::class || $media->model_id !== ${{ modelVariable }}->id, 404);
+
+        if (${{ modelVariable }}->media()->count() === 1) {
+            throw ValidationException::withMessages([
+                'image' => 'At least one image is required.',
+            ]);
+        }
+
+        $media->delete();
+    }
+}

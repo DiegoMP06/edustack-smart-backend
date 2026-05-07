@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Modules\{{ module }}\Actions;
+
+use {{ modelNamespace }};
+use App\Modules\{{ module }}\DTOs\{{ model }}StatusData;
+
+class Toggle{{ model }}StatusAction
+{
+    public function execute({{ model }} ${{ modelVariable }}, {{ model }}StatusData $data): {{ model }}
+    {
+        ${{ modelVariable }}->{{ statusField }} = $data->isActive;
+        ${{ modelVariable }}->{{ statusTimestampField }} = $data->isActive ? now() : null;
+        ${{ modelVariable }}->save();
+
+        return ${{ modelVariable }};
+    }
+}

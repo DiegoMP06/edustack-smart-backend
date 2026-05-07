@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Modules\{{ module }}\Http\Controllers;
+
+use App\Modules\{{ module }}\Http\Requests\{{ storeRequest }};
+use App\Modules\{{ module }}\Http\Requests\{{ updateRequest }};
+use {{ modelNamespace }};
+use Illuminate\Routing\Controller;
+
+class {{ label }}Controller extends Controller
+{
+    public function create(): void
+    {
+    }
+
+    public function store({{ storeRequest }} $request): void
+    {
+    }
+
+    public function show({{ model }} ${{ modelVariable }}): void
+    {
+    }
+
+    public function edit({{ model }} ${{ modelVariable }}): void
+    {
+    }
+
+    public function update({{ updateRequest }} $request, {{ model }} ${{ modelVariable }}): void
+    {
+    }
+
+    public function destroy({{ model }} ${{ modelVariable }}): void
+    {
+    }
+}

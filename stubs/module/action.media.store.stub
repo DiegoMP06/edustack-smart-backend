@@ -1,0 +1,17 @@
+<?php
+
+namespace App\Modules\{{ module }}\Actions;
+
+use {{ modelNamespace }};
+use App\Modules\{{ module }}\DTOs\{{ model }}MediaData;
+
+class Store{{ model }}MediaAction
+{
+    public function execute({{ model }} ${{ modelVariable }}, {{ model }}MediaData $data): void
+    {
+        foreach ($data->images as $key) {
+            ${{ modelVariable }}->addMediaFromDisk($key, 's3')
+                ->toMediaCollection('{{ mediaCollection }}');
+        }
+    }
+}

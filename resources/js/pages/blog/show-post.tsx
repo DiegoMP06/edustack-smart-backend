@@ -72,7 +72,7 @@ export default function ShowPost({ post }: ShowPostProps) {
                         imageKey="main"
                     />
 
-                    <section className="my-10">
+                    <section className="my-10 overflow-x-scroll w-full">
                         <Render
                             config={puckConfig}
                             data={{ content: post.content }}

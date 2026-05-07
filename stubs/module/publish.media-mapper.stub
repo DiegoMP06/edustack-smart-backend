@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Modules\{{ module }}\Http\Resources\Concerns;
+
+use App\Modules\{{ module }}\Http\Resources\MediaResource;
+use Illuminate\Support\Collection;
+
+trait MapsMedia
+{
+    /**
+     * @param  Collection<int, mixed>  $media
+     * @param  array<string, array{width:int,height:int}>  $dimensions
+     * @param  array<int, string>  $extraConversions
+     * @return array<int, array<string, mixed>>
+     */
+    protected function mapMedia(Collection $media, string $mainConversion = 'main', array $dimensions = ['main' => ['width' => 1200, 'height' => 620], 'hero' => ['width' => 1920, 'height' => 1080]], array $extraConversions = ['hero']): array
+    {
+        return $media
+            ->map(fn ($item): array => new MediaResource($item, $mainConversion, $dimensions, $extraConversions)->toArray(request()))
+            ->values()
+            ->all();
+    }
+}

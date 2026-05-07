@@ -1,6 +1,7 @@
 import { Head, router } from '@inertiajs/react';
 import { Render } from '@puckeditor/core';
-import { ChevronLeft, Pencil } from 'lucide-react';
+import { ChevronLeft, Clock, LogIn, Pencil } from 'lucide-react';
+import ShowLocationMap from '@/components/leaflet/ShowLocationMap';
 import GalleryContent from '@/components/ui/app/gallery-content';
 import { Icon } from '@/components/ui/app/icon';
 import { Avatar, AvatarFallback } from '@/components/ui/shadcn/avatar';
@@ -9,7 +10,7 @@ import { Button } from '@/components/ui/shadcn/button';
 import { useInitials } from '@/hooks/use-initials';
 import AppLayout from '@/layouts/app-layout';
 import { puckConfig } from '@/lib/puck';
-import { formatDateToLocale } from '@/lib/utils';
+import { formatDatetimeToLocale } from '@/lib/utils';
 import events from '@/routes/events';
 import type { BreadcrumbItem } from '@/types';
 import type { Event, EventActivity } from '@/types/events';
@@ -88,7 +89,7 @@ export default function ShowActivity({ event, activity }: ShowActivityProps) {
                         imageKey="main"
                     />
 
-                    <section className="my-10">
+                    <section className="my-10 overflow-x-scroll w-full">
                         <Render
                             config={puckConfig}
                             data={{ content: activity.content }}
@@ -137,6 +138,34 @@ export default function ShowActivity({ event, activity }: ShowActivityProps) {
                     </div>
 
                     <div>
+                        <h3 className="text-lg font-bold capitalize">
+                            Fecha y Hora:
+                        </h3>
+
+                        <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+                            <LogIn
+                                className="size-6"
+                            />
+                            {formatDatetimeToLocale(activity.started_at)} -{' '}
+                            {formatDatetimeToLocale(activity.ended_at)}
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lg font-bold capitalize">
+                            Fecha de Registro:
+                        </h3>
+
+                        <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+                            <Clock
+                                className="size-6"
+                            />
+                            {formatDatetimeToLocale(event.registration_started_at)} -{' '}
+                            {formatDatetimeToLocale(event.registration_ended_at)}
+                        </p>
+                    </div>
+
+                    <div>
                         <h3 className="text-lg font-bold">Categorías:</h3>
 
                         <div className="mt-2 flex flex-wrap gap-2">
@@ -147,56 +176,37 @@ export default function ShowActivity({ event, activity }: ShowActivityProps) {
                             ))}
                         </div>
                     </div>
-                </aside>
-            </div>
 
-            <main className="mx-auto max-w-4xl">
-                <div className="mb-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    <div className="rounded-lg border p-4">
-                        <h3 className="text-sm font-semibold text-muted-foreground">
-                            Fecha y Hora
-                        </h3>
-                        <p className="mt-1 text-sm">
-                            {formatDateToLocale(activity.started_at)} -{' '}
-                            {formatDateToLocale(activity.ended_at)}
-                        </p>
-                    </div>
+                    {!activity.is_online ? (
+                        <div>
+                            <h3 className="text-lg font-bold">Ubicación:</h3>
 
-                    <div className="rounded-lg border p-4">
-                        <h3 className="text-sm font-semibold text-muted-foreground">
-                            Ubicación
-                        </h3>
-                        <p className="mt-1 text-sm">
-                            {activity.is_online ? (
+                            <div className="mt-2 w-full">
+                                <ShowLocationMap
+                                    lat={activity.lat || 0}
+                                    lng={activity.lng || 0}
+                                    location={activity.location || ''}
+                                />
+                            </div>
+                        </div>
+                    ) : (
+                        <div>
+                            <h3 className="text-lg font-bold">Enlace:</h3>
+
+                            <div className="mt-2 w-full">
                                 <a
                                     href={activity.online_link || '#'}
                                     className="text-blue-500 hover:underline"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    En Línea (Unirse)
+                                    {activity.online_link}
                                 </a>
-                            ) : (
-                                activity.location
-                            )}
-                        </p>
-                    </div>
-
-                    <div className="rounded-lg border p-4">
-                        <h3 className="text-sm font-semibold text-muted-foreground">
-                            Detalles
-                        </h3>
-                        <p className="mt-1 text-sm capitalize">
-                            Tipo: {activity.type?.name} | Dificultad:{' '}
-                            {activity.difficultyLevel?.name}
-                        </p>
-                    </div>
-                </div>
-
-                <p className="leading-relaxed whitespace-pre-wrap text-muted-foreground">
-                    {activity.description}
-                </p>
-            </main>
-        </AppLayout>
+                            </div>
+                        </div>
+                    )}
+                </aside>
+            </div >
+        </AppLayout >
     );
 }

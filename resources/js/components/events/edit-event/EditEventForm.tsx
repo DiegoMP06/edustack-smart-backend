@@ -42,7 +42,6 @@ export default function EditEventForm({ event }: EditEventFormProps) {
         control,
         register,
         handleSubmit,
-        formState: { errors },
     } = useForm({
         defaultValues: initialValues,
     });
@@ -109,9 +108,8 @@ export default function EditEventForm({ event }: EditEventFormProps) {
             <EventForm
                 {...{
                     control,
-                    errors,
                     register,
-                    defaultImage: event.media.at(0)?.urls.thumbnail,
+                    defaultImage: event.media.at(0)?.urls.main,
                     edit: true,
                 }}
             />

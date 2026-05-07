@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Modules\{{ module }}\Services;
+
+use {{ modelNamespace }};
+use App\Modules\{{ module }}\Actions\Toggle{{ model }}StatusAction;
+use App\Modules\{{ module }}\DTOs\{{ model }}StatusData;
+
+class {{ model }}StatusService
+{
+    public function __construct(
+        private Toggle{{ model }}StatusAction $toggleStatusAction,
+    ) {}
+
+    public function toggle({{ model }} ${{ modelVariable }}): {{ model }}
+    {
+        $data = {{ model }}StatusData::fromModel(${{ modelVariable }});
+
+        return $this->toggleStatusAction->execute(${{ modelVariable }}, $data);
+    }
+}

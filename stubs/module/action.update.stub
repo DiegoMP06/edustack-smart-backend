@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Modules\{{ module }}\Actions;
+
+use {{ modelNamespace }};
+use App\Modules\{{ module }}\DTOs\{{ model }}Data;
+use Illuminate\Support\Facades\DB;
+
+class Update{{ model }}Action
+{
+    /**
+     * Update an existing model using DTO data.
+     */
+    public function execute({{ model }} ${{ modelVariable }}, {{ model }}Data $data): {{ model }}
+    {
+        return DB::transaction(function () use (${{ modelVariable }}, $data) {
+            ${{ modelVariable }}->update([
+                // Map DTO properties to model attributes.
+            ]);
+
+            return ${{ modelVariable }}->load([]);
+        });
+    }
+}

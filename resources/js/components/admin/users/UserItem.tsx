@@ -77,7 +77,7 @@ export default function UserItem({ user, roles }: UserItemProps) {
                         {user.mother_last_name}
                         <span className="rounded bg-accent p-1 text-xs text-accent-foreground">
                             {user.roles
-                                .map((role) => ROLES[role.name])
+                                .map((role) => ROLES[role])
                                 .join(', ')}
                         </span>
                     </ItemTitle>
@@ -140,7 +140,7 @@ export default function UserItem({ user, roles }: UserItemProps) {
 
             <RoleUserModal
                 roles={roles}
-                currentRole={user.roles[0].name}
+                currentRole={user.roles[0]}
                 userId={user.id}
                 isModalActive={isModalActive}
                 setIsModalActive={setIsModalActive}

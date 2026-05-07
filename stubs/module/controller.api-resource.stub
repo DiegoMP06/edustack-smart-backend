@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Modules\{{ module }}\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+
+class {{ label }}Controller extends Controller
+{
+    public function index(): void
+    {
+    }
+
+    public function store(Request $request): void
+    {
+    }
+
+    public function show(string $id): void
+    {
+    }
+
+    public function update(Request $request, string $id): void
+    {
+    }
+
+    public function destroy(string $id): void
+    {
+    }
+}

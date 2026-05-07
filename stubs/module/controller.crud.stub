@@ -1,0 +1,86 @@
+<?php
+
+namespace App\Modules\{{ module }}\Http\Controllers;
+
+use App\Modules\{{ module }}\Http\Requests\Store{{ model }}Request;
+use App\Modules\{{ module }}\Http\Requests\Update{{ model }}Request;
+use App\Modules\{{ module }}\Http\Resources\{{ model }}Collection;
+use App\Modules\{{ module }}\Http\Resources\{{ model }}Resource;
+use App\Modules\{{ module }}\DTOs\{{ model }}Data;
+use App\Modules\{{ module }}\Queries\{{ model }}Query;
+use App\Modules\{{ module }}\Services\{{ model }}Service;
+use {{ modelNamespace }};
+use Illuminate\Routing\Controller;
+
+class {{ label }}Controller extends Controller
+{
+    public function __construct(
+        private {{ model }}Service $service,
+    ) {}
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(): {{ model }}Collection
+    {
+        ${{ modelPlural }} = {{ model }}Query::forCurrentRequest()->paginate();
+
+        return new {{ model }}Collection(${{ modelPlural }});
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create(): void
+    {
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Store{{ model }}Request $request): {{ model }}Resource
+    {
+        ${{ modelVariable }} = $this->service->create(
+            data: {{ model }}Data::fromArray($request->validated()),
+            userId: (int) $request->user()->id,
+        );
+
+        return new {{ model }}Resource(${{ modelVariable }});
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show({{ model }} ${{ modelVariable }}): {{ model }}Resource
+    {
+        return new {{ model }}Resource(${{ modelVariable }});
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit({{ model }} ${{ modelVariable }}): void
+    {
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Update{{ model }}Request $request, {{ model }} ${{ modelVariable }}): {{ model }}Resource
+    {
+        ${{ modelVariable }} = $this->service->update(
+            ${{ modelVariable }},
+            {{ model }}Data::fromArray($request->validated()),
+        );
+
+        return new {{ model }}Resource(${{ modelVariable }});
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy({{ model }} ${{ modelVariable }}): void
+    {
+        $this->service->delete(${{ modelVariable }});
+    }
+}

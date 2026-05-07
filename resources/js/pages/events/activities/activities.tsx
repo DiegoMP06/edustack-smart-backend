@@ -1,5 +1,5 @@
 import { Head, router } from '@inertiajs/react';
-import { Plus } from 'lucide-react';
+import { ChevronLeft, Plus } from 'lucide-react';
 import ActivityItem from '@/components/events/activities/ActivityItem';
 import Pagination from '@/components/ui/app/pagination';
 import { Button } from '@/components/ui/shadcn/button';
@@ -42,10 +42,28 @@ export default function Activities({
         >
             <Head title={`Actividades de ${event.name}`} />
 
-            <div className="mb-15">
+            <div className="mb-15 flex items-center gap-4">
+                <Button
+                    variant="outline"
+                    onClick={() =>
+                        router.visit(
+                            events.edit({
+                                event: event.id,
+                            }),
+                        )
+                    }
+                >
+                    <ChevronLeft />
+                    Volver al Evento
+                </Button>
+
                 <Button
                     onClick={() =>
-                        router.visit(events.activities.create(event.id))
+                        router.visit(
+                            events.activities.create({
+                                event: event.id,
+                            }),
+                        )
                     }
                 >
                     <Plus />

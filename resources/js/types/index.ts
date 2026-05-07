@@ -11,3 +11,4 @@ export * from './media';
 export * from './navigation';
 export * from './projects';
 export * from './ui';
+export * from './admin'

@@ -84,7 +84,7 @@ export default function ShowProject({ project }: ShowProjectProps) {
                         imageKey="screenshot"
                     />
 
-                    <section className="my-10">
+                    <section className="my-10 overflow-x-scroll w-full">
                         <Render
                             config={puckConfig}
                             data={{ content: project.content }}

@@ -1,0 +1,10 @@
+<?php
+
+namespace App\Modules\{{ module }}\Services;
+
+{{ imports }}
+
+class {{ label }}Service
+{
+{{ constructor }}
+}

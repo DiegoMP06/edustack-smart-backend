@@ -1,0 +1,58 @@
+<?php
+
+namespace App\Console\Commands\Module;
+
+use App\Concerns\Commands\GeneratesModuleFiles;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
+use Illuminate\Console\Command;
+use Illuminate\Support\Str;
+
+#[Signature('make-module:media-resource
+    {module : Module name (e.g. Blog)}
+    {name   : Resource name (e.g. Post or PostResource)}
+    {--collection : Also generate a collection class}
+    {--force : Overwrite existing files}
+    {--dry-run : Preview changes without writing files}')]
+#[Description('Generate a module resource with App\\Http\\Resources\\MediaResource mapping helper')]
+class MakeModuleMediaResource extends Command
+{
+    use GeneratesModuleFiles;
+
+    protected $aliases = ['mm:media-resource'];
+
+    public function handle(): void
+    {
+        $module = Str::studly($this->argument('module'));
+        $segments = $this->resolveClassSegments((string) $this->argument('name'), 'Resource');
+        $name = $segments['className'];
+        $directory = $segments['directory'];
+        $resourceBaseName = Str::replaceEnd('Resource', '', $name);
+
+        $this->setup($module, $resourceBaseName);
+
+        $resourcePath = $directory === ''
+            ? "Modules/{$module}/Http/Resources/{$name}.php"
+            : "Modules/{$module}/Http/Resources/{$directory}/{$name}.php";
+
+        $this->write(
+            stub: 'resource.media',
+            path: $resourcePath,
+            label: $resourceBaseName,
+        );
+
+        if ($this->option('collection')) {
+            $collectionPath = $directory === ''
+                ? "Modules/{$module}/Http/Resources/{$resourceBaseName}Collection.php"
+                : "Modules/{$module}/Http/Resources/{$directory}/{$resourceBaseName}Collection.php";
+
+            $this->write(
+                stub: 'collection',
+                path: $collectionPath,
+                label: $resourceBaseName,
+            );
+        }
+
+        $this->summary("Media resource <fg=cyan>{$name}</> generated.");
+    }
+}

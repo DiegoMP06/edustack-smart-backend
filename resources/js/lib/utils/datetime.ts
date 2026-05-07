@@ -1,39 +1,40 @@
-export const formatTime = (date?: Date): string => {
-    if (!date) {
-        return '00:00';
-    }
+// export const applyDateKeepingTime = (
+//     currentDate: Date | undefined,
+//     nextDate: Date,
+// ): Date => {
+//     const dateWithTime = new Date(nextDate);
 
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
+//     if (currentDate) {
+//         dateWithTime.setHours(
+//             currentDate.getHours(),
+//             currentDate.getMinutes(),
+//             0,
+//             0,
+//         );
+//     }
 
-    return `${hours}:${minutes}`;
-};
-export const applyTimeToDate = (
-    date: Date | undefined,
-    timeValue: string,
-): Date => {
-    const [hours, minutes] = timeValue.split(':').map(Number);
-    const nextDate = date ? new Date(date) : new Date();
+//     return dateWithTime;
+// };
 
-    nextDate.setHours(hours || 0, minutes || 0, 0, 0);
+export const formatDatetimeToLocale = (
+    dateString: string,
+    locale: string = 'es-MX',
+) =>
+    new Date(dateString).toLocaleDateString(locale, {
+        year: 'numeric',
+        month: 'long',
+        weekday: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+    });
 
-    return nextDate;
-};
+export function toDatetimeLocal(value: Date): string {
+    const year = value.getFullYear();
+    const month = `${value.getMonth() + 1}`.padStart(2, '0');
+    const day = `${value.getDate()}`.padStart(2, '0');
+    const hours = `${value.getHours()}`.padStart(2, '0');
+    const minutes = `${value.getMinutes()}`.padStart(2, '0');
 
-export const applyDateKeepingTime = (
-    currentDate: Date | undefined,
-    nextDate: Date,
-): Date => {
-    const dateWithTime = new Date(nextDate);
-
-    if (currentDate) {
-        dateWithTime.setHours(
-            currentDate.getHours(),
-            currentDate.getMinutes(),
-            0,
-            0,
-        );
-    }
-
-    return dateWithTime;
-};
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+}

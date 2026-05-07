@@ -23,9 +23,9 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/shadcn/select';
+import { ROLES } from '@/consts/roles';
 import users from '@/routes/admin/users';
 import type { ChangeRoleForm, Role, User } from '@/types';
-import { ROLES } from '../../../consts/roles';
 
 type RoleUserModalProps = {
     isModalActive: boolean;

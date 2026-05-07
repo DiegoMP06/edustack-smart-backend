@@ -1,0 +1,60 @@
+<?php
+
+namespace App\Modules\{{ module }}\Http\Controllers;
+
+use Illuminate\Routing\Controller;
+use {{ modelNamespace }};
+use App\Modules\{{ module }}\Http\Requests\{{ storeRequest }};
+use App\Modules\{{ module }}\Http\Requests\{{ updateRequest }};
+
+class {{ label }}Controller extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(): void
+    {
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create(): void
+    {
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store({{ storeRequest }} $request): void
+    {
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show({{ model }} ${{ modelVariable }}): void
+    {
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit({{ model }} ${{ modelVariable }}): void
+    {
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update({{ updateRequest }} $request, {{ model }} ${{ modelVariable }}): void
+    {
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy({{ model }} ${{ modelVariable }}): void
+    {
+    }
+}
