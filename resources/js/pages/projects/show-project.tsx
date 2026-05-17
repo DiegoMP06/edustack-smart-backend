@@ -1,6 +1,7 @@
 import { Head, router } from '@inertiajs/react';
 import { Render } from '@puckeditor/core';
 import { ChevronLeft, GitBranch, Link2, Pencil } from 'lucide-react';
+
 import GalleryContent from '@/components/ui/app/gallery-content';
 import {
     Avatar,
@@ -15,19 +16,19 @@ import {
     HoverCardContent,
     HoverCardTrigger,
 } from '@/components/ui/shadcn/hover-card';
+import type { ProjectData } from '@/generated/types/App/Modules/Projects/DTOs';
 import { useInitials } from '@/hooks/app/use-initials';
-import AppLayout from '@/layouts/app-layout';
+import SingleProjectLayout from '@/layouts/projects/SingleProjectLayout';
 import { puckConfig } from '@/lib/puck';
 import { formatDatetimeToLocale } from '@/lib/utils';
 import projects from '@/routes/projects';
 import type { BreadcrumbItem } from '@/types';
-import type { Project } from '@/types/projects';
 
 type ShowProjectProps = {
-    project: Project;
+    project: ProjectData;
 };
 
-const breadcrumbs = (project: Project): BreadcrumbItem[] => [
+const breadcrumbs = (project: ProjectData): BreadcrumbItem[] => [
     {
         title: 'Proyectos',
         href: projects.index().url,
@@ -38,14 +39,17 @@ const breadcrumbs = (project: Project): BreadcrumbItem[] => [
     },
 ];
 export default function ShowProject({ project }: ShowProjectProps) {
-    const firstFiveCollaborators = project.collaborators.slice(0, 5);
+    const firstFiveCollaborators = project.collaborators?.slice(0, 5) || [];
     const remainingCollaborators =
-        project.collaborators.length - firstFiveCollaborators.length;
+        project.collaborators!.length - firstFiveCollaborators?.length;
 
     const getInitials = useInitials();
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs(project)}>
+        <SingleProjectLayout
+            breadcrumbs={breadcrumbs(project)}
+            project={project}
+        >
             <Head title={project.name} />
 
             <div className="mb-15 flex items-center justify-between">
@@ -58,7 +62,9 @@ export default function ShowProject({ project }: ShowProjectProps) {
                 </Button>
 
                 <Button
-                    onClick={() => router.visit(projects.edit({ project: project.id }))}
+                    onClick={() =>
+                        router.visit(projects.edit({ project: project.id }))
+                    }
                     variant="outline"
                 >
                     <Pencil />
@@ -79,15 +85,15 @@ export default function ShowProject({ project }: ShowProjectProps) {
                     </main>
 
                     <GalleryContent
-                        media={project.media}
+                        media={project.media || []}
                         alt={project.name}
                         imageKey="screenshot"
                     />
 
-                    <section className="my-10 overflow-x-scroll w-full">
+                    <section className="my-10 w-full">
                         <Render
                             config={puckConfig}
-                            data={{ content: project.content }}
+                            data={{ content: project.content as never }}
                         />
                     </section>
                 </div>
@@ -98,10 +104,10 @@ export default function ShowProject({ project }: ShowProjectProps) {
                             <AvatarFallback className="rounded-lg bg-indigo-200 text-indigo-700 dark:bg-neutral-700 dark:text-white">
                                 {getInitials(
                                     project.author?.name +
-                                    ' ' +
-                                    project.author?.father_last_name +
-                                    ' ' +
-                                    project.author?.mother_last_name,
+                                        ' ' +
+                                        project.author?.father_last_name +
+                                        ' ' +
+                                        project.author?.mother_last_name,
                                 )}
                             </AvatarFallback>
                         </Avatar>
@@ -117,7 +123,7 @@ export default function ShowProject({ project }: ShowProjectProps) {
                         </div>
                     </div>
 
-                    {project.collaborators.length > 0 && (
+                    {project.collaborators!.length > 0 && (
                         <div>
                             <h3 className="text-lg font-bold">
                                 Colaboradores:
@@ -133,10 +139,10 @@ export default function ShowProject({ project }: ShowProjectProps) {
                                                         <AvatarFallback className="rounded-lg bg-indigo-200 text-indigo-700 dark:bg-neutral-700 dark:text-white">
                                                             {getInitials(
                                                                 collaborator?.name +
-                                                                ' ' +
-                                                                collaborator?.father_last_name +
-                                                                ' ' +
-                                                                collaborator?.mother_last_name,
+                                                                    ' ' +
+                                                                    collaborator?.father_last_name +
+                                                                    ' ' +
+                                                                    collaborator?.mother_last_name,
                                                             )}
                                                         </AvatarFallback>
                                                     </Avatar>
@@ -147,10 +153,10 @@ export default function ShowProject({ project }: ShowProjectProps) {
                                                             <AvatarFallback className="rounded-lg bg-indigo-200 text-indigo-700 dark:bg-neutral-700 dark:text-white">
                                                                 {getInitials(
                                                                     collaborator.name +
-                                                                    ' ' +
-                                                                    collaborator.father_last_name +
-                                                                    ' ' +
-                                                                    collaborator.mother_last_name,
+                                                                        ' ' +
+                                                                        collaborator.father_last_name +
+                                                                        ' ' +
+                                                                        collaborator.mother_last_name,
                                                                 )}
                                                             </AvatarFallback>
                                                         </Avatar>
@@ -192,7 +198,7 @@ export default function ShowProject({ project }: ShowProjectProps) {
                         <h3 className="text-lg font-bold">Estado:</h3>
 
                         <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
-                            {project.status.name}
+                            {project.status?.name}
                         </p>
                     </div>
 
@@ -200,7 +206,7 @@ export default function ShowProject({ project }: ShowProjectProps) {
                         <h3 className="text-lg font-bold">Categorías:</h3>
 
                         <div className="mt-2 flex flex-wrap gap-2">
-                            {project.categories.map((cat) => (
+                            {project.categories?.map((cat) => (
                                 <Badge variant="secondary" key={cat.id}>
                                     {cat.name}
                                 </Badge>
@@ -272,6 +278,6 @@ export default function ShowProject({ project }: ShowProjectProps) {
                     )}
                 </aside>
             </div>
-        </AppLayout>
+        </SingleProjectLayout>
     );
 }

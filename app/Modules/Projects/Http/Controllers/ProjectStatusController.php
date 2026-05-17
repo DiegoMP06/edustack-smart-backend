@@ -2,25 +2,18 @@
 
 namespace App\Modules\Projects\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Projects\Project;
-use App\Modules\Projects\Services\ProjectStatusService;
+use App\Modules\Projects\Application\UseCases\Command\ToggleProjectStatusAction;
+use Illuminate\Http\RedirectResponse;
 
 class ProjectStatusController extends Controller
 {
-    public function __construct(
-        private ProjectStatusService $statusService,
-    ) {}
-
-    /**
-     * Toggle the model status flag.
-     */
-    public function __invoke(Project $project)
+    public function __invoke(Project $project, ToggleProjectStatusAction $action): RedirectResponse
     {
         $this->authorize('update', $project);
 
-        $this->statusService->toggle($project);
+        $action->execute($project);
 
-        return back()->with('message', 'Project status updated successfully.');
+        return back()->with('message', 'El estado del proyecto ha sido actualizado.');
     }
 }

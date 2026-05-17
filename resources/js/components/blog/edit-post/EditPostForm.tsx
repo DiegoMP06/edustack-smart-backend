@@ -5,13 +5,18 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import PostForm from '@/components/blog/PostForm';
 import { Button } from '@/components/ui/shadcn/button';
+import type {
+    DraftPostFormData,
+    PostCategoryData,
+    PostData,
+    PostTypeData,
+} from '@/generated/types/App/Modules/Blog/DTOs';
 import posts from '@/routes/posts';
-import type { PostFormData, Post, PostType, PostCategory } from '@/types/blog';
 
 type EditPostFormProps = {
-    post: Post;
-    types: PostType[];
-    categories: PostCategory[];
+    post: PostData;
+    types: PostTypeData[];
+    categories: PostCategoryData[];
 };
 
 export default function EditPostForm({
@@ -20,25 +25,21 @@ export default function EditPostForm({
     categories,
 }: EditPostFormProps) {
     const [processing, setProcessing] = useState(false);
-    const initialValues: PostFormData = {
+    const initialValues: DraftPostFormData = {
         name: post.name,
         description: post.description,
         reading_time_minutes: post.reading_time_minutes,
         post_type_id: post.post_type_id,
-        categories: post.categories.map((category) => category.id),
+        categories: post.categories?.map((category) => category.id) || [],
     };
 
-    const {
-        control,
-        register,
-        handleSubmit,
-    } = useForm({
+    const { control, register, handleSubmit } = useForm({
         defaultValues: initialValues,
     });
 
-    const handleUpdatePost: SubmitHandler<PostFormData> = (data) => {
+    const handleUpdatePost: SubmitHandler<DraftPostFormData> = (data) => {
         setProcessing(true);
-        router.patch(posts.update(post.id), data, {
+        router.put(posts.update(post.id), data, {
             forceFormData: false,
             preserveScroll: true,
             showProgress: true,

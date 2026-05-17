@@ -11,7 +11,7 @@ class UpdatePostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('update', $this->route('post'));
+        return true;
     }
 
     /**
@@ -22,27 +22,12 @@ class UpdatePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // Define validation rules for updating records.
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string', 'min:50'],
+            'reading_time_minutes' => ['required', 'integer', 'min:1'],
+            'post_type_id' => ['required', 'integer', 'exists:post_types,id'],
+            'categories' => ['required', 'array', 'min:1'],
+            'categories.*' => ['required', 'integer', 'exists:post_categories,id'],
         ];
-    }
-
-    /**
-     * Get custom validation messages for this request.
-     *
-     * @return array<string, string>
-     */
-    public function messages(): array
-    {
-        return [
-            // Provide custom validation messages.
-        ];
-    }
-
-    /**
-     * Prepare the data for validation.
-     */
-    protected function prepareForValidation(): void
-    {
-        // Normalize input before validation.
     }
 }

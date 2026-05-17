@@ -116,6 +116,7 @@ export default [
             'resources/js/components/ui/shadcn/*',
             'resources/js/routes/**',
             'resources/js/wayfinder/**',
+            'resources/js/generated/**',
         ],
     },
     prettier, // Turn off all rules that might conflict with Prettier

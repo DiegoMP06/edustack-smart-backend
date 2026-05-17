@@ -2,20 +2,20 @@ import { router } from '@inertiajs/react';
 import { Button } from '@/components/ui/shadcn/button';
 import type { LinkMetaPagination, PaginationType } from '@/types/ui';
 
-type QueryParams = Record<string, string | number | boolean | null | undefined>;
+type QueryParams = Record<string, unknown>;
 
 type PaginationProps<T = unknown> = {
     pagination: PaginationType<T>;
     queryParams?: QueryParams;
-    withVirtualDOM?: boolean
-    handleSearch?: (page: number) => void
+    withVirtualDOM?: boolean;
+    handleSearch?: (page: number) => void;
 };
 
 export default function Pagination<T>({
     pagination,
     queryParams = {},
     withVirtualDOM,
-    handleSearch
+    handleSearch,
 }: PaginationProps<T>) {
     if (pagination.meta.last_page <= 1) {
         return null;
@@ -28,25 +28,20 @@ export default function Pagination<T>({
 
         if (withVirtualDOM) {
             handleClickWithVirtualDOM(link.url);
+
             return;
         }
 
         handleClickInertia(link.url);
-    }
+    };
 
     const handleClickInertia = (url: string) => {
-        router.get(
-            url,
-            {
-                ...queryParams,
-            },
-            {
-                preserveState: true,
-                preserveScroll: true,
-                replace: true,
-            },
-        );
-    }
+        router.get(url, queryParams as Record<string, any>, {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+        });
+    };
 
     const handleClickWithVirtualDOM = (url: string) => {
         const urlObj = new URL(url);
@@ -55,7 +50,7 @@ export default function Pagination<T>({
         if (handleSearch) {
             handleSearch(isNaN(page) ? 1 : page);
         }
-    }
+    };
 
     return (
         <nav className="mt-8 flex flex-wrap items-center gap-2">

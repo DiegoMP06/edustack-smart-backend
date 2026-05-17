@@ -2,18 +2,18 @@
 
 namespace App\Modules\Events\DTOs;
 
-use App\Models\Events\Event;
+use Spatie\LaravelData\Data;
+use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
-readonly class EventStatusData
+#[TypeScript]
+class EventStatusData extends Data
 {
     public function __construct(
-        public bool $isActive,
+        public int $id,
+        public string $name,
+        public string $slug,
+        public string $color,
+        public string $description,
+        public int $order
     ) {}
-
-    public static function fromModel(Event $event): self
-    {
-        return new self(
-            isActive: ! $event->is_published,
-        );
-    }
 }

@@ -4,23 +4,19 @@ namespace App\Modules\Classroom\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Classroom\Course;
-use App\Modules\Classroom\Services\CourseStatusService;
+use App\Modules\Classroom\Application\UseCases\Command\ToggleCoursePublishedAction;
+use Illuminate\Http\RedirectResponse;
 
 class CourseStatusController extends Controller
 {
     public function __construct(
-        private CourseStatusService $statusService,
+        private ToggleCoursePublishedAction $toggleCoursePublishedAction,
     ) {}
 
-    /**
-     * Toggle the model status flag.
-     */
-    public function __invoke(Course $course)
+    public function __invoke(Course $course): RedirectResponse
     {
-        $this->authorize('update', $course);
+        $this->toggleCoursePublishedAction->execute($course);
 
-        $this->statusService->toggle($course);
-
-        return back()->with('message', 'Course status updated successfully.');
+        return back()->with('message', 'Estado del curso actualizado.');
     }
 }

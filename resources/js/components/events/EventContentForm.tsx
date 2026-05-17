@@ -1,14 +1,14 @@
 import { router } from '@inertiajs/react';
 import { toast } from 'sonner';
 import PuckInput from '@/components/puck/PuckInput';
+import type { EventData } from '@/generated/types/App/Modules/Events/DTOs';
 import usePuckContent from '@/hooks/puck/usePuckContent';
 import { db } from '@/lib/dexie';
 import { eventPuckConfig } from '@/lib/puck';
 import events from '@/routes/events';
-import type { Event } from '@/types';
 
 type ContentFormProps = {
-    event: Event;
+    event: EventData;
     edit: boolean;
 };
 
@@ -24,7 +24,7 @@ export default function EventContentForm({ event, edit }: ContentFormProps) {
         contentType: 'events',
         itemId: event.id,
         title: event.name,
-        serverContent: event.content,
+        serverContent: event.content as never,
     });
 
     const handleSaveChangesToServer = async () => {

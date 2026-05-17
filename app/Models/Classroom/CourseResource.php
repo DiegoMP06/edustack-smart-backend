@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 #[Fillable(['name', 'description', 'url', 'order', 'resource_type_id'])]
 class CourseResource extends Model
 {
-    public function resourceable()
+    public function resourceable(): \Illuminate\Database\Eloquent\Relations\MorphTo
     {
         return $this->morphTo();
     }
 
-    public function type()
+    public function type(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(ResourceType::class, 'resource_type_id');
     }

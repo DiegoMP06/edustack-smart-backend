@@ -6,19 +6,19 @@ import { Icon } from '@/components/ui/app/icon';
 import { Avatar, AvatarFallback } from '@/components/ui/shadcn/avatar';
 import { Badge } from '@/components/ui/shadcn/badge';
 import { Button } from '@/components/ui/shadcn/button';
+import type { PostData } from '@/generated/types/App/Modules/Blog/DTOs';
 import { useInitials } from '@/hooks/app/use-initials';
 import AppLayout from '@/layouts/app-layout';
 import { puckConfig } from '@/lib/puck';
 import { formatDatetimeToLocale } from '@/lib/utils';
 import posts from '@/routes/posts';
 import type { BreadcrumbItem } from '@/types';
-import type { Post } from '@/types/blog';
 
 type ShowPostProps = {
-    post: Post;
+    post: PostData;
 };
 
-const breadcrumbs = (post: Post): BreadcrumbItem[] => [
+const breadcrumbs = (post: PostData): BreadcrumbItem[] => [
     {
         title: 'Blog',
         href: posts.index().url,
@@ -67,15 +67,15 @@ export default function ShowPost({ post }: ShowPostProps) {
                     </main>
 
                     <GalleryContent
-                        media={post.media}
+                        media={post.media || []}
                         alt={post.name}
                         imageKey="main"
                     />
 
-                    <section className="my-10 overflow-x-scroll w-full">
+                    <section className="my-10 w-full">
                         <Render
                             config={puckConfig}
-                            data={{ content: post.content }}
+                            data={{ content: post.content as never }}
                         />
                     </section>
                 </div>
@@ -86,10 +86,10 @@ export default function ShowPost({ post }: ShowPostProps) {
                             <AvatarFallback className="rounded-lg bg-indigo-200 text-indigo-700 dark:bg-neutral-700 dark:text-white">
                                 {getInitials(
                                     post.author?.name +
-                                    ' ' +
-                                    post.author?.father_last_name +
-                                    ' ' +
-                                    post.author?.mother_last_name,
+                                        ' ' +
+                                        post.author?.father_last_name +
+                                        ' ' +
+                                        post.author?.mother_last_name,
                                 )}
                             </AvatarFallback>
                         </Avatar>
@@ -113,10 +113,10 @@ export default function ShowPost({ post }: ShowPostProps) {
 
                         <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
                             <Icon
-                                iconName={post.type.icon || ''}
+                                iconName={post.type?.icon || ''}
                                 className="size-6"
                             />
-                            {post.type.name}
+                            {post.type?.name}
                         </p>
                     </div>
 
@@ -124,7 +124,7 @@ export default function ShowPost({ post }: ShowPostProps) {
                         <h3 className="text-lg font-bold">Categorías:</h3>
 
                         <div className="mt-2 flex flex-wrap gap-2">
-                            {post.categories.map((cat) => (
+                            {post.categories?.map((cat) => (
                                 <Badge variant="secondary" key={cat.id}>
                                     {cat.name}
                                 </Badge>

@@ -1,0 +1,73 @@
+import { ProjectCollaboratorRole } from '../../../Enums/Projects';
+import { RoleData, UserData } from '../../Admin/DTOs';
+import { MediaData } from '../../Media/DTOs';
+export type DraftProjectFormData = {
+    name: string;
+    description: string;
+    images?: File[];
+    repository_url: string;
+    demo_url: string;
+    tech_stack: string[];
+    version: string;
+    license: string;
+    project_status_id: number;
+    categories: number[];
+};
+export type ProjectCategoryData = {
+    id: number;
+    name: string;
+    slug: string;
+    description: string;
+    color: string;
+    icon: string;
+    order: number;
+};
+export type ProjectCollaboratorData = {
+    pivot_role: ProjectCollaboratorRole;
+    pivot_id: number;
+    id: number;
+    name: string;
+    father_last_name: string;
+    mother_last_name: string;
+    email: string;
+    created_at: string;
+    updated_at: string;
+    is_active: boolean;
+    roles: RoleData[] | null;
+};
+export type ProjectCollaboratorFormData = {
+    user_id: number;
+    role: ProjectCollaboratorRole;
+};
+export type ProjectData = {
+    id: number;
+    name: string;
+    slug: string;
+    description: string;
+    content: Record<string, unknown>;
+    repository_url: string;
+    demo_url: string;
+    tech_stack: string[];
+    version: string;
+    license: string;
+    is_featured: boolean;
+    is_published: boolean;
+    published_at: string;
+    project_status_id: number;
+    user_id: number;
+    created_at: string;
+    updated_at: string;
+    status: ProjectStatusData | null;
+    categories: ProjectCategoryData[] | null;
+    author: UserData | null;
+    collaborators: ProjectCollaboratorData[] | null;
+    media: MediaData[] | null;
+};
+export type ProjectStatusData = {
+    id: number;
+    name: string;
+    slug: string;
+    color: string;
+    description: string;
+    order: number;
+};

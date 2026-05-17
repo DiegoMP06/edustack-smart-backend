@@ -28,7 +28,7 @@ class CourseStatus extends Model
             ->logOnlyDirty();
     }
 
-    public function courses()
+    public function courses(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Course::class);
     }

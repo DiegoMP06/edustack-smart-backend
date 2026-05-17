@@ -1,21 +1,26 @@
 import { Head, router } from '@inertiajs/react';
 import { ChevronLeft } from 'lucide-react';
+
 import EditProjectForm from '@/components/projects/edit-project/EditProjectForm';
 import EditProjectGallery from '@/components/projects/edit-project/EditProjectGallery';
 import ProjectOptions from '@/components/projects/edit-project/ProjectOptions';
 import { Button } from '@/components/ui/shadcn/button';
-import AppLayout from '@/layouts/app-layout';
+import type {
+    ProjectCategoryData,
+    ProjectData,
+    ProjectStatusData,
+} from '@/generated/types/App/Modules/Projects/DTOs';
+import SingleProjectLayout from '@/layouts/projects/SingleProjectLayout';
 import projects from '@/routes/projects';
 import type { BreadcrumbItem } from '@/types';
-import type { Project, ProjectCategory, ProjectStatus } from '@/types/projects';
 
 type EditProjectProps = {
-    project: Project;
-    statuses: ProjectStatus[];
-    categories: ProjectCategory[];
+    project: ProjectData;
+    statuses: ProjectStatusData[];
+    categories: ProjectCategoryData[];
 };
 
-const breadcrumbs = (project: Project): BreadcrumbItem[] => [
+const breadcrumbs = (project: ProjectData): BreadcrumbItem[] => [
     {
         title: 'Proyectos',
         href: projects.index().url,
@@ -36,7 +41,10 @@ export default function EditProject({
     categories,
 }: EditProjectProps) {
     return (
-        <AppLayout breadcrumbs={breadcrumbs(project)}>
+        <SingleProjectLayout
+            breadcrumbs={breadcrumbs(project)}
+            project={project}
+        >
             <Head title={`Editar ${project.name}`} />
 
             <div className="mb-15">
@@ -63,8 +71,8 @@ export default function EditProject({
 
             <EditProjectGallery
                 projectId={project.id}
-                gallery={project.media}
+                gallery={project.media || []}
             />
-        </AppLayout>
+        </SingleProjectLayout>
     );
 }

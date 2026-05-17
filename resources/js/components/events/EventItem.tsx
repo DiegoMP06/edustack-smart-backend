@@ -30,6 +30,7 @@ import {
     ItemMedia,
     ItemTitle,
 } from '@/components/ui/shadcn/item';
+import type { EventData } from '@/generated/types/App/Modules/Events/DTOs';
 import {
     formatDateToLocale,
     formatCurrency,
@@ -37,10 +38,9 @@ import {
     cn,
 } from '@/lib/utils';
 import events from '@/routes/events';
-import type { Event } from '@/types';
 
 type EventItemProps = {
-    event: Event;
+    event: EventData;
 };
 
 export default function EventItem({ event }: EventItemProps) {
@@ -95,7 +95,7 @@ export default function EventItem({ event }: EventItemProps) {
                     <Avatar className="size-10">
                         <AvatarImage
                             src={getIdealResponsiveMediaLink(
-                                event.media.at(0)!,
+                                event.media?.at(0),
                             )}
                         />
                         <AvatarFallback>

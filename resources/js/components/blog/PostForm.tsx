@@ -12,13 +12,17 @@ import {
     SelectValue,
 } from '@/components/ui/shadcn/select';
 import { Textarea } from '@/components/ui/shadcn/textarea';
-import type { PostCategory, PostFormData, PostType } from '@/types/blog';
+import type {
+    DraftPostFormData,
+    PostCategoryData,
+    PostTypeData,
+} from '@/generated/types/App/Modules/Blog/DTOs';
 
 type PostFormProps = {
-    types: PostType[];
-    categories: PostCategory[];
-    register: UseFormRegister<PostFormData>;
-    control: Control<PostFormData>;
+    types: PostTypeData[];
+    categories: PostCategoryData[];
+    register: UseFormRegister<DraftPostFormData>;
+    control: Control<DraftPostFormData>;
 };
 
 export default function PostForm({
@@ -27,7 +31,7 @@ export default function PostForm({
     control,
     categories,
 }: PostFormProps) {
-    const { errors } = useFormState({ control })
+    const { errors } = useFormState({ control });
 
     return (
         <>
@@ -150,16 +154,16 @@ export default function PostForm({
                                         onCheckedChange={(checked) =>
                                             checked
                                                 ? onChange([
-                                                    ...(value || []),
-                                                    category.id,
-                                                ])
+                                                      ...(value || []),
+                                                      category.id,
+                                                  ])
                                                 : onChange(
-                                                    value?.filter(
-                                                        (id) =>
-                                                            id !==
-                                                            category.id,
-                                                    ) || [],
-                                                )
+                                                      value?.filter(
+                                                          (id) =>
+                                                              id !==
+                                                              category.id,
+                                                      ) || [],
+                                                  )
                                         }
                                         defaultChecked={value?.some(
                                             (id) => id === category.id,

@@ -2,43 +2,50 @@
 
 namespace App\Modules\Projects\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Projects\Project;
-use App\Modules\Projects\DTOs\ProjectContentData;
+use App\Modules\Projects\Application\Support\ProjectDataMapper;
+use App\Modules\Projects\Application\UseCases\Command\UpdateProjectContentAction;
 use App\Modules\Projects\Http\Requests\UpdateProjectContentRequest;
-use App\Modules\Projects\Services\ProjectContentService;
+use App\Modules\Shared\DTOs\Content\ModelContentFormData;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class ProjectContentController extends Controller
 {
     public function __construct(
-        private ProjectContentService $contentService,
+        protected ProjectDataMapper $projectDataMapper,
     ) {}
 
-    /**
-     * Show the content editor for the given model.
-     */
     public function edit(Project $project, Request $request)
     {
         $this->authorize('update', $project);
 
         return inertia('projects/project-content', [
-            'project' => $project,
+            'project' => $this->projectDataMapper->forContent($project),
             'edit' => $request->boolean('edit', false),
             'message' => $request->session()->get('message'),
         ]);
     }
 
-    /**
-     * Persist editor content for the given model.
-     */
-    public function update(Project $project, UpdateProjectContentRequest $request)
-    {
+    public function update(
+        Project $project,
+        UpdateProjectContentRequest $request,
+        UpdateProjectContentAction $action,
+    ): RedirectResponse {
         $this->authorize('update', $project);
 
-        $data = ProjectContentData::fromArray($request->validated());
-        $this->contentService->update($project, $data);
+        $edit = $request->boolean('edit', false);
+        $data = ModelContentFormData::from($request->validated());
+        $action->execute($project, $data);
 
-        return back()->with('message', 'Project content saved successfully.');
+        $route = $edit
+            ? back()
+            : redirect()->intended(route(
+                'projects.collaborators.index',
+                ['project' => $project, 'edit' => false],
+                false,
+            ));
+
+        return $route->with('message', 'Contenido guardado correctamente.');
     }
 }

@@ -10,12 +10,12 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/shadcn/card';
+import type { PostData } from '@/generated/types/App/Modules/Blog/DTOs';
 import posts from '@/routes/posts';
-import type { Post } from '@/types';
 
 type PostOptionsProps = {
-    isPublished: Post['is_published'];
-    postId: Post['id'];
+    isPublished: PostData['is_published'];
+    postId: PostData['id'];
 };
 
 export default function PostOptions({ isPublished, postId }: PostOptionsProps) {

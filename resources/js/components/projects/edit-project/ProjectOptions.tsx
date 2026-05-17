@@ -10,7 +10,6 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/shadcn/card';
-import projectCollaborators from '@/routes/project-collaborators';
 import projects from '@/routes/projects';
 import type { Project } from '@/types';
 
@@ -86,7 +85,7 @@ export default function ProjectOptions({
                         variant="outline"
                         onClick={() =>
                             router.visit(
-                                projectCollaborators.index(projectId, {
+                                projects.collaborators.index(projectId, {
                                     query: { edit: true },
                                 }),
                             )

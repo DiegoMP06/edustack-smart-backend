@@ -8,21 +8,21 @@ import {
     ContextMenuItem,
     ContextMenuTrigger,
 } from '@/components/ui/shadcn/context-menu';
+import type { MediaData } from '@/generated/types/App/Modules/Media/DTOs';
 import { getIdealResponsiveMediaLink } from '@/lib/utils';
-import type { Media } from '@/types';
 
 type EditGalleryItemProps = {
-    image: Media;
+    image: MediaData;
     processing: boolean;
-    onDeleteImage: (mediaId: Media['id']) => void;
+    onDeleteImage: (mediaId: MediaData['id']) => void;
     objectType: string;
-}
+};
 
 export default function EditGalleryItem({
     image,
     processing,
     onDeleteImage,
-    objectType
+    objectType,
 }: EditGalleryItemProps) {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -33,7 +33,7 @@ export default function EditGalleryItem({
     return (
         <>
             <Item
-                original={image.urls.main}
+                original={image.urls.main || ''}
                 thumbnail={getIdealResponsiveMediaLink(image)}
                 width={image.dimensions.main.width}
                 height={image.dimensions.main.height}
@@ -80,5 +80,5 @@ export default function EditGalleryItem({
                 confirmDisabled={processing}
             />
         </>
-    )
+    );
 }

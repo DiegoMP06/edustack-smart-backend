@@ -1,14 +1,14 @@
 import { router } from '@inertiajs/react';
 import { toast } from 'sonner';
 import PuckInput from '@/components/puck/PuckInput';
+import type { ProjectData } from '@/generated/types/App/Modules/Projects/DTOs';
 import usePuckContent from '@/hooks/puck/usePuckContent';
 import { db } from '@/lib/dexie';
 import { projectPuckConfig } from '@/lib/puck';
 import projects from '@/routes/projects';
-import type { Project } from '@/types/projects';
 
 type ProjectContentFormProps = {
-    project: Project;
+    project: ProjectData;
     edit: boolean;
 };
 
@@ -27,7 +27,7 @@ export default function ProjectContentForm({
         contentType: 'projects',
         itemId: project.id,
         title: project.name,
-        serverContent: project.content,
+        serverContent: project.content as never,
     });
 
     const handleSaveChangesToServer = async () => {

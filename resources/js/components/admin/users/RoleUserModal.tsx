@@ -24,15 +24,19 @@ import {
     SelectValue,
 } from '@/components/ui/shadcn/select';
 import { ROLES } from '@/consts/roles';
+import type {
+    UpdateUserRoleFormData,
+    UserData,
+    RoleData,
+} from '@/generated/types/App/Modules/Admin/DTOs';
 import users from '@/routes/admin/users';
-import type { ChangeRoleForm, Role, User } from '@/types';
 
 type RoleUserModalProps = {
     isModalActive: boolean;
     setIsModalActive: Dispatch<SetStateAction<boolean>>;
-    roles: Role[];
-    currentRole: Role['name'];
-    userId: User['id'];
+    roles: RoleData[];
+    currentRole: RoleData['name'];
+    userId: UserData['id'];
 };
 
 export default function RoleUserModal({
@@ -43,7 +47,7 @@ export default function RoleUserModal({
     userId,
 }: RoleUserModalProps) {
     const [processing, setProcessing] = useState(false);
-    const initialValues: ChangeRoleForm = {
+    const initialValues: UpdateUserRoleFormData = {
         role: currentRole,
     };
 
@@ -55,7 +59,7 @@ export default function RoleUserModal({
         defaultValues: initialValues,
     });
 
-    const handleChangeRole: SubmitHandler<ChangeRoleForm> = (data) => {
+    const handleChangeRole: SubmitHandler<UpdateUserRoleFormData> = (data) => {
         setProcessing(true);
         router.patch(users.role(userId), data, {
             forceFormData: false,

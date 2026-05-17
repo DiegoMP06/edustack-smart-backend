@@ -2,17 +2,17 @@ import { Head, router } from '@inertiajs/react';
 import { ChevronLeft } from 'lucide-react';
 import PostContentForm from '@/components/blog/PostContentForm';
 import { Button } from '@/components/ui/shadcn/button';
+import type { PostData } from '@/generated/types/App/Modules/Blog/DTOs';
 import AppLayout from '@/layouts/app-layout';
 import posts from '@/routes/posts';
 import type { BreadcrumbItem } from '@/types';
-import type { Post } from '@/types/blog';
 
 type PostContentProps = {
-    post: Post;
+    post: PostData;
     edit: boolean;
 };
 
-const breadcrumbs: (post: Post) => BreadcrumbItem[] = (post: Post) => [
+const breadcrumbs: (post: PostData) => BreadcrumbItem[] = (post: PostData) => [
     {
         title: 'Blog',
         href: posts.index().url,

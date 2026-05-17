@@ -16,17 +16,17 @@ class LessonCompletion extends Model
         ];
     }
 
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function lesson()
+    public function lesson(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(CourseLesson::class, 'course_lesson_id');
     }
 
-    public function course()
+    public function course(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Course::class);
     }

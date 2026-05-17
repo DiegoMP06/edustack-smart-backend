@@ -1,13 +1,15 @@
 import type { ReactNode } from 'react';
 import type { z } from 'zod';
 import type { LinkMetaPaginationSchema, PaginationSchema } from '@/schemas';
-import type { BreadcrumbItem } from '@/types/navigation';
+import type { BreadcrumbItem, NavItem } from '@/types/navigation';
 
 export type AppLayoutProps = {
     children: ReactNode;
     breadcrumbs?: BreadcrumbItem[];
     withSearch?: boolean;
     collectionName?: string;
+    sidebarLinks?: NavItem[];
+    sidebarLabel?: string;
 };
 
 export type AppVariant = 'header' | 'sidebar';

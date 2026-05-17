@@ -1,0 +1,151 @@
+import { EventData, EventStatusData, DifficultyLevelData } from '../';
+import { MediaData } from '../../../Media/DTOs';
+import {
+    ActivityRegistrationStatus,
+    TeamStatus,
+    TeamMemberRole,
+    BehaviorType,
+} from '../../../../Enums/Events';
+import { RoleData } from '../../../Admin/DTOs';
+export type DraftEventActivityFormData = {
+    name: string;
+    description: string;
+    requirements: string | null;
+    images?: File[];
+    is_online: boolean;
+    online_link: string | null;
+    location: string | null;
+    latLng: { lat: number; lng: number };
+    lat?: number;
+    lng?: number;
+    has_teams: boolean;
+    requires_team: boolean;
+    min_team_size: number | null;
+    max_team_size: number | null;
+    with_capacity: boolean;
+    capacity: number | null;
+    only_students: boolean;
+    is_free: boolean;
+    price: number;
+    speakers: SpeakerData[];
+    repository_url: string | null;
+    started_at: Date;
+    ended_at: Date;
+    registration_started_at: Date;
+    registration_ended_at: Date;
+    event_activity_type_id: number;
+    difficulty_level_id: number;
+    categories: number[];
+};
+export type EventActivityCategoryData = {
+    id: number;
+    name: string;
+    slug: string;
+    description: string;
+    color: string;
+    order: number;
+};
+export type EventActivityData = {
+    id: number;
+    name: string;
+    slug: string;
+    description: string;
+    content: Record<string, unknown>;
+    requirements: string;
+    is_online: boolean;
+    online_link: string | null;
+    location: string | null;
+    lat: number | null;
+    lng: number | null;
+    has_teams: boolean;
+    requires_team: boolean;
+    min_team_size: number | null;
+    max_team_size: number | null;
+    capacity: number;
+    only_students: boolean;
+    is_competition: boolean;
+    price: number;
+    speakers: SpeakerData[];
+    repository_url: string | null;
+    is_published: boolean;
+    started_at: string;
+    ended_at: string;
+    registration_started_at: string;
+    registration_ended_at: string;
+    difficulty_level_id: number;
+    event_status_id: number;
+    event_activity_type_id: number;
+    event_id: number;
+    created_at: string;
+    updated_at: string | null;
+    event: EventData | null;
+    type: EventActivityTypeData | null;
+    status: EventStatusData | null;
+    difficulty: DifficultyLevelData | null;
+    categories: EventActivityCategoryData[] | null;
+    teams: EventActivityTeamData[] | null;
+    registrations: EventActivityRegistrationData[] | null;
+    media: MediaData[] | null;
+};
+export type EventActivityRegistrationData = {
+    pivot_id: number;
+    pivot_status: ActivityRegistrationStatus;
+    pivot_confirmed_at: string | null;
+    id: number;
+    name: string;
+    father_last_name: string;
+    mother_last_name: string;
+    email: string;
+    created_at: string;
+    updated_at: string;
+    is_active: boolean;
+    roles: RoleData[] | null;
+};
+export type EventActivityTeamData = {
+    id: number;
+    name: string;
+    description: string;
+    status: TeamStatus;
+    captain_user_id: number;
+    event_activity_id: number;
+    members: EventActivityTeamMemberData[];
+};
+export type EventActivityTeamMemberData = {
+    pivot_id: number;
+    pivot_role: TeamMemberRole;
+    pivot_joined_at: string | null;
+    id: number;
+    name: string;
+    father_last_name: string;
+    mother_last_name: string;
+    email: string;
+    created_at: string;
+    updated_at: string;
+    is_active: boolean;
+    roles: RoleData[] | null;
+};
+export type EventActivityTypeData = {
+    id: number;
+    name: string;
+    slug: string;
+    description: string;
+    icon: string;
+    behavior_type: BehaviorType;
+    order: number;
+};
+export type SocialMediaSpeakerData = {
+    id: string;
+    name: string;
+    url: string;
+};
+export type SpeakerData = {
+    id: string;
+    name: string;
+    father_last_name: string;
+    mother_last_name: string;
+    email: string;
+    job_title: string | null;
+    company: string | null;
+    social: SocialMediaSpeakerData[];
+    biography: string;
+};

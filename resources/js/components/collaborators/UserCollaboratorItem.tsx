@@ -17,7 +17,8 @@ import {
     ItemDescription,
     ItemTitle,
 } from '@/components/ui/shadcn/item';
-import type { Collaborator, UserData } from '@/types';
+import type { UserData } from '@/generated/types/App/Modules/Admin/DTOs';
+import type { Collaborator } from '@/types';
 import AddCollaboratorModal from './AddCollaboratorModal';
 
 type UserCollaboratorItemProps = {
@@ -26,8 +27,8 @@ type UserCollaboratorItemProps = {
     variant?: 'default' | 'outline' | 'muted' | null | undefined;
     processing: boolean;
     roles: Record<string, string>;
-    onAddCollaborator: (userId: UserData['id'], role: string) => void
-    onDeleteCollaborator: (userId: UserData['id']) => void
+    onAddCollaborator: (userId: UserData['id'], role: string) => void;
+    onDeleteCollaborator: (userId: UserData['id']) => void;
 };
 
 export default function UserCollaboratorItem({
@@ -49,7 +50,7 @@ export default function UserCollaboratorItem({
     const userRole = useMemo(
         () =>
             collaborators.find((collaborator) => collaborator.id === user.id)
-                ?.pivot.role,
+                ?.pivot_role,
         [collaborators, user],
     );
 

@@ -23,11 +23,11 @@ return Application::configure(basePath: dirname(__DIR__))
             if (file_exists(base_path('app/Modules/FeatureArchitectureTest/routes/article.php'))) {
                 require base_path('app/Modules/FeatureArchitectureTest/routes/article.php');
             }
+            if (file_exists(base_path('app/Modules/Media/routes/media.php'))) {
+                require base_path('app/Modules/Media/routes/media.php');
+            }
             if (file_exists(base_path('app/Modules/Admin/routes/user.php'))) {
                 require base_path('app/Modules/Admin/routes/user.php');
-            }
-            if (file_exists(base_path('app/Modules/Forms/routes/form.php'))) {
-                require base_path('app/Modules/Forms/routes/form.php');
             }
             if (file_exists(base_path('app/Modules/Classroom/routes/course.php'))) {
                 require base_path('app/Modules/Classroom/routes/course.php');
@@ -37,9 +37,6 @@ return Application::configure(basePath: dirname(__DIR__))
             }
             if (file_exists(base_path('app/Modules/Events/routes/event.php'))) {
                 require base_path('app/Modules/Events/routes/event.php');
-            }
-            if (file_exists(base_path('app/Modules/Blog/routes/post.php'))) {
-                require base_path('app/Modules/Blog/routes/post.php');
             }
         },
     )

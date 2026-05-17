@@ -7,42 +7,35 @@ import UserCollaboratorItem from '@/components/collaborators/UserCollaboratorIte
 import Pagination from '@/components/ui/app/pagination';
 import { Button } from '@/components/ui/shadcn/button';
 import { EVENT_COLLABORATOR_ROLE } from '@/consts/events';
+import type { UserData } from '@/generated/types/App/Modules/Admin/DTOs';
+import type { EventData } from '@/generated/types/App/Modules/Events/DTOs';
 import AppLayout from '@/layouts/app-layout';
-import eventCollaborators from '@/routes/event-collaborators';
 import events from '@/routes/events';
-import type {
-    BreadcrumbItem,
-    PaginationType,
-    Event,
-    UserData,
-} from '@/types';
+import type { BreadcrumbItem, PaginationType } from '@/types';
 
 type EventCollaboratorsProps = {
     users: PaginationType<UserData>;
-    event: Event;
+    event: EventData;
     page: number;
     search: string;
     message?: string;
     edit: boolean;
 };
 
-const breadcrumbs: (event: Event) => BreadcrumbItem[] = (
-    event: Event,
-) => [
-        {
-            title: 'Eventos',
-            href: events.index().url,
-        },
-        {
-            title: event.name,
-            href: events.show(event.id).url,
-        },
-        {
-            title: `Colaboradores`,
-            href: eventCollaborators.index(event.id).url,
-        },
-    ];
-
+const breadcrumbs: (event: EventData) => BreadcrumbItem[] = (event) => [
+    {
+        title: 'Eventos',
+        href: events.index().url,
+    },
+    {
+        title: event.name,
+        href: events.show(event.id).url,
+    },
+    {
+        title: `Colaboradores`,
+        href: events.collaborators.index(event.id).url,
+    },
+];
 
 export default function EventCollaborators({
     users,
@@ -53,14 +46,14 @@ export default function EventCollaborators({
     const [isModalActive, setIsModalActive] = useState(false);
     const [processing, setProcessing] = useState(false);
 
-    const handleAddCollaborator = (userId: UserData['id'], role: string,) => {
+    const handleAddCollaborator = (userId: UserData['id'], role: string) => {
         setProcessing(true);
         const formData = {
             user_id: userId,
             role,
         };
 
-        router.post(eventCollaborators.store(event.id), formData, {
+        router.post(events.collaborators.store(event.id), formData, {
             preserveScroll: true,
             forceFormData: false,
             showProgress: true,
@@ -79,10 +72,13 @@ export default function EventCollaborators({
 
     const handleDeleteCollaborator = (userId: UserData['id']) => {
         setProcessing(true);
-        const collaboratorIndex = event.collaborators.find((collaborator) => collaborator.id === userId)?.pivot.id || -1;
+        const collaboratorIndex =
+            event.collaborators?.find(
+                (collaborator) => collaborator.id === userId,
+            )?.pivot_id || -1;
 
         router.delete(
-            eventCollaborators.destroy({
+            events.collaborators.destroy({
                 event: event.id,
                 event_collaborator: collaboratorIndex,
             }),
@@ -107,19 +103,16 @@ export default function EventCollaborators({
         <AppLayout
             breadcrumbs={breadcrumbs(event)}
             withSearch
-            collectionName='users'
+            collectionName="users"
         >
             <Head title={`Colaboradores de ${event.name}`} />
 
             <div className="flex h-screen flex-col gap-6 overflow-hidden">
                 <div className="flex-1 overflow-y-auto p-4">
-
                     <div className="mb-15 flex gap-4">
                         {edit ? (
                             <Button
-                                onClick={() =>
-                                    router.visit(events.edit(event))
-                                }
+                                onClick={() => router.visit(events.edit(event))}
                             >
                                 <ChevronLeft />
                                 Volver
@@ -140,10 +133,12 @@ export default function EventCollaborators({
                                 <UserCollaboratorItem
                                     key={user.id}
                                     user={user}
-                                    collaborators={event.collaborators}
+                                    collaborators={event.collaborators || []}
                                     processing={processing}
                                     roles={EVENT_COLLABORATOR_ROLE}
-                                    onDeleteCollaborator={handleDeleteCollaborator}
+                                    onDeleteCollaborator={
+                                        handleDeleteCollaborator
+                                    }
                                     onAddCollaborator={handleAddCollaborator}
                                 />
                             ))}
@@ -170,7 +165,7 @@ export default function EventCollaborators({
                             router.visit(
                                 edit
                                     ? events.edit(event)
-                                    : events.activities.index(event),
+                                    : events?.activities?.index(event),
                             )
                         }
                     >
@@ -182,7 +177,7 @@ export default function EventCollaborators({
 
             <ShowCollaboratorsModal
                 isModalActive={isModalActive}
-                collaborators={event.collaborators}
+                collaborators={event.collaborators || []}
                 processing={processing}
                 roles={EVENT_COLLABORATOR_ROLE}
                 setIsModalActive={setIsModalActive}

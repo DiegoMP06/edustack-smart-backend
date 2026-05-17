@@ -1,10 +1,10 @@
+import type { ReactNode } from 'react';
 import {
     createContext,
     useCallback,
     useContext,
     useRef,
     useState,
-    type ReactNode,
 } from 'react';
 import ConfirmDialog from '@/components/ui/app/confirm-dialog';
 
@@ -14,13 +14,13 @@ type ConfirmDialogOptions = {
     confirmLabel?: string;
     cancelLabel?: string;
     confirmVariant?:
-    | 'default'
-    | 'destructive'
-    | 'outline'
-    | 'secondary'
-    | 'ghost'
-    | 'link'
-    | null;
+        | 'default'
+        | 'destructive'
+        | 'outline'
+        | 'secondary'
+        | 'ghost'
+        | 'link'
+        | null;
 };
 
 type ConfirmDialogContextValue = (
@@ -61,7 +61,7 @@ export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
             <ConfirmDialog
                 open={dialogOptions !== null}
                 onOpenChange={(open) => {
-                    if (!open) {
+                    if (!open && resolverRef.current) {
                         closeWithResult(false);
                     }
                 }}
@@ -80,7 +80,9 @@ export function useConfirmDialog(): ConfirmDialogContextValue {
     const context = useContext(ConfirmDialogContext);
 
     if (!context) {
-        throw new Error('useConfirmDialog must be used within ConfirmDialogProvider');
+        throw new Error(
+            'useConfirmDialog must be used within ConfirmDialogProvider',
+        );
     }
 
     return context;

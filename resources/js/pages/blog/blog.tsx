@@ -3,10 +3,11 @@ import { Plus } from 'lucide-react';
 import PostItem from '@/components/blog/PostItem';
 import Pagination from '@/components/ui/app/pagination';
 import { Button } from '@/components/ui/shadcn/button';
+import type { PostData } from '@/generated/types/App/Modules/Blog/DTOs';
+import type { ListCollectionQueryParamsData } from '@/generated/types/App/Modules/Shared/DTOs/Query';
 import AppLayout from '@/layouts/app-layout';
 import { create, index } from '@/routes/posts';
 import type { BreadcrumbItem, PaginationType } from '@/types';
-import type { Post } from '@/types/blog';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,8 +17,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 type BlogProps = {
-    posts: PaginationType<Post>;
-    filter: { [key: string]: string };
+    posts: PaginationType<PostData>;
+    filter: ListCollectionQueryParamsData['filter'];
 };
 
 export default function Blog({ posts, filter }: BlogProps) {
@@ -44,12 +45,7 @@ export default function Blog({ posts, filter }: BlogProps) {
                 </p>
             )}
 
-            <Pagination
-                pagination={posts}
-                queryParams={{
-                    ...filter,
-                }}
-            />
+            <Pagination pagination={posts} queryParams={{ filter }} />
         </AppLayout>
     );
 }

@@ -28,6 +28,7 @@ class StoreEventRequest extends FormRequest
             'description' => ['required', 'string', 'min:50'],
             'price' => ['required', 'numeric', 'min:0'],
             'percent_off' => ['required', 'numeric', 'min:0', 'max:100'],
+            'with_capacity' => ['required', 'boolean'],
             'capacity' => ['nullable', 'required_if:with_capacity,true', 'numeric', 'min:1'],
             'is_online' => ['required', 'boolean'],
             'online_link' => [

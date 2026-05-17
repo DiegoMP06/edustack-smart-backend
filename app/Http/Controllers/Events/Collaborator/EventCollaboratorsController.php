@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Events\Collaborator;
 
-use App\Concerns\ApiQueryable;
 use App\Enums\Events\EventCollaboratorRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Events\StoreEventCollaboratorRequest;
@@ -10,6 +9,7 @@ use App\Http\Resources\UserCollection;
 use App\Models\Events\Event;
 use App\Models\Events\EventCollaborator;
 use App\Models\User;
+use App\Modules\Shared\Concerns\ApiQueryable;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -24,8 +24,7 @@ class EventCollaboratorsController extends Controller
 
         $users = $users = $this->buildQuery(
             User::where(
-                fn($query) =>
-                $query->whereNot('id', $request->user()?->id)
+                fn ($query) => $query->whereNot('id', $request->user()?->id)
                     ->where('is_active', true)
             ),
         )->paginate(20)->withQueryString();

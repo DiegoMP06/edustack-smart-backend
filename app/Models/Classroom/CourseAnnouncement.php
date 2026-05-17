@@ -39,12 +39,12 @@ class CourseAnnouncement extends Model
             ->logOnlyDirty();
     }
 
-    public function course()
+    public function course(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Course::class);
     }
 
-    public function author()
+    public function author(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }

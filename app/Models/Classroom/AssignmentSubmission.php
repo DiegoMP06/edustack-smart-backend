@@ -34,32 +34,32 @@ class AssignmentSubmission extends Model
         ];
     }
 
-    public function assignment()
+    public function assignment(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Assignment::class);
     }
 
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function formResponse()
+    public function formResponse(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(FormResponse::class);
     }
 
-    public function status()
+    public function status(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(SubmissionStatus::class, 'submission_status_id');
     }
 
-    public function gradedBy()
+    public function gradedBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'graded_by');
     }
 
-    public function comments()
+    public function comments(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(SubmissionComment::class);
     }

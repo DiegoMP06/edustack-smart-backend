@@ -1,11 +1,8 @@
 import type { z } from 'zod';
 import type { ROLES } from '@/consts/roles';
+import type { EventCollaboratorData } from '@/generated/types/App/Modules/Events/DTOs';
+import type { ProjectCollaboratorData } from '@/generated/types/App/Modules/Projects/DTOs';
 import type { UserSchema } from '@/schemas';
-import type {
-    EventCollaboratorRole,
-    PivotType,
-    ProjectCollaboratorRole,
-} from '.';
 
 export type Roles = keyof typeof ROLES;
 export type RolesValues = (typeof ROLES)[Roles];
@@ -30,7 +27,7 @@ export type User = {
     is_active: boolean;
     created_at: string;
     updated_at: string;
-    roles: Roles[];
+    roles: Role[];
     [key: string]: unknown;
 };
 
@@ -60,11 +57,6 @@ export type UserData = Pick<
     | 'roles'
 >;
 
-export type Collaborator = PivotType<
-    UserData,
-    {
-        role: ProjectCollaboratorRole | EventCollaboratorRole;
-    }
->;
+export type Collaborator = ProjectCollaboratorData | EventCollaboratorData;
 
 export type UserFromAPI = z.infer<typeof UserSchema>;

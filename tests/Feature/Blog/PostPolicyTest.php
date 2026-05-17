@@ -21,13 +21,13 @@ it('forbids non owners from viewing and updating posts', function (): void {
     $owner = User::factory()->member()->create();
     $otherUser = User::factory()->member()->create();
 
-    $post = Post::factory()->for($owner)->create();
+    $post = Post::factory()->for($owner, 'author')->create();
     $type = PostType::factory()->create();
     $categories = PostCategory::factory()->count(2)->create();
 
     $payload = [
         'name' => 'Post actualizado',
-        'summary' => 'Resumen de prueba con suficiente longitud para cumplir validación.',
+        'description' => 'Resumen de prueba con suficiente longitud para cumplir validación.',
         'reading_time_minutes' => 6,
         'post_type_id' => $type->id,
         'categories' => $categories->pluck('id')->toArray(),
@@ -38,7 +38,7 @@ it('forbids non owners from viewing and updating posts', function (): void {
         ->assertForbidden();
 
     $this->actingAs($otherUser)
-        ->patch(route('posts.update', $post), $payload)
+        ->put(route('posts.update', $post), $payload)
         ->assertForbidden();
 
     $this->actingAs($otherUser)
@@ -50,7 +50,7 @@ it('allows admins to manage posts they do not own', function (): void {
     $owner = User::factory()->member()->create();
     $admin = User::factory()->admin()->create();
 
-    $post = Post::factory()->for($owner)->create([
+    $post = Post::factory()->for($owner, 'author')->create([
         'is_published' => false,
     ]);
 

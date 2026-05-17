@@ -1,0 +1,41 @@
+# Windsurf Rules: EduStack Smart Backend
+
+## Stack
+- PHP 8.5 / Laravel 13 / Inertia.js v2 + React 19 / TailwindCSS v4 / Pest v4
+
+## Modular Architecture (MANDATORY)
+
+All modules: `app/Modules/<Module>/`
+
+```
+├── Domain/Contracts/       # Interfaces
+├── Domain/Policies/        # Policies
+├── Domain/Rules/           # Validation
+├── Application/DTOs/       # DTOs
+├── Application/UseCases/Command/  # Writes
+├── Application/UseCases/Query/    # Reads
+├── Application/Support/    # Mappers
+├── Infrastructure/Repositories/   # Eloquent
+├── Infrastructure/Queries/Options/ # QueryBuilder config
+├── Infrastructure/Analytics/      # Integrations
+├── Http/Controllers/       # Thin
+├── Http/Requests/          # FormRequests
+├── Http/Resources/         # API Resources
+├── Providers/              # DI, policies, routes
+└── routes/                 # Routes
+```
+
+### Rules
+1. NO Services — UseCases only
+2. Thin controllers
+3. Repository pattern
+4. DI via Providers
+5. QueryBuilder via Options classes
+6. DTOs in Application/DTOs
+7. Architecture tests per module
+
+## Conventions
+- PHP 8 constructor promotion, explicit types
+- Form Requests, Eloquent, eager loading
+- Pest testing
+- `vendor/bin/pint` for formatting

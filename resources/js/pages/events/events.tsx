@@ -3,10 +3,11 @@ import { Plus } from 'lucide-react';
 import EventItem from '@/components/events/EventItem';
 import Pagination from '@/components/ui/app/pagination';
 import { Button } from '@/components/ui/shadcn/button';
-import AppLayout from '@/layouts/app-layout';
+import type { EventData } from '@/generated/types/App/Modules/Events/DTOs';
+import type { ListCollectionQueryParamsData } from '@/generated/types/App/Modules/Shared/DTOs/Query';
+import EventsLayout from '@/layouts/events/EventsLayout';
 import { create, index } from '@/routes/events';
 import type { BreadcrumbItem, PaginationType } from '@/types';
-import type { Event } from '@/types/events';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,13 +17,13 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 type EventsProps = {
-    events: PaginationType<Event>;
-    filter: { [key: string]: string };
+    events: PaginationType<EventData>;
+    filter: ListCollectionQueryParamsData['filter'];
 };
 
 export default function Events({ events, filter }: EventsProps) {
     return (
-        <AppLayout breadcrumbs={breadcrumbs} collectionName="events" withSearch>
+        <EventsLayout breadcrumbs={breadcrumbs} collectionName="events" withSearch>
             <Head title="Eventos" />
 
             <div className="mb-15">
@@ -50,6 +51,6 @@ export default function Events({ events, filter }: EventsProps) {
                     ...filter,
                 }}
             />
-        </AppLayout>
+        </EventsLayout>
     );
 }

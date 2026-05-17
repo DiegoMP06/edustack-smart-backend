@@ -1,0 +1,72 @@
+# Project Context: EduStack Smart Backend
+
+## Tech Stack
+- **PHP 8.5** / **Laravel 13**
+- **Inertia.js v2** + **React 19**
+- **TailwindCSS v4**
+- **Pest v4** for testing
+- **Laravel Fortify** (auth), **Scout** (search), **Sanctum** (API tokens), **Reverb** (WebSockets)
+- **Spatie**: laravel-query-builder, laravel-medialibrary, laravel-permission
+
+## Modular Architecture Standard (MANDATORY)
+
+All modules under `app/Modules/<Module>/` MUST follow this structure:
+
+```
+app/Modules/<Module>/
+├── Domain/
+│   ├── Contracts/          # Interfaces (Repositories, etc.)
+│   ├── Policies/           # Authorization policies
+│   └── Rules/              # Domain validation rules
+├── Application/
+│   ├── DTOs/               # Data Transfer Objects
+│   ├── UseCases/
+│   │   ├── Command/        # Write operations
+│   │   └── Query/          # Read operations
+│   └── Support/            # Mappers, Transformers, Helpers
+├── Infrastructure/
+│   ├── Repositories/       # Eloquent implementations of contracts
+│   ├── Queries/
+│   │   └── Options/        # Spatie QueryBuilder config (filters/includes/sorts)
+│   └── Analytics/          # External integrations
+├── Http/
+│   ├── Controllers/        # Thin: validate, authorize, call UseCase
+│   ├── Requests/           # FormRequest classes
+│   └── Resources/          # API Resources
+├── Providers/              # ModuleServiceProvider (DI bindings, policies, routes)
+└── routes/                 # web.php, api.php, features.php
+```
+
+### Core Rules
+1. **NO Services layer** — Use `UseCases/Command` and `UseCases/Query`
+2. **Controllers are thin** — Validate, authorize, delegate to UseCase
+3. **Repositories encapsulate data access** — Contracts in `Domain/`, implementations in `Infrastructure/`
+4. **DI via Providers** — All contracts bound in module's Provider
+5. **Spatie QueryBuilder encapsulated** — Use `Options` classes; never import Spatie directly in controllers/usecases
+6. **DTOs in `Application/DTOs`** — Strongly typed data carriers
+7. **Architecture tests mandatory** — `tests/Unit/Architecture/<Module>ArchitectureTest.php`
+
+## Code Conventions
+- PHP 8 constructor property promotion
+- Explicit return types always
+- Curly braces for all control structures
+- PHPDoc over inline comments
+- Named routes with `route()`
+- Form Requests for validation
+- Eloquent relationships over raw queries
+- `config('key')` not `env()` outside config files
+- Eager loading to prevent N+1
+
+## Testing
+- Pest v4 — `php artisan make:test --pest {Name}`
+- Run: `php artisan test --compact --filter=testName`
+- Use factories for model creation in tests
+- Every change must be tested
+
+## Code Style
+- Run `vendor/bin/pint --dirty --format agent` after PHP changes
+
+## Frontend
+- Inertia React pages in `resources/js/pages/`
+- Wayfinder routes: import from `@/actions/` or `@/routes/`
+- If UI doesn't reflect changes: `pnpm run dev` or `pnpm run build`

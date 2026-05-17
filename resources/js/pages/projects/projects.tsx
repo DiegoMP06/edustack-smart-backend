@@ -1,12 +1,14 @@
 import { Head, router } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
+
 import ProjectItem from '@/components/projects/ProjectItem';
 import Pagination from '@/components/ui/app/pagination';
 import { Button } from '@/components/ui/shadcn/button';
-import AppLayout from '@/layouts/app-layout';
+import type { ProjectData } from '@/generated/types/App/Modules/Projects/DTOs';
+import type { ListCollectionQueryParamsData } from '@/generated/types/App/Modules/Shared/DTOs/Query';
+import ProjectsLayout from '@/layouts/projects/ProjectsLayout';
 import { create, index } from '@/routes/projects';
 import type { BreadcrumbItem, PaginationType } from '@/types';
-import type { Project } from '@/types/projects';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,14 +18,13 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 type ProjectsProps = {
-    page: number;
-    filter: string;
-    projects: PaginationType<Project>;
+    filter: ListCollectionQueryParamsData['filter'];
+    projects: PaginationType<ProjectData>;
 };
 
 export default function Projects({ filter, projects }: ProjectsProps) {
     return (
-        <AppLayout
+        <ProjectsLayout
             breadcrumbs={breadcrumbs}
             withSearch
             collectionName="projects"
@@ -50,6 +51,6 @@ export default function Projects({ filter, projects }: ProjectsProps) {
             )}
 
             <Pagination pagination={projects} queryParams={{ filter }} />
-        </AppLayout>
+        </ProjectsLayout>
     );
 }

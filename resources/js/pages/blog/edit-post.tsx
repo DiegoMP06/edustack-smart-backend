@@ -4,12 +4,16 @@ import EditPostForm from '@/components/blog/edit-post/EditPostForm';
 import EditPostGallery from '@/components/blog/edit-post/EditPostGallery';
 import PostOptions from '@/components/blog/edit-post/PostOptions';
 import { Button } from '@/components/ui/shadcn/button';
+import type {
+    PostCategoryData,
+    PostData,
+    PostTypeData,
+} from '@/generated/types/App/Modules/Blog/DTOs';
 import AppLayout from '@/layouts/app-layout';
 import posts from '@/routes/posts';
 import type { BreadcrumbItem } from '@/types';
-import type { Post, PostCategory, PostType } from '@/types/blog';
 
-const breadcrumbs = (post: Post): BreadcrumbItem[] => [
+const breadcrumbs = (post: PostData): BreadcrumbItem[] => [
     {
         title: 'Blog',
         href: posts.index().url,
@@ -25,9 +29,9 @@ const breadcrumbs = (post: Post): BreadcrumbItem[] => [
 ];
 
 type EditPostProps = {
-    post: Post;
-    types: PostType[];
-    categories: PostCategory[];
+    post: PostData;
+    types: PostTypeData[];
+    categories: PostCategoryData[];
 };
 
 export default function EditPost({ post, types, categories }: EditPostProps) {
@@ -57,7 +61,7 @@ export default function EditPost({ post, types, categories }: EditPostProps) {
                 </aside>
             </div>
 
-            <EditPostGallery postId={post.id} gallery={post.media} />
+            <EditPostGallery postId={post.id} gallery={post.media || []} />
         </AppLayout>
     );
 }

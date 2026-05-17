@@ -7,7 +7,7 @@ use App\Http\Requests\Events\StoreEventRequest;
 use App\Http\Requests\Events\UpdateEventRequest;
 use App\Http\Resources\Events\EventCollection;
 use App\Models\Events\Event;
-use App\Concerns\ApiQueryable;
+use App\Modules\Shared\Concerns\ApiQueryable;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -76,7 +76,7 @@ class EventController extends Controller
 
         if (
             $event->activities()->where(
-                fn($q) => $q->where('started_at', '<', $data['start_date'])
+                fn ($q) => $q->where('started_at', '<', $data['start_date'])
                     ->orWhere('ended_at', '>', $data['end_date'])
             )->exists()
         ) {

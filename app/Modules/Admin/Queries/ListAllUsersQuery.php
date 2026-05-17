@@ -2,8 +2,8 @@
 
 namespace App\Modules\Admin\Queries;
 
-use App\Concerns\ApiQueryable;
 use App\Models\User;
+use App\Modules\Shared\Concerns\ApiQueryable;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -15,7 +15,7 @@ class ListAllUsersQuery
     public function build(array $params = [], array $filters = [], array $defaultIncludes = [], array $includes = [], array $sorts = []): QueryBuilder
     {
         return $this->buildQuery(
-            subject: User::whereNot('id', '=', $params['except_user_id']),
+            subject: User::whereNot('id', $params['except_user_id']),
             filters: $filters,
             defaultIncludes: $defaultIncludes,
             includes: $includes,

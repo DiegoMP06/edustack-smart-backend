@@ -1,11 +1,15 @@
-import type { Media, ResponsiveImages } from '@/types/media';
+import type {
+    MediaData,
+    ResponsiveImagesData,
+} from '@/generated/types/App/Modules/Shared/DTOs/Media';
 
 export const getIdealResponsiveMediaLink = (
-    media?: Media,
-    size: keyof ResponsiveImages = 'xs',
-) =>
+    media?: MediaData,
+    size: keyof ResponsiveImagesData = 'xs',
+): string =>
     !media
         ? ''
         : media.responsive[size] ||
           Object.values(media.responsive).find((item) => item !== null) ||
-          media.urls.original;
+          media.urls.original ||
+          '';

@@ -25,10 +25,12 @@
         "meilisearch/meilisearch-php": "*",
         "pusher/pusher-php-server": "*",
         "spatie/laravel-activitylog": "^4.0",
+        "spatie/laravel-data": "^4.22",
         "spatie/laravel-medialibrary": "*",
         "spatie/laravel-permission": "*",
         "spatie/laravel-query-builder": "*",
-        "spatie/laravel-sluggable": "*"
+        "spatie/laravel-sluggable": "*",
+        "spatie/laravel-typescript-transformer": "^3.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",

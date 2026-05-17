@@ -34,18 +34,18 @@ import {
     ItemHeader,
     ItemTitle,
 } from '@/components/ui/shadcn/item';
+import type { ProjectData } from '@/generated/types/App/Modules/Projects/DTOs';
 import { getIdealResponsiveMediaLink, cn } from '@/lib/utils';
 import projects from '@/routes/projects';
-import type { Project } from '@/types/projects';
 
 type ProjectItemProps = {
-    project: Project;
+    project: ProjectData;
 };
 
 export default function ProjectItem({ project }: ProjectItemProps) {
     const [processing, setProcessing] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-    const coverImage = project.media.at(0);
+    const coverImage = project.media?.at(0);
 
     const handleProjectStatus = () => {
         setProcessing(true);
@@ -98,8 +98,8 @@ export default function ProjectItem({ project }: ProjectItemProps) {
                             src={getIdealResponsiveMediaLink(coverImage)}
                             alt={project.name}
                             className="block h-auto w-full rounded-t-md rounded-b-none object-cover"
-                            width={coverImage.dimensions.screenshot.width}
-                            height={coverImage.dimensions.screenshot.height}
+                            width={coverImage?.dimensions.screenshot.width}
+                            height={coverImage?.dimensions.screenshot.height}
                         />
                     ) : (
                         <div className="h-40 w-full rounded-t-md rounded-b-none bg-muted" />
@@ -171,7 +171,7 @@ export default function ProjectItem({ project }: ProjectItemProps) {
                                             {project.version}
                                         </Badge>
                                     </p>
-                                    
+
                                     <p className="flex flex-wrap items-center gap-2 text-sm font-semibold">
                                         Stack:
                                         {project.tech_stack.map((item) => (

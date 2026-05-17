@@ -2,24 +2,22 @@
 
 namespace App\Modules\Events\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Events\Event;
-use App\Modules\Events\Services\EventStatusService;
+use App\Modules\Events\Actions\ToggleEventStatusAction;
+use Illuminate\Http\RedirectResponse;
 
 class EventStatusController extends Controller
 {
-    public function __construct(
-        private EventStatusService $statusService,
-    ) {}
-
     /**
      * Toggle the model status flag.
      */
-    public function __invoke(Event $event)
-    {
+    public function __invoke(
+        Event $event,
+        ToggleEventStatusAction $action
+    ): RedirectResponse {
         $this->authorize('update', $event);
 
-        $this->statusService->toggle($event);
+        $action->execute($event);
 
         return back()->with('message', 'Event status updated successfully.');
     }

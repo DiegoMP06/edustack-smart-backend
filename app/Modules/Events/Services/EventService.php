@@ -3,46 +3,31 @@
 namespace App\Modules\Events\Services;
 
 use App\Models\Events\Event;
-use App\Modules\Events\Actions\CreateEventAction;
-use App\Modules\Events\Actions\DeleteEventAction;
-use App\Modules\Events\Actions\UpdateEventAction;
+use App\Models\User;
 use App\Modules\Events\DTOs\EventData;
+use App\Modules\Events\Queries\ListUserEventsQuery;
+use App\Modules\Shared\DTOs\Query\ListCollectionQueryParamsData;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class EventService
 {
     public function __construct(
-        private CreateEventAction $createAction,
-        private UpdateEventAction $updateAction,
-        private DeleteEventAction $deleteAction,
+        private ListUserEventsQuery $listEventsQuery,
     ) {}
 
-    public function list(array $filters = []): LengthAwarePaginator
+    public function listUserEvents(ListCollectionQueryParamsData $data, User $user): LengthAwarePaginator
     {
-        return Event::query()
-            ->with([])
-            ->when($filters['search'] ?? null, fn ($query, $value) => $query->where('title', 'like', "%{$value}%"))
-            ->latest()
-            ->paginate(15);
-    }
+        $events = $this->listEventsQuery->paginate(
+            params: ['user_id' => $user->id],
+            perPage: $data->per_page,
+            defaultIncludes: ['status', 'media'],
+        );
 
-    public function findOrFail(int $id): Event
-    {
-        return Event::with([])->findOrFail($id);
-    }
+        $events->getCollection()->transform(
+            fn (Event $event) => EventData::fromModel($event)
+                ->include('status', 'media')
+        );
 
-    public function create(EventData $data, int $userId): Event
-    {
-        return $this->createAction->execute($data, $userId);
-    }
-
-    public function update(Event $event, EventData $data): Event
-    {
-        return $this->updateAction->execute($event, $data);
-    }
-
-    public function delete(Event $event): void
-    {
-        $this->deleteAction->execute($event);
+        return $events;
     }
 }

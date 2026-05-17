@@ -2,14 +2,15 @@ import { router } from '@inertiajs/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import EditGallery from '@/components/gallery/EditGallery';
+import type { PostData } from '@/generated/types/App/Modules/Blog/DTOs';
+import type { MediaData } from '@/generated/types/App/Modules/Media/DTOs';
 import useMediaUpload from '@/hooks/media/useMediaUpload';
 import posts from '@/routes/posts';
 import type { ImageFormData, Media } from '@/types';
-import type { Post } from '@/types/blog';
 
 type EditPostGalleryProps = {
-    gallery: Post['media'];
-    postId: Post['id'];
+    gallery: MediaData[];
+    postId: PostData['id'];
 };
 
 export default function EditPostGallery({
@@ -19,15 +20,15 @@ export default function EditPostGallery({
     const [processing, setProcessing] = useState(false);
     const [isModalActive, setIsModalActive] = useState(false);
 
-    const { uploadImages } = useMediaUpload()
+    const { uploadImages } = useMediaUpload();
 
     const handleAddImage = async (data: ImageFormData) => {
         setProcessing(true);
 
         const keys = await uploadImages(data.images);
         const formData = {
-            images: keys
-        }
+            images: keys,
+        };
 
         router.post(posts.medias.store(postId), formData, {
             preserveScroll: true,
@@ -41,7 +42,7 @@ export default function EditPostGallery({
                 Object.values(error).forEach((value) => toast.error(value));
             },
         });
-    }
+    };
 
     const handleDeleteImage = (mediaId: Media['id']) => {
         setProcessing(true);
@@ -65,7 +66,7 @@ export default function EditPostGallery({
                 },
             },
         );
-    }
+    };
 
     return (
         <EditGallery

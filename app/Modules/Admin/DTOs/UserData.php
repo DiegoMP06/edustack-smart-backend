@@ -3,8 +3,15 @@
 namespace App\Modules\Admin\DTOs;
 
 use App\Models\User;
+use Spatie\LaravelData\Attributes\DataCollectionOf;
+use Spatie\LaravelData\Data;
+use Spatie\LaravelData\DataCollection;
+use Spatie\LaravelData\Lazy;
+use Spatie\TypeScriptTransformer\Attributes\TypeScript;
+use Spatie\TypeScriptTransformer\Attributes\TypeScriptType;
 
-readonly class UserData
+#[TypeScript()]
+class UserData extends Data
 {
     public function __construct(
         public int $id,
@@ -15,9 +22,10 @@ readonly class UserData
         public string $created_at,
         public string $updated_at,
         public bool $is_active,
-        public array $roles,
-    ) {
-    }
+        #[DataCollectionOf(RoleData::class)]
+        #[TypeScriptType('Array<RoleData>|null')]
+        public Lazy|DataCollection|null $roles = null,
+    ) {}
 
     public static function fromModel(User $user): self
     {
@@ -30,22 +38,7 @@ readonly class UserData
             created_at: $user->created_at->toDateTimeString(),
             updated_at: $user->updated_at->toDateTimeString(),
             is_active: $user->is_active,
-            roles: $user->roles->pluck('name')->toArray(),
+            roles: Lazy::create(fn () => RoleData::collect($user->roles)),
         );
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'father_last_name' => $this->father_last_name,
-            'mother_last_name' => $this->mother_last_name,
-            'email' => $this->email,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'is_active' => $this->is_active,
-            'roles' => $this->roles,
-        ];
     }
 }

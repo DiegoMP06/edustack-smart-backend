@@ -5,13 +5,15 @@ import { useState } from 'react';
 import type { SubmitHandler } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+
 import EventForm from '@/components/events/EventForm';
 import { Button } from '@/components/ui/shadcn/button';
+import type { DraftEventFormData } from '@/generated/types/App/Modules/Events/DTOs';
 import useMediaUpload from '@/hooks/media/useMediaUpload';
-import AppLayout from '@/layouts/app-layout';
+import EventsLayout from '@/layouts/events/EventsLayout';
+import { formatDateToServer, formatDateTimeToServer } from '@/lib/utils';
 import events from '@/routes/events';
 import type { BreadcrumbItem } from '@/types';
-import type { EventFormData } from '@/types/events';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -27,7 +29,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function CreateEvent() {
     const [processing, setProcessing] = useState(false);
 
-    const initialValues: EventFormData = {
+    const initialValues: DraftEventFormData = {
         name: '',
         logo: [],
         description: '',
@@ -48,29 +50,32 @@ export default function CreateEvent() {
 
     const { uploadImages } = useMediaUpload();
 
-    const {
-        control,
-        register,
-        handleSubmit,
-    } = useForm({
+    const { control, register, handleSubmit } = useForm({
         defaultValues: initialValues,
     });
 
-    const handleCreateEvent: SubmitHandler<EventFormData> = async ({
+    const handleCreateEvent: SubmitHandler<DraftEventFormData> = async ({
         latLng,
         start_date,
         end_date,
         registration_ended_at,
         registration_started_at,
+        logo,
         ...data
     }) => {
         setProcessing(true);
 
-        const keys = await uploadImages(data.logo || []);
+        const keys = await uploadImages(logo || []);
+
+        if (!keys || keys.length === 0) {
+            setProcessing(false);
+
+            return;
+        }
 
         const formData = {
             ...data,
-            logo: keys && keys.length > 0 ? keys[0] : null,
+            logo: keys[0],
             price: data.is_free ? 0 : data.price,
             percent_off: data.is_free ? 0 : data.percent_off,
             capacity: data.with_capacity ? data.capacity : null,
@@ -78,14 +83,14 @@ export default function CreateEvent() {
             location: data.is_online ? null : data.location,
             lat: data.is_online ? null : latLng.lat,
             lng: data.is_online ? null : latLng.lng,
-            start_date: start_date.toISOString().split('T')[0],
-            end_date: end_date.toISOString().split('T')[0],
-            registration_started_at: registration_started_at
-                .toISOString()
-                .split('T')[0],
-            registration_ended_at: registration_ended_at
-                .toISOString()
-                .split('T')[0],
+            start_date: formatDateToServer(start_date),
+            end_date: formatDateToServer(end_date),
+            registration_started_at: formatDateTimeToServer(
+                registration_started_at,
+            ),
+            registration_ended_at: formatDateTimeToServer(
+                registration_ended_at,
+            ),
         };
 
         router.post(events.store(), formData, {
@@ -105,7 +110,7 @@ export default function CreateEvent() {
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <EventsLayout breadcrumbs={breadcrumbs}>
             <Head title="Crear Evento" />
 
             <div className="mb-15">
@@ -119,15 +124,12 @@ export default function CreateEvent() {
                 className="mx-auto grid w-full max-w-2xl grid-cols-1 gap-6"
                 onSubmit={handleSubmit(handleCreateEvent)}
             >
-                <EventForm
-                    control={control}
-                    register={register}
-                />
+                <EventForm control={control} register={register} />
 
                 <Button type="submit" disabled={processing}>
                     Crear Evento
                 </Button>
             </form>
-        </AppLayout>
+        </EventsLayout>
     );
 }

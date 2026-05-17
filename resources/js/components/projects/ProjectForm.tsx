@@ -13,17 +13,17 @@ import {
 } from '@/components/ui/shadcn/select';
 import { Textarea } from '@/components/ui/shadcn/textarea';
 import type {
-    ProjectCategory,
-    ProjectFormData,
-    ProjectStatus,
-} from '@/types/projects';
+    DraftProjectFormData,
+    ProjectCategoryData,
+    ProjectStatusData,
+} from '@/generated/types/App/Modules/Projects/DTOs';
 import TechStackInput from './TechStackInput';
 
 type ProjectFormProps = {
-    statuses: ProjectStatus[];
-    categories: ProjectCategory[];
-    register: UseFormRegister<ProjectFormData>;
-    control: Control<ProjectFormData, unknown, ProjectFormData>;
+    statuses: ProjectStatusData[];
+    categories: ProjectCategoryData[];
+    register: UseFormRegister<DraftProjectFormData>;
+    control: Control<DraftProjectFormData>;
 };
 
 export default function ProjectForm({
@@ -32,7 +32,7 @@ export default function ProjectForm({
     categories,
     statuses,
 }: ProjectFormProps) {
-    const { errors } = useFormState({ control })
+    const { errors } = useFormState({ control });
 
     return (
         <>
@@ -225,16 +225,16 @@ export default function ProjectForm({
                                         onCheckedChange={(checked) =>
                                             checked
                                                 ? onChange([
-                                                    ...(value || []),
-                                                    category.id,
-                                                ])
+                                                      ...(value || []),
+                                                      category.id,
+                                                  ])
                                                 : onChange(
-                                                    value?.filter(
-                                                        (id) =>
-                                                            id !==
-                                                            category.id,
-                                                    ) || [],
-                                                )
+                                                      value?.filter(
+                                                          (id) =>
+                                                              id !==
+                                                              category.id,
+                                                      ) || [],
+                                                  )
                                         }
                                         defaultChecked={value?.some(
                                             (id) => id === category.id,

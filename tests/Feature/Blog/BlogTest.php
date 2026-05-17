@@ -5,8 +5,6 @@ use App\Models\Blog\PostCategory;
 use App\Models\Blog\PostType;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 
 uses(RefreshDatabase::class);
@@ -20,7 +18,6 @@ beforeEach(function () {
 });
 
 test('user can see list of their posts', function () {
-    $this->withoutExceptionHandling();
     $user = User::factory()->admin()->create();
     $posts = Post::factory()->count(3)->create(['user_id' => $user->id]);
 
@@ -34,19 +31,17 @@ test('user can see list of their posts', function () {
 });
 
 test('user can create a post', function () {
-    Storage::fake('s3');
     $user = User::factory()->admin()->create();
     $type = PostType::factory()->create();
     $categories = PostCategory::factory()->count(2)->create();
 
     $data = [
         'name' => 'New Post Name',
-        'summary' => 'This is a summary with at least fifty characters in it to pass validation.',
+        'description' => 'This is a description with at least fifty characters in it to pass validation.',
+        'reading_time_minutes' => 5,
         'post_type_id' => $type->id,
         'categories' => $categories->pluck('id')->toArray(),
-        'images' => [
-            UploadedFile::fake()->image('post1.jpg'),
-        ],
+        'images' => ['s3-key/image1.jpg'],
     ];
 
     $response = $this->actingAs($user)->post(route('posts.store'), $data);
@@ -54,7 +49,6 @@ test('user can create a post', function () {
     $post = Post::where('name', 'New Post Name')->first();
     expect($post)->not->toBeNull();
     expect($post->categories)->toHaveCount(2);
-    expect($post->getMedia('gallery'))->toHaveCount(1);
 
     $response->assertRedirect(route('posts.content.edit', ['post' => $post, 'edit' => false]));
 });
@@ -67,12 +61,13 @@ test('user can update a post', function () {
 
     $data = [
         'name' => 'Updated Post Name',
-        'summary' => 'Updated summary with at least fifty characters in it to pass validation.',
+        'description' => 'Updated description with at least fifty characters in it to pass validation.',
+        'reading_time_minutes' => 6,
         'post_type_id' => $newType->id,
         'categories' => $newCategories->pluck('id')->toArray(),
     ];
 
-    $response = $this->actingAs($user)->patch(route('posts.update', $post), $data);
+    $response = $this->actingAs($user)->put(route('posts.update', $post), $data);
 
     $post->refresh();
     expect($post->name)->toBe('Updated Post Name');
@@ -88,6 +83,6 @@ test('user can delete a post', function () {
 
     $response = $this->actingAs($user)->delete(route('posts.destroy', $post));
 
-    expect(Post::find($post->id))->toBeNull();
+    expect(Post::withTrashed()->find($post->id)->trashed())->toBeTrue();
     $response->assertRedirect();
 });

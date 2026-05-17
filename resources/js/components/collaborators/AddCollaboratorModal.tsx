@@ -19,15 +19,15 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/shadcn/select';
-import type { UserData } from '@/types';
+import type { UserData } from '@/generated/types/App/Modules/Admin/DTOs';
 
 type AddCollaboratorModalProps = {
     userId: UserData['id'];
     isModalActive: boolean;
-    roles: Record<string, string>
+    roles: Record<string, string>;
     processing: boolean;
     setIsModalActive: Dispatch<SetStateAction<boolean>>;
-    onAddCollaborator: (userId: UserData['id'], role: string) => void
+    onAddCollaborator: (userId: UserData['id'], role: string) => void;
 };
 
 type AddCollaboratorFormData = {
@@ -57,7 +57,7 @@ export default function AddCollaboratorModal({
     const onSubmit = ({ role }: AddCollaboratorFormData) => {
         onAddCollaborator(userId, role);
         setIsModalActive(false);
-    }
+    };
 
     return (
         <Dialog open={isModalActive} onOpenChange={setIsModalActive}>

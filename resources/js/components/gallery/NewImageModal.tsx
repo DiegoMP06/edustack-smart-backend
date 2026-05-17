@@ -4,7 +4,15 @@ import { Controller, useForm } from 'react-hook-form';
 import DropzoneInput from '@/components/dropzone/DropzoneInput';
 import InputError from '@/components/ui/app/input-error';
 import { Button } from '@/components/ui/shadcn/button';
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/shadcn/dialog';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/shadcn/dialog';
 import { Label } from '@/components/ui/shadcn/label';
 import type { ImageFormData } from '@/types';
 
@@ -16,8 +24,6 @@ type NewImageModalProps = {
     processing: boolean;
 };
 
-
-
 export default function NewImageModal({
     isModalActive,
     setIsModalActive,
@@ -25,7 +31,6 @@ export default function NewImageModal({
     onAddImage,
     processing,
 }: NewImageModalProps) {
-
     const initialValues: ImageFormData = {
         images: [],
     };
@@ -50,10 +55,15 @@ export default function NewImageModal({
             <DialogContent className="sm:max-w-xl">
                 <DialogHeader>
                     <DialogTitle>Nueva imagen</DialogTitle>
-                    <DialogDescription>Agrega una nueva imagen a la publicación.</DialogDescription>
+                    <DialogDescription>
+                        Agrega una nueva imagen a la publicación.
+                    </DialogDescription>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit(onAddImage)} className="grid grid-cols-1 gap-6">
+                <form
+                    onSubmit={handleSubmit(onAddImage)}
+                    className="grid grid-cols-1 gap-6"
+                >
                     <div className="grid gap-2">
                         <Label htmlFor="images">
                             {multipleFiles ? 'Imágenes' : 'Imagen'}:{' '}

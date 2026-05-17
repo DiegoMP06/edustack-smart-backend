@@ -52,32 +52,32 @@ class CourseLesson extends Model
             ->logOnlyDirty();
     }
 
-    public function course()
+    public function course(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Course::class);
     }
 
-    public function section()
+    public function section(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(CourseSection::class, 'course_section_id');
     }
 
-    public function resources()
+    public function resources(): \Illuminate\Database\Eloquent\Relations\MorphMany
     {
         return $this->morphMany(CourseResource::class, 'resourceable')->orderBy('order');
     }
 
-    public function completions()
+    public function completions(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(LessonCompletion::class);
     }
 
-    public function assignments()
+    public function assignments(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Assignment::class);
     }
 
-    public function discussions()
+    public function discussions(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(CourseDiscussion::class);
     }

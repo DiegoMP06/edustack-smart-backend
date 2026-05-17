@@ -27,12 +27,12 @@ import {
     ItemHeader,
     ItemTitle,
 } from '@/components/ui/shadcn/item';
+import type { PostData } from '@/generated/types/App/Modules/Blog/DTOs';
 import { getIdealResponsiveMediaLink, cn } from '@/lib/utils';
 import posts from '@/routes/posts';
-import type { Post } from '@/types/blog';
 
 type PostItemProps = {
-    post: Post;
+    post: PostData;
 };
 
 export default function PostItem({ post }: PostItemProps) {
@@ -86,11 +86,11 @@ export default function PostItem({ post }: PostItemProps) {
             <Item variant="outline" className="items-start gap-0 p-0">
                 <ItemHeader>
                     <img
-                        src={getIdealResponsiveMediaLink(post.media.at(0))}
+                        src={getIdealResponsiveMediaLink(post?.media?.at(0))}
                         alt={post.name}
                         className="block h-auto w-full rounded-t-md rounded-b-none object-cover"
-                        width={post.media.at(0)?.dimensions.main.width}
-                        height={post.media.at(0)?.dimensions.main.height}
+                        width={post.media?.at(0)?.dimensions.main.width}
+                        height={post.media?.at(0)?.dimensions.main.height}
                     />
                 </ItemHeader>
 
@@ -127,16 +127,16 @@ export default function PostItem({ post }: PostItemProps) {
                                         Tipo de Post:
                                         <Badge variant="outline">
                                             <Icon
-                                                iconName={post.type.icon || ''}
+                                                iconName={post.type?.icon || ''}
                                                 className="size-4"
                                             />
-                                            {post.type.name}
+                                            {post.type?.name}
                                         </Badge>
                                     </p>
 
                                     <p className="flex flex-wrap items-center gap-2 text-sm font-semibold">
                                         Categorías:
-                                        {post.categories.map((category) => (
+                                        {post.categories?.map((category) => (
                                             <Badge
                                                 variant="secondary"
                                                 key={category.id}

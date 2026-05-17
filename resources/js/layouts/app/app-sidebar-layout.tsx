@@ -9,10 +9,12 @@ export default function AppSidebarLayout({
     breadcrumbs = [],
     withSearch = false,
     collectionName,
+    sidebarLinks,
+    sidebarLabel,
 }: AppLayoutProps) {
     return (
         <AppShell variant="sidebar">
-            <AppSidebar />
+            <AppSidebar links={sidebarLinks} label={sidebarLabel} />
             <AppContent variant="sidebar" className="overflow-x-hidden">
                 <AppSidebarHeader
                     breadcrumbs={breadcrumbs}

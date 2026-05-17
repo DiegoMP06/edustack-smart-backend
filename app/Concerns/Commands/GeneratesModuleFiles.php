@@ -2,173 +2,202 @@
 
 namespace App\Concerns\Commands;
 
+use App\Models\User;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 trait GeneratesModuleFiles
 {
-    protected string $module;
-
-    protected string $model;
-
-    protected string $modelVariable;
-
-    protected string $modelPlural;
-
-    protected string $modelLower;
-
-    protected string $routeName;
-
-    protected string $routePrefix;
-
+    // Module
+    protected string $moduleName;
     protected string $moduleLower;
-
     protected string $moduleKebab;
+    protected string $moduleNamespace;
+    protected string $modulePath;
 
-    protected string $storeRequest;
+    // Model
+    protected ?string $modelName = null;
+    protected ?string $modelVariable = null;
+    protected ?string $modelPlural = null;
+    protected ?string $modelLower = null;
+    protected ?string $modelNamespace = null;
+    protected ?string $modelPath = null;
+    protected ?string $modelRouteName = null;
+    protected ?string $modelRoutePrefix = null;
 
-    protected string $updateRequest;
-
-    protected string $updateContentRequest;
-
-    protected string $modelNamespace;
-
+    // Generated
     protected array $generated = [];
 
-    protected function setup(string $module, string $model): void
+    protected function toString(): string
     {
-        $this->module = Str::studly($module);
-        $this->model = Str::studly($model);
-        $this->modelVariable = Str::camel($this->model);
-        $this->modelPlural = Str::camel(Str::plural($this->model));
-        $this->modelLower = Str::lower($this->model);
-        $this->routeName = Str::kebab(Str::plural($this->model));
-        $this->routePrefix = Str::kebab(Str::plural($this->model));
-        $this->moduleLower = Str::lower($this->module);
-        $this->moduleKebab = Str::kebab($this->module);
-        $this->storeRequest = "Store{$this->model}Request";
-        $this->updateRequest = "Update{$this->model}Request";
-        $this->updateContentRequest = "Update{$this->model}ContentRequest";
-        $this->modelNamespace = "App\\Models\\{$this->module}\\{$this->model}";
+        return "
+            moduleName: {$this->moduleName}
+            modulePath: {$this->modulePath}
+            moduleLower: {$this->moduleLower}
+            moduleKebab: {$this->moduleKebab}
+            moduleNamespace: {$this->moduleNamespace}
+            modelName: {$this->modelName}
+            modelVariable: {$this->modelVariable}
+            modelPlural: {$this->modelPlural}
+            modelLower: {$this->modelLower}
+            modelNamespace: {$this->modelNamespace}
+            modelPath: {$this->modelPath}
+            modelRouteName: {$this->modelRouteName}
+            modelRoutePrefix: {$this->modelRoutePrefix}
+        ";
     }
 
-    protected function setupWithModelNamespace(string $module, string $model, string $modelNamespace): void
+    private function getRoutePrefix(string $path, string $className): string
     {
-        $this->setup($module, $model);
-        $this->modelNamespace = $modelNamespace;
+        $fullPath = "{$path}/{$className}";
+
+        $route = collect(explode('/', $fullPath))
+            ->map(fn($segment) => Str::kebab($segment))
+            ->implode('/');
+
+        $route = Str::plural($route);
+
+        return $route;
     }
 
-    /**
-     * @return array{directory: string, className: string}
-     */
-    protected function resolveClassSegments(string $name, string $suffix = ''): array
+    private function getRouteName(string $path, string $className): string
     {
-        $normalized = str_replace('\\', '/', trim($name));
+        $fullPath = $this->getRoutePrefix($path, $className);
+        $routeName = collect(explode('/', $fullPath))
+            ->implode('.');
+        return $routeName;
+    }
+
+    private function normalizePath(string $path): string
+    {
+        $normalized = str_replace('\\', '/', trim($path));
         $normalized = trim($normalized, '/');
         $normalized = preg_replace('#/+#', '/', $normalized) ?? '';
 
-        $segments = array_values(array_filter(explode('/', $normalized), fn (string $segment): bool => $segment !== ''));
+        return $normalized;
+    }
+
+    /**
+     * Summary of dividePath
+     * @param string $path
+     * @return array{className: string, fullPath: string, path: string}}
+     */
+    private function dividePath(string $path): array
+    {
+        $normalized = $this->normalizePath($path);
+
+        $segments = array_values(
+            array_filter(
+                explode('/', $normalized),
+                fn(string $segment): bool => $segment !== ''
+            )
+        );
 
         if ($segments === []) {
-            return ['directory' => '', 'className' => $suffix === '' ? 'Generated' : "Generated{$suffix}"];
+            return [
+                'className' => $normalized,
+                'fullPath' => $normalized,
+                'path' => '',
+            ];
         }
 
         $className = Str::studly(array_pop($segments));
-
-        if ($suffix !== '') {
-            $className = Str::replaceEnd($suffix, '', $className).$suffix;
-        }
-
-        $directory = collect($segments)
-            ->map(fn (string $segment): string => Str::studly($segment))
+        $newPath = (string) collect($segments)
+            ->map(fn(string $segment): string => Str::studly($segment))
             ->implode('/');
 
         return [
-            'directory' => $directory,
             'className' => $className,
+            'fullPath' => $normalized,
+            'path' => (string) $newPath,
         ];
     }
 
-    protected function write(string $stub, string $path, string $label, array $extra = []): bool
+    private function normalizeNamespace(string $namespace): string
     {
-        $fullPath = app_path($path);
-        $stubPath = base_path("stubs/module/{$stub}.stub");
-        $resolvedLabel = $this->resolveGeneratedLabel($label, $path);
-        $force = $this->hasOption('force') && (bool) $this->option('force');
-        $dryRun = $this->hasOption('dry-run') && (bool) $this->option('dry-run');
-
-        if (! File::exists($stubPath)) {
-            $this->error("  Stub not found: stubs/module/{$stub}.stub");
-
-            return false;
-        }
-
-        if (File::exists($fullPath) && ! $force) {
-            $this->warn("  SKIP   {$path}");
-            $this->generated[] = [$resolvedLabel, '<fg=yellow>already exists</>'];
-
-            return false;
-        }
-
-        if ($dryRun) {
-            $action = File::exists($fullPath) ? 'OVERWRITE' : 'CREATE';
-            $this->line("  <fg=cyan>{$action}</> {$path} <fg=yellow>(dry-run)</>");
-            $this->generated[] = [$resolvedLabel, "app/{$path} <fg=yellow>(dry-run)</>"];
-
-            return true;
-        }
-
-        $wasExisting = File::exists($fullPath);
-
-        File::ensureDirectoryExists(dirname($fullPath));
-        $stubContents = $this->replace(File::get($stubPath), array_merge([
-            '{{ label }}' => $label,
-            '{{ name }}' => $label,
-        ], $extra));
-
-        File::put($fullPath, $this->syncNamespaceWithPath($stubContents, $path));
-
-        $action = $wasExisting ? 'OVERWRITE' : 'CREATE';
-        $this->line("  <fg=green>{$action}</> {$path}");
-        $this->generated[] = [$resolvedLabel, "app/{$path}"];
-
-        return true;
+        return 'App\\' . str_replace('/', '\\', $namespace);
     }
 
-    protected function resolveGeneratedLabel(string $label, string $path): string
+    private function generateNamespace(string $path, ?string $folders = ''): string
     {
-        if ($label !== $this->model) {
-            return $label;
-        }
+        $folders = $folders ? $folders : 'Modules';
+        $directory = dirname("{$folders}/{$path}");
 
-        $filename = pathinfo($path, PATHINFO_FILENAME);
-
-        if ($filename === '') {
-            return $label;
-        }
-
-        return Str::studly($filename);
+        return $this->normalizeNamespace($directory);
     }
 
-    protected function replace(string $contents, array $extra = []): string
+    private function generateModuleAtt(string $module): void
+    {
+        $divide = $this->dividePath($module);
+        $this->moduleName = Str::studly($divide['className']);
+        $this->moduleLower = Str::lower($this->moduleName);
+        $this->moduleKebab = Str::kebab($this->moduleName);
+        $this->modulePath = "Modules/{$divide['fullPath']}";
+        $this->moduleNamespace = $this->generateNamespace($this->moduleName, $this->modulePath);
+    }
+
+    private function generateModelAtt(string $model): void
+    {
+        $divide = $this->dividePath($model);
+        $this->modelName = Str::studly($divide['className']);
+        $this->modelVariable = Str::camel($this->modelName);
+        $this->modelPlural = Str::camel(Str::plural($this->modelName));
+        $this->modelLower = Str::lower($this->modelName);
+        $this->modelPath = "Models/{$divide['fullPath']}";
+        $this->modelRouteName = $this->getRouteName($divide['path'], $divide['className']);
+        $this->modelRoutePrefix = $this->getRoutePrefix($divide['path'], $divide['className']);
+        $this->modelNamespace = $this->generateNamespace($this->modelName, $this->modelPath);
+    }
+
+    protected function setup(string $module, ?string $model = null): void
+    {
+        $this->generateModuleAtt($module);
+
+
+        if ($model) {
+            $this->generateModelAtt($model);
+        }
+    }
+
+    private function getFileLabel(string $label, string $labelPrefix): string
+    {
+        $studlyLabel = Str::studly($label);
+        return Str::finish($studlyLabel, $labelPrefix);
+    }
+
+    /**
+     * Summary of getFilePath
+     * @param string $label
+     * @param string $path
+     * @param string $labelPrefix
+     * @return array{className: string, fullPath: string, path: string}}
+     */
+    private function getFilePath(string $label, string $path, string $labelPrefix): array
+    {
+        $className = $this->getFileLabel($label, $labelPrefix);
+        $relativePath = "{$this->modulePath}/{$path}/{$className}";
+        $relativePath = $this->normalizePath($relativePath);
+
+        return $this->dividePath($relativePath);
+    }
+
+    private function replaceFileAtt(string $contents, array $extra = []): string
     {
         $replacements = array_merge([
-            '{{ module }}' => $this->module,
-            '{{ model }}' => $this->model,
-            '{{ name }}' => $this->model,
-            '{{ label }}' => $this->model,
-            '{{ modelVariable }}' => $this->modelVariable,
-            '{{ modelPlural }}' => $this->modelPlural,
-            '{{ modelLower }}' => $this->modelLower,
-            '{{ routeName }}' => $this->routeName,
-            '{{ routePrefix }}' => $this->routePrefix,
+            '{{ module }}' => $this->moduleName,
+            '{{ modulePath }}' => $this->modulePath,
+            '{{ moduleNamespace }}' => $this->moduleNamespace,
             '{{ moduleLower }}' => $this->moduleLower,
             '{{ moduleKebab }}' => $this->moduleKebab,
-            '{{ storeRequest }}' => $this->storeRequest,
-            '{{ updateRequest }}' => $this->updateRequest,
-            '{{ updateContentRequest }}' => $this->updateContentRequest,
-            '{{ user }}' => 'User',
-            '{{ modelNamespace }}' => $this->modelNamespace,
+            '{{ model }}' => $this->modelName ?? '',
+            '{{ modelVariable }}' => $this->modelVariable ?? '',
+            '{{ modelPlural }}' => $this->modelPlural ?? '',
+            '{{ modelLower }}' => $this->modelLower ?? '',
+            '{{ modelRouteName }}' => $this->modelRouteName ?? '',
+            '{{ modelNamespace }}' => $this->modelNamespace ?? '',
+            '{{ modelPath }}' => $this->modelPath ?? '',
+            '{{ modelRoutePrefix }}' => $this->modelRoutePrefix ?? '',
+            '{{ user }}' => User::class,
         ], $extra);
 
         return str_replace(
@@ -178,30 +207,88 @@ trait GeneratesModuleFiles
         );
     }
 
-    protected function syncNamespaceWithPath(string $contents, string $path): string
+    protected function writeFile(string $stub, string $path, string $label, string $labelPrefix, array $extra = []): bool
     {
-        $directory = dirname($path);
+        $stubPath = base_path($this->normalizePath("stubs/{$stub}.stub"));
+        $fileStructure = $this->getFilePath($label, $path, $labelPrefix);
 
-        if ($directory === '.' || str_contains($directory, '/routes')) {
-            return $contents;
+        $fullPath = app_path($fileStructure['fullPath'] . '.php');
+        $fileLabel = $fileStructure['className'];
+
+        $fileNamespace = $this->normalizeNamespace($fileStructure['path']);
+        $filePath = $this->normalizePath("app/{$fileStructure['fullPath']}.php");
+
+        $force = $this->hasOption('force') && (bool) $this->option('force');
+        $dryRun = $this->hasOption('dry-run') && (bool) $this->option('dry-run');
+
+        $this->line("\n");
+
+        if (!File::exists($stubPath)) {
+            $this->error("\tStub not found: stubs/{$stub}.stub");
+            return false;
         }
 
-        if (! str_contains($contents, 'namespace ')) {
-            return $contents;
+        if (File::exists($fullPath) && !$force) {
+            $this->warn("\tSKIP   {$filePath}");
+            $this->generated[] = [$fileLabel, '<fg=yellow>already exists</>'];
+            return false;
         }
 
-        $namespace = 'App\\'.str_replace('/', '\\', $directory);
+        if ($dryRun) {
+            $action = File::exists($fullPath) ? 'OVERWRITE' : 'CREATE';
+            $this->line("\t<fg=cyan>{$action}</> {$filePath} <fg=yellow>(dry-run)</>");
+            $this->generated[] = [$fileLabel, "{$filePath} <fg=yellow>(dry-run)</>"];
+            return true;
+        }
 
-        return (string) preg_replace('/^namespace\s+[^;]+;/m', "namespace {$namespace};", $contents, 1);
+        $wasExisting = File::exists($fullPath);
+
+        File::ensureDirectoryExists(dirname($fullPath));
+
+        $stubContents = $this->replaceFileAtt(File::get($stubPath), array_merge([
+            '{{ class }}' => $fileLabel,
+            '{{ namespace }}' => $fileNamespace,
+        ], $extra));
+
+        File::put($fullPath, $stubContents);
+
+        $action = $wasExisting ? 'OVERWRITE' : 'CREATE';
+        $this->line("\t<fg=green>{$action}</> {$filePath}");
+        $this->generated[] = [$fileLabel, "{$filePath}"];
+
+        return true;
     }
 
     protected function summary(string $title): void
     {
         $this->newLine();
-        $this->info("✅  {$title}");
+        $this->info("✅   {$title}");
         $this->newLine();
         $this->table(['Class', 'Path'], $this->generated);
     }
+
+    protected function validateField(string $fieldName): string|null
+    {
+        $field = $this->option($fieldName);
+
+        if (!$field) {
+            $field = $this->ask("¿Podría repetir el campo {$fieldName}?");
+        }
+
+        if (!$field) {
+            $this->error("❌ Operación cancelada. El campo {$fieldName} es obligatorio.");
+            return null;
+        }
+
+        return $field;
+    }
+
+    protected function setupWithModelNamespace(string $module, string $model, string $modelNamespace): void
+    {
+        $this->setup($module, $model);
+        $this->modelNamespace = $modelNamespace;
+    }
+
 
     protected function registerRouteInBootstrap(string $routePath): void
     {
@@ -209,7 +296,7 @@ trait GeneratesModuleFiles
         $marker = '// [module-routes]';
         $requireLine = "            if (file_exists(base_path('{$routePath}'))) { require base_path('{$routePath}'); }";
 
-        if (! File::exists($appPath)) {
+        if (!File::exists($appPath)) {
             $this->warn('  SKIP   bootstrap/app.php not found');
 
             return;
@@ -218,7 +305,7 @@ trait GeneratesModuleFiles
         $contents = File::get($appPath);
 
         if (str_contains($contents, $routePath)) {
-            $this->warn('  SKIP   Route already registered in bootstrap/app.php');
+            $this->warn('\tSKIP   Route already registered in bootstrap/app.php');
 
             return;
         }
@@ -226,7 +313,7 @@ trait GeneratesModuleFiles
         if (str_contains($contents, $marker)) {
             File::put($appPath, str_replace(
                 $marker,
-                $marker."\n".$requireLine,
+                $marker . "\n" . $requireLine,
                 $contents,
             ));
 
@@ -239,10 +326,10 @@ trait GeneratesModuleFiles
 
         if (str_contains($contents, $routingAnchor)) {
             $replacement = "health: '/up',\n"
-                ."        then: function (): void {\n"
-                ."            // [module-routes]\n"
-                .$requireLine."\n"
-                .'        },';
+                . "        then: function (): void {\n"
+                . "            // [module-routes]\n"
+                . $requireLine . "\n"
+                . '        },';
 
             File::put($appPath, str_replace($routingAnchor, $replacement, $contents));
 
@@ -270,7 +357,7 @@ trait GeneratesModuleFiles
         $moduleRoutePath = app_path("Modules/{$this->module}/routes/{$this->modelVariable}.php");
         $requireLine = "if (file_exists(base_path('{$routePath}'))) { require base_path('{$routePath}'); }";
 
-        if (! File::exists($moduleRoutePath)) {
+        if (!File::exists($moduleRoutePath)) {
             $this->warn('  SKIP   Module base route file does not exist for linking');
 
             return;
@@ -284,7 +371,7 @@ trait GeneratesModuleFiles
             return;
         }
 
-        File::put($moduleRoutePath, rtrim($contents)."\n\n{$requireLine}\n");
+        File::put($moduleRoutePath, rtrim($contents) . "\n\n{$requireLine}\n");
         $this->line('  <fg=green>INJECT</> Route file linked in module base routes');
     }
 }

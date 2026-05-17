@@ -13,7 +13,7 @@ use App\Models\Events\Event;
 use App\Models\Events\EventActivity;
 use App\Models\Events\EventActivityCategory;
 use App\Models\Events\EventActivityType;
-use App\Concerns\ApiQueryable;
+use App\Modules\Shared\Concerns\ApiQueryable;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -84,7 +84,6 @@ class EventActivityController extends Controller
 
         $this->validateBusinessRules($event, $data);
 
-
         $activity = $event->activities()->create([
             ...$data,
 
@@ -138,7 +137,7 @@ class EventActivityController extends Controller
 
         $this->validateBusinessRules($event, $data);
 
-        if (!$data['is_competition']) {
+        if (! $data['is_competition']) {
             $rounds = $activity->rounds()->count();
 
             if ($rounds > 0) {

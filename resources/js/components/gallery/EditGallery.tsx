@@ -1,27 +1,28 @@
 import 'photoswipe/dist/photoswipe.css';
 
-import { router } from "@inertiajs/react";
-import { useEcho } from "@laravel/echo-react";
-import { Plus } from "lucide-react";
-import { useEffect } from "react";
-import { Gallery } from "react-photoswipe-gallery";
+import { router } from '@inertiajs/react';
+import { useEcho } from '@laravel/echo-react';
+import { Plus } from 'lucide-react';
+import { useEffect } from 'react';
+import { Gallery } from 'react-photoswipe-gallery';
 import { Button } from '@/components/ui/shadcn/button';
-import type { Media, ImageFormData } from "@/types";
+import type { MediaData } from '@/generated/types/App/Modules/Media/DTOs';
+import type { ImageFormData } from '@/types';
 import EditGalleryItem from './EditGalleryItem';
 import NewImageModal from './NewImageModal';
 
 type EditGalleryProps = {
-    gallery: Media[];
+    gallery: MediaData[];
     objectId: number;
     objectType: string;
-    objectKey: string
+    objectKey: string;
     multipleFiles: boolean;
     processing: boolean;
     isModalActive: boolean;
     onAddImage: (data: ImageFormData) => void;
     onDeleteImage: (mediaId: number) => void;
-    setIsModalActive: React.Dispatch<React.SetStateAction<boolean>>
-}
+    setIsModalActive: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 export default function EditGallery({
     gallery,
@@ -35,12 +36,16 @@ export default function EditGallery({
     onDeleteImage,
     setIsModalActive,
 }: EditGalleryProps) {
-    const echo = useEcho(`${objectType.toLowerCase()}.${objectId}`, 'MediaProcessed', () => {
-        router.reload({ only: [objectKey] });
-    });
+    const echo = useEcho(
+        `${objectType.toLowerCase()}.${objectId}`,
+        'MediaProcessed',
+        () => {
+            router.reload({ only: [objectKey] });
+        },
+    );
 
     useEffect(() => {
-        echo.listen()
+        echo.listen();
 
         return () => echo.leave();
     }, [echo]);

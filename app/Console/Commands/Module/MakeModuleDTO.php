@@ -5,44 +5,89 @@ namespace App\Console\Commands\Module;
 use App\Concerns\Commands\GeneratesModuleFiles;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
+use Illuminate\Console\Attributes\Aliases;
 use Illuminate\Console\Command;
-use Illuminate\Support\Str;
 
 #[Signature('make-module:dto
-    {module : Module name (e.g. Blog)}
-    {name   : DTO name (e.g. CreatePostData or CreatePost)}
-    {--force : Overwrite existing files}
-    {--dry-run : Preview changes without writing files}')]
+    {name : Nombre del DTO (e.g. ArticleData)}
+    {--module= : Nombre del módulo (e.g. RouteRegistrationTest)}
+    {--m|model= : Nombre del modelo (e.g. Article)}
+    {--form-data : Crear un DTO de formulario}
+    {--with-media : Crear un DTO con media}
+    {--s|singleton : Crear un DTO de singleton}
+    {--f|force : Forzar la creación de un archivo existente}
+    {--d|dry-run : Simular la creación del archivo}')]
 #[Description('Generate a readonly DTO (Data Transfer Object) inside a module')]
+#[Aliases(['mm:dto', 'module:dto'])]
 class MakeModuleDTO extends Command
 {
     use GeneratesModuleFiles;
 
-    protected $aliases = ['mm:dto'];
-
     public function handle(): void
     {
-        $module = Str::studly($this->argument('module'));
-        $segments = $this->resolveClassSegments((string) $this->argument('name'), 'Data');
-        $dtoClassName = $segments['className'];
-        $directory = $segments['directory'];
-        $dtoName = Str::replaceEnd('Data', '', $dtoClassName);
+        $fileName = $this->argument('name');
+        $model = $this->option('model');
+        $module = $this->validateField('module');
 
-        $this->setup($module, $dtoName);
+        if (!$module)
+            return;
 
-        $dtoPath = $directory === ''
-            ? "Modules/{$module}/DTOs/{$dtoClassName}.php"
-            : "Modules/{$module}/DTOs/{$directory}/{$dtoClassName}.php";
+        $this->setup($module, $model);
 
-        $this->write(
-            stub: 'dto',
-            path: $dtoPath,
-            label: $dtoName,
-            extra: [
-                '{{ label }}' => $dtoName,
-            ],
+        $options = $this->getFileOptions();
+
+        $this->writeFile(
+            stub: $options['stub'],
+            path: 'Application/DTOs',
+            label: $fileName,
+            labelPrefix: $options['labelPrefix'],
         );
 
-        $this->summary("DTO <fg=cyan>{$dtoClassName}</> generated.");
+        $finalClassName = $this->getFileLabel($fileName, $options['labelPrefix']);
+
+        $this->summary("DTO <fg=cyan>{$finalClassName}</> generated.");
+    }
+
+
+
+    /**
+     * Obtiene las opciones de configuración del archivo según los flags provistos.
+     *
+     * @return array{labelPrefix: string, stub: string}
+     */
+    protected function getFileOptions(): array
+    {
+        if ($this->option('model') && $this->option('with-media')) {
+            return [
+                'stub' => 'module/dto/dto.model.media',
+                'labelPrefix' => 'Data',
+            ];
+        }
+
+        if ($this->option('model')) {
+            return [
+                'stub' => 'module/dto/dto.model',
+                'labelPrefix' => 'Data',
+            ];
+        }
+
+        if ($this->option('form-data')) {
+            return [
+                'stub' => 'module/dto/dto.form-data',
+                'labelPrefix' => 'FormData',
+            ];
+        }
+
+        if ($this->option('singleton')) {
+            return [
+                'stub' => 'module/dto/dto.singleton',
+                'labelPrefix' => 'Data',
+            ];
+        }
+
+        return [
+            'stub' => 'module/dto/dto',
+            'labelPrefix' => 'Data',
+        ];
     }
 }

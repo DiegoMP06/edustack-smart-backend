@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Classroom\CourseStatusController;
+use App\Modules\Classroom\Http\Controllers\CourseStatusController;
 use App\Models\Classroom\Course;
 use Illuminate\Http\Request;
 use Tests\TestCase;
@@ -27,7 +27,7 @@ it('toggles the course published status and flashes a success message', function
 
     $course->is_published = false;
 
-    $response = (new CourseStatusController)->__invoke($course);
+    $response = app(CourseStatusController::class)->__invoke($course);
 
     expect($course->is_published)->toBeTrue()
         ->and($course->saved)->toBeTrue()

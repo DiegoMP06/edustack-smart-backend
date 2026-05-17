@@ -28,7 +28,7 @@ class ResourceType extends Model
             ->logOnlyDirty();
     }
 
-    public function resources()
+    public function resources(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(CourseResource::class);
     }

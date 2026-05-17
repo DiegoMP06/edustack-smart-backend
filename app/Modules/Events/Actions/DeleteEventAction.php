@@ -13,7 +13,6 @@ class DeleteEventAction
     public function execute(Event $event): void
     {
         DB::transaction(function () use ($event) {
-            // Example: $event->clearMediaCollection();
             $event->deleteOrFail();
         });
     }

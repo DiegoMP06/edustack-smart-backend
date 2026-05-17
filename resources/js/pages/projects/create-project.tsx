@@ -4,24 +4,25 @@ import { useState } from 'react';
 import type { SubmitHandler } from 'react-hook-form';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+
 import DropzoneInput from '@/components/dropzone/DropzoneInput';
 import ProjectForm from '@/components/projects/ProjectForm';
 import InputError from '@/components/ui/app/input-error';
 import { Button } from '@/components/ui/shadcn/button';
 import { Label } from '@/components/ui/shadcn/label';
+import type {
+    DraftProjectFormData,
+    ProjectCategoryData,
+    ProjectStatusData,
+} from '@/generated/types/App/Modules/Projects/DTOs';
 import useMediaUpload from '@/hooks/media/useMediaUpload';
-import AppLayout from '@/layouts/app-layout';
+import ProjectsLayout from '@/layouts/projects/ProjectsLayout';
 import projects from '@/routes/projects';
 import type { BreadcrumbItem } from '@/types';
-import type {
-    ProjectCategory,
-    ProjectFormData,
-    ProjectStatus,
-} from '@/types/projects';
 
 type CreateProjectProps = {
-    categories: ProjectCategory[];
-    statuses: ProjectStatus[];
+    categories: ProjectCategoryData[];
+    statuses: ProjectStatusData[];
 };
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -41,9 +42,9 @@ export default function CreateProject({
 }: CreateProjectProps) {
     const [processing, setProcessing] = useState(false);
 
-    const initialValues: ProjectFormData = {
+    const initialValues: DraftProjectFormData = {
         name: '',
-        summary: '',
+        description: '',
         repository_url: '',
         demo_url: '',
         tech_stack: [],
@@ -65,14 +66,16 @@ export default function CreateProject({
         defaultValues: initialValues,
     });
 
-    const handleCreateProject: SubmitHandler<ProjectFormData> = async (data) => {
+    const handleCreateProject: SubmitHandler<DraftProjectFormData> = async (
+        data,
+    ) => {
         setProcessing(true);
 
         const keys = await uploadImages(data.images || []);
         const formData = {
             ...data,
-            images: keys
-        }
+            images: keys,
+        };
 
         router.post(projects.store(), formData, {
             preserveScroll: true,
@@ -89,7 +92,7 @@ export default function CreateProject({
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <ProjectsLayout breadcrumbs={breadcrumbs}>
             <Head title="Crear Proyecto" />
 
             <div className="mb-15">
@@ -137,6 +140,6 @@ export default function CreateProject({
                     Crear Proyecto
                 </Button>
             </form>
-        </AppLayout>
+        </ProjectsLayout>
     );
 }

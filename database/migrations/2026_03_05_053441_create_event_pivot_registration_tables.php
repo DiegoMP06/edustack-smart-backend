@@ -9,7 +9,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -36,7 +37,7 @@ return new class extends Migration {
         Schema::create('event_registrations', function (Blueprint $table) {
             $table->id();
             $table->enum('status', EventRegistrationStatus::cases())
-            ->default(EventRegistrationStatus::PENDING);
+                ->default(EventRegistrationStatus::PENDING);
             $table->timestamp('confirmed_at')->nullable();
             $table->foreignId('event_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
@@ -70,7 +71,6 @@ return new class extends Migration {
             $table->softDeletes();
             $table->index(['event_activity_id', 'status']);
         });
-
 
         Schema::create('event_activity_team_members', function (Blueprint $table) {
             $table->id();

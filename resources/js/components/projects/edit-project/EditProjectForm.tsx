@@ -5,18 +5,18 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import ProjectForm from '@/components/projects/ProjectForm';
 import { Button } from '@/components/ui/shadcn/button';
-import projects from '@/routes/projects';
 import type {
-    Project,
-    ProjectCategory,
-    ProjectFormData,
-    ProjectStatus,
-} from '@/types/projects';
+    DraftProjectFormData,
+    ProjectCategoryData,
+    ProjectData,
+    ProjectStatusData,
+} from '@/generated/types/App/Modules/Projects/DTOs';
+import projects from '@/routes/projects';
 
 type EditProjectFormProps = {
-    project: Project;
-    statuses: ProjectStatus[];
-    categories: ProjectCategory[];
+    project: ProjectData;
+    statuses: ProjectStatusData[];
+    categories: ProjectCategoryData[];
 };
 
 export default function EditProjectForm({
@@ -25,7 +25,7 @@ export default function EditProjectForm({
     categories,
 }: EditProjectFormProps) {
     const [processing, setProcessing] = useState(false);
-    const initialValues: ProjectFormData = {
+    const initialValues: DraftProjectFormData = {
         name: project.name,
         description: project.description,
         repository_url: project.repository_url,
@@ -34,39 +34,27 @@ export default function EditProjectForm({
         version: project.version,
         license: project.license,
         project_status_id: project.project_status_id,
-        categories: project.categories.map((category) => category.id),
+        categories: project.categories?.map((category) => category.id) || [],
     };
 
-    const {
-        handleSubmit,
-        control,
-        register,
-    } = useForm({
+    const { handleSubmit, control, register } = useForm({
         defaultValues: initialValues,
     });
 
-    const handleEditProject: SubmitHandler<ProjectFormData> = (data) => {
+    const handleEditProject: SubmitHandler<DraftProjectFormData> = (data) => {
         setProcessing(true);
-        router.post(
-            projects.update(project.id, {
-                query: {
-                    _method: 'PUT',
-                },
-            }),
-            data,
-            {
-                forceFormData: true,
-                preserveScroll: true,
-                showProgress: true,
-                onSuccess: (data) => {
-                    toast.success(data.props.message as string);
-                },
-                onFinish: () => setProcessing(false),
-                onError: (error) => {
-                    Object.values(error).forEach((value) => toast.error(value));
-                },
+        router.put(projects.update(project.id), data, {
+            forceFormData: true,
+            preserveScroll: true,
+            showProgress: true,
+            onSuccess: (data) => {
+                toast.success(data.props.message as string);
             },
-        );
+            onFinish: () => setProcessing(false),
+            onError: (error) => {
+                Object.values(error).forEach((value) => toast.error(value));
+            },
+        });
     };
 
     return (

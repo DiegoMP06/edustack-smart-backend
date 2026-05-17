@@ -9,6 +9,7 @@ uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
     config(['scout.driver' => null]);
+    $this->withoutVite();
 
     Role::firstOrCreate(['name' => 'admin']);
     Role::firstOrCreate(['name' => 'teacher']);
@@ -20,7 +21,7 @@ it('allows collaborators to view project but forbids updating it', function (): 
     $owner = User::factory()->member()->create();
     $collaborator = User::factory()->student()->create();
 
-    $project = Project::factory()->for($owner)->create();
+    $project = Project::factory()->for($owner, 'author')->create();
     $project->collaborators()->attach($collaborator->id, ['role' => 'collaborator']);
 
     $this->actingAs($collaborator)
@@ -36,7 +37,7 @@ it('forbids unrelated users from viewing projects', function (): void {
     $owner = User::factory()->member()->create();
     $otherUser = User::factory()->student()->create();
 
-    $project = Project::factory()->for($owner)->create();
+    $project = Project::factory()->for($owner, 'author')->create();
 
     $this->actingAs($otherUser)
         ->get(route('projects.show', $project))

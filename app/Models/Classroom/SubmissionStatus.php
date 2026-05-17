@@ -28,7 +28,7 @@ class SubmissionStatus extends Model
             ->logOnlyDirty();
     }
 
-    public function submissions()
+    public function submissions(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(AssignmentSubmission::class);
     }

@@ -3,9 +3,7 @@
 namespace App\Models\Events;
 
 use App\Enums\Events\BehaviorType;
-use App\Models\Classroom\Course;
 use App\Models\Forms\FormAttachment;
-use App\Models\Projects\Project;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -36,7 +34,7 @@ use Spatie\Sluggable\SlugOptions;
     'requires_team',
     'min_team_size',
     'max_team_size',
-    'max_participants',
+    'capacity',
     'only_students',
     'is_competition',
     'price',
@@ -164,14 +162,9 @@ class EventActivity extends Model implements HasMedia
         return $this->belongsTo(EventStatus::class, 'event_status_id');
     }
 
-    public function difficultyLevel()
-    {
-        return $this->belongsTo(DifficultyLevel::class, 'difficulty_level_id');
-    }
-
     public function difficulty()
     {
-        return $this->difficultyLevel();
+        return $this->belongsTo(DifficultyLevel::class, 'difficulty_level_id');
     }
 
     public function categories()

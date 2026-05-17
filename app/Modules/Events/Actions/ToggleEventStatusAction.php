@@ -3,14 +3,13 @@
 namespace App\Modules\Events\Actions;
 
 use App\Models\Events\Event;
-use App\Modules\Events\DTOs\EventStatusData;
 
 class ToggleEventStatusAction
 {
-    public function execute(Event $event, EventStatusData $data): Event
+    public function execute(Event $event): Event
     {
-        $event->is_published = $data->isActive;
-        $event->published_at = $data->isActive ? now() : null;
+        $event->is_published = ! $event->is_published;
+        $event->published_at = $event->is_published ? now() : null;
         $event->save();
 
         return $event;

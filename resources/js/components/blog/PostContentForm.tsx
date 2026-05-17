@@ -1,14 +1,14 @@
 import { router } from '@inertiajs/react';
 import { toast } from 'sonner';
 import PuckInput from '@/components/puck/PuckInput';
+import type { PostData } from '@/generated/types/App/Modules/Blog/DTOs';
 import usePuckContent from '@/hooks/puck/usePuckContent';
 import { db } from '@/lib/dexie';
 import { blogPuckConfig } from '@/lib/puck';
 import posts from '@/routes/posts';
-import type { Post } from '@/types/blog';
 
 type ContentFormProps = {
-    post: Post;
+    post: PostData;
     edit: boolean;
 };
 
@@ -24,7 +24,7 @@ export default function PostContentForm({ post, edit }: ContentFormProps) {
         contentType: 'posts',
         itemId: post.id,
         title: post.name,
-        serverContent: post.content,
+        serverContent: post.content as never,
     });
 
     const handleSaveChangesToServer = async () => {

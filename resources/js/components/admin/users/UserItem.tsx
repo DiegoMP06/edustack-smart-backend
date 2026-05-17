@@ -24,14 +24,17 @@ import {
     ItemTitle,
 } from '@/components/ui/shadcn/item';
 import { ROLES } from '@/consts/roles';
+import type {
+    RoleData,
+    UserData,
+} from '@/generated/types/App/Modules/Admin/DTOs';
 import { cn } from '@/lib/utils';
 import users from '@/routes/admin/users';
-import type { Role, UserData } from '@/types';
 import RoleUserModal from './RoleUserModal';
 
 type UserItemProps = {
     user: UserData;
-    roles: Role[];
+    roles: RoleData[];
 };
 
 export default function UserItem({ user, roles }: UserItemProps) {
@@ -77,7 +80,7 @@ export default function UserItem({ user, roles }: UserItemProps) {
                         {user.mother_last_name}
                         <span className="rounded bg-accent p-1 text-xs text-accent-foreground">
                             {user.roles
-                                .map((role) => ROLES[role])
+                                ?.map((role) => ROLES[role.name])
                                 .join(', ')}
                         </span>
                     </ItemTitle>
@@ -140,7 +143,7 @@ export default function UserItem({ user, roles }: UserItemProps) {
 
             <RoleUserModal
                 roles={roles}
-                currentRole={user.roles[0]}
+                currentRole={user.roles?.at(0)?.name || ''}
                 userId={user.id}
                 isModalActive={isModalActive}
                 setIsModalActive={setIsModalActive}

@@ -65,6 +65,43 @@ This project has domain-specific skills available. You MUST activate the relevan
 - Stick to existing directory structure; don't create new base folders without approval.
 - Do not change the application's dependencies without approval.
 
+### Modular Architecture Standard (Reference: `app/Modules/Blog`)
+All new or migrated modules MUST follow this decoupled, DI-driven structure:
+
+```text
+app/Modules/<Module>/
+├── Domain/
+│   ├── Contracts/          # Interfaces (Repositories, Services, etc.)
+│   ├── Policies/           # Authorization policies
+│   └── Rules/              # Domain-specific validation rules
+├── Application/
+│   ├── DTOs/               # Data Transfer Objects
+│   ├── UseCases/
+│   │   ├── Command/        # Write operations (Create, Update, Delete, Toggle)
+│   │   └── Query/          # Read operations (List, Show, GetOptions)
+│   └── Support/            # Mappers, Transformers, Helpers
+├── Infrastructure/
+│   ├── Repositories/       # Eloquent implementations of Domain contracts
+│   ├── Queries/            # Spatie QueryBuilder classes (encapsulated)
+│   │   └── Options/        # Allowed filters/includes/sorts definitions
+│   └── Analytics/          # External integrations (Cache, Scout, etc.)
+├── Http/
+│   ├── Controllers/        # Thin controllers: validate, authorize, call UseCase
+│   ├── Requests/           # FormRequest validation classes
+│   └── Resources/          # API Resources / Collections
+├── Providers/              # ModuleServiceProvider (Bindings, Policies, Routes)
+└── routes/                 # web.php, api.php, features.php
+```
+
+**Core Rules:**
+1. **NO Services layer.** Use `UseCases/Command` and `UseCases/Query` instead.
+2. **Controllers are thin.** They only validate, authorize, and delegate to a UseCase.
+3. **Repositories encapsulate data access.** `Domain/Contracts` define interfaces; `Infrastructure/Repositories` implement them using Eloquent/Spatie.
+4. **DI via Providers.** All contracts MUST be bound to implementations in the module's `Provider`.
+5. **Spatie QueryBuilder is encapsulated.** Query classes live in `Infrastructure/Queries` with `Options` classes for configuration. Controllers/UseCases NEVER import Spatie directly.
+6. **DTOs live in `Application/DTOs`.** Strongly typed data carriers between layers.
+7. **Architecture Tests are mandatory.** Every module MUST have `tests/Unit/Architecture/<Module>ArchitectureTest.php` enforcing layer boundaries.
+
 ## Frontend Bundling
 
 - If the user doesn't see a frontend change reflected in the UI, it could mean they need to run `pnpm run build`, `pnpm run dev`, or `composer run dev`. Ask them.

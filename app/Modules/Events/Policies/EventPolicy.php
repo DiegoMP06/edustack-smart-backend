@@ -7,12 +7,21 @@ use App\Models\User;
 
 class EventPolicy
 {
+    public function before(User $user, string $ability): ?bool
+    {
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+
+        return null;
+    }
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('event.view-any');
+        return $user->exists && $user->is_active;
     }
 
     /**
@@ -20,7 +29,7 @@ class EventPolicy
      */
     public function view(User $user, Event $event): bool
     {
-        return $user->can('event.view');
+        return $user->is_active && $event->user_id === $user->id;
     }
 
     /**
@@ -28,7 +37,7 @@ class EventPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('event.create');
+        return $user->is_active && $user->exists;
     }
 
     /**
@@ -36,7 +45,7 @@ class EventPolicy
      */
     public function update(User $user, Event $event): bool
     {
-        return $user->can('event.update');
+        return $user->is_active && $event->user_id === $user->id;
     }
 
     /**
@@ -44,22 +53,6 @@ class EventPolicy
      */
     public function delete(User $user, Event $event): bool
     {
-        return $user->can('event.delete');
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Event $event): bool
-    {
-        return $user->can('event.restore');
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Event $event): bool
-    {
-        return $user->can('event.force-delete');
+        return $user->is_active && $event->user_id === $user->id;
     }
 }

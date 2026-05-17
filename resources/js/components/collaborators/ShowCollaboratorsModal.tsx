@@ -9,7 +9,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/shadcn/dialog';
-import type { Collaborator, UserData } from '@/types';
+import type { UserData } from '@/generated/types/App/Modules/Admin/DTOs';
+import type { Collaborator } from '@/types';
 import UserCollaboratorItem from './UserCollaboratorItem';
 
 type ProjectCollaboratorsModalProps = {
@@ -18,8 +19,8 @@ type ProjectCollaboratorsModalProps = {
     processing: boolean;
     roles: Record<string, string>;
     setIsModalActive: Dispatch<SetStateAction<boolean>>;
-    onAddCollaborator: (userId: UserData['id'], role: string) => void
-    onDeleteCollaborator: (userId: UserData['id']) => void
+    onAddCollaborator: (userId: UserData['id'], role: string) => void;
+    onDeleteCollaborator: (userId: UserData['id']) => void;
 };
 
 export default function ShowCollaboratorsModal({

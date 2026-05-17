@@ -1,18 +1,14 @@
 import { toast } from 'sonner';
 import type { z } from 'zod';
+import type { GeneratePresignedURLItemData } from '@/generated/types/App/Modules/Media/DTOs';
 import { apiFetch } from '@/lib/api';
 import type { PresignedUrlItemSchema } from '@/schemas/media';
 import { PresignedUrlsSchema } from '@/schemas/media';
 
 type PresignedUrlItem = z.infer<typeof PresignedUrlItemSchema>;
-type UploadFileItem = {
-    extension?: string;
-    type: string;
-    id: number;
-};
 
 export default function useMediaUpload() {
-    const getPresignedUrls = async (images: UploadFileItem[]) => {
+    const getPresignedUrls = async (images: GeneratePresignedURLItemData[]) => {
         const presignedUrlsResponse = await apiFetch(
             '/media/presigned-url',
             {},
@@ -68,11 +64,13 @@ export default function useMediaUpload() {
     };
 
     const uploadImages = async (images: File[]) => {
-        const uploadFiles: UploadFileItem[] = images.map((file, index) => ({
-            extension: file.name.split('.').pop(),
-            type: file.type,
-            id: index,
-        }));
+        const uploadFiles: GeneratePresignedURLItemData[] = images.map(
+            (file, index) => ({
+                extension: file.name.split('.').pop() || '',
+                type: file.type,
+                id: index,
+            }),
+        );
 
         const presignedUrls = await getPresignedUrls(uploadFiles);
 

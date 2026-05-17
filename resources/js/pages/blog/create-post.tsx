@@ -9,15 +9,19 @@ import DropzoneInput from '@/components/dropzone/DropzoneInput';
 import InputError from '@/components/ui/app/input-error';
 import { Button } from '@/components/ui/shadcn/button';
 import { Label } from '@/components/ui/shadcn/label';
+import type {
+    DraftPostFormData,
+    PostCategoryData,
+    PostTypeData,
+} from '@/generated/types/App/Modules/Blog/DTOs';
 import useMediaUpload from '@/hooks/media/useMediaUpload';
 import AppLayout from '@/layouts/app-layout';
 import posts from '@/routes/posts';
 import type { BreadcrumbItem } from '@/types';
-import type { PostCategory, PostFormData, PostType } from '@/types/blog';
 
 type CreatePostProps = {
-    types: PostType[];
-    categories: PostCategory[];
+    types: PostTypeData[];
+    categories: PostCategoryData[];
 };
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -34,7 +38,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function CreatePost({ types, categories }: CreatePostProps) {
     const [processing, setProcessing] = useState(false);
 
-    const initialValues: PostFormData = {
+    const initialValues: DraftPostFormData = {
         name: '',
         description: '',
         reading_time_minutes: 5,
@@ -54,14 +58,14 @@ export default function CreatePost({ types, categories }: CreatePostProps) {
         defaultValues: initialValues,
     });
 
-    const handleCreatePost: SubmitHandler<PostFormData> = async (data) => {
+    const handleCreatePost: SubmitHandler<DraftPostFormData> = async (data) => {
         setProcessing(true);
 
-        const keys = await uploadImages(data.images || []);
+        const keys = await uploadImages((data.images || []) as never);
         const formData = {
             ...data,
-            images: keys
-        }
+            images: keys,
+        };
 
         router.post(posts.store(), formData, {
             preserveScroll: true,

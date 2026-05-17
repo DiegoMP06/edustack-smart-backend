@@ -9,12 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 #[Fillable(['content', 'assignment_submission_id', 'user_id'])]
 class SubmissionComment extends Model
 {
-    public function submission()
+    public function submission(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(AssignmentSubmission::class, 'assignment_submission_id');
     }
 
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }

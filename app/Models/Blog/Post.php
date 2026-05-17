@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Spatie\Activitylog\LogOptions;
@@ -34,7 +36,7 @@ use Spatie\Sluggable\SlugOptions;
 ])]
 class Post extends Model implements HasMedia
 {
-    use HasFactory, HasSlug, InteractsWithMedia, LogsActivity, Searchable, SoftDeletes, HasRelatables;
+    use HasFactory, HasRelatables, HasSlug, InteractsWithMedia, LogsActivity, Searchable, SoftDeletes;
 
     protected function casts(): array
     {
@@ -100,17 +102,17 @@ class Post extends Model implements HasMedia
             ->withResponsiveImages();
     }
 
-    public function author()
+    public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function type()
+    public function type(): BelongsTo
     {
         return $this->belongsTo(PostType::class, 'post_type_id');
     }
 
-    public function categories()
+    public function categories(): BelongsToMany
     {
         return $this->belongsToMany(PostCategory::class, 'post_category', 'post_id', 'post_category_id')->withPivot('id');
     }

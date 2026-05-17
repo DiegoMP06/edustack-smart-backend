@@ -83,57 +83,57 @@ class Course extends Model implements HasMedia
             ->withResponsiveImages();
     }
 
-    public function author()
+    public function author(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function status()
+    public function status(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(CourseStatus::class, 'course_status_id');
     }
 
-    public function category()
+    public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(CourseCategory::class, 'course_category_id');
     }
 
-    public function sections()
+    public function sections(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(CourseSection::class)->orderBy('order');
     }
 
-    public function lessons()
+    public function lessons(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(CourseLesson::class)->orderBy('order');
     }
 
-    public function resources()
+    public function resources(): \Illuminate\Database\Eloquent\Relations\MorphMany
     {
         return $this->morphMany(CourseResource::class, 'resourceable')->orderBy('order');
     }
 
-    public function enrollments()
+    public function enrollments(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(CourseEnrollment::class);
     }
 
-    public function teachers()
+    public function teachers(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(CourseTeacher::class);
     }
 
-    public function assignments()
+    public function assignments(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Assignment::class);
     }
 
-    public function announcements()
+    public function announcements(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(CourseAnnouncement::class);
     }
 
-    public function discussions()
+    public function discussions(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(CourseDiscussion::class);
     }

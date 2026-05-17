@@ -38,22 +38,22 @@ class CourseDiscussion extends Model
             ->logOnlyDirty();
     }
 
-    public function course()
+    public function course(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Course::class);
     }
 
-    public function lesson()
+    public function lesson(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(CourseLesson::class, 'course_lesson_id');
     }
 
-    public function author()
+    public function author(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function replies()
+    public function replies(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(CourseDiscussionReply::class);
     }

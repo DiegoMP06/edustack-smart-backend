@@ -10,7 +10,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/shadcn/card';
-import eventCollaborators from '@/routes/event-collaborators';
+import eventCollaborators from '@/routes/events/collaborators';
 import events from '@/routes/events';
 import type { Event } from '@/types';
 

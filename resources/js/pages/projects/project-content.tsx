@@ -1,20 +1,19 @@
 import { Head, router } from '@inertiajs/react';
 import { ChevronLeft } from 'lucide-react';
+
 import ProjectContentForm from '@/components/projects/ProjectContentForm';
 import { Button } from '@/components/ui/shadcn/button';
-import AppLayout from '@/layouts/app-layout';
+import type { ProjectData } from '@/generated/types/App/Modules/Projects/DTOs';
+import SingleProjectLayout from '@/layouts/projects/SingleProjectLayout';
 import projects from '@/routes/projects';
 import type { BreadcrumbItem } from '@/types';
-import type { Project } from '@/types/projects';
 
 type ProjectContentProps = {
-    project: Project;
+    project: ProjectData;
     edit: boolean;
 };
 
-const breadcrumbs: (project: Project) => BreadcrumbItem[] = (
-    project: Project,
-) => [
+const breadcrumbs: (project: ProjectData) => BreadcrumbItem[] = (project) => [
     {
         title: 'Proyectos',
         href: projects.index().url,
@@ -31,13 +30,16 @@ const breadcrumbs: (project: Project) => BreadcrumbItem[] = (
 
 export default function ProjectContent({ project, edit }: ProjectContentProps) {
     return (
-        <AppLayout breadcrumbs={breadcrumbs(project)}>
+        <SingleProjectLayout
+            breadcrumbs={breadcrumbs(project)}
+            project={project}
+        >
             <Head title={`Contenido del Proyecto ${project.name}`} />
 
             {edit ? (
                 <div className="mb-15">
                     <Button
-                        onClick={() => router.visit(projects.edit(project))}
+                        onClick={() => router.visit(projects.show(project))}
                     >
                         <ChevronLeft />
                         Volver
@@ -46,6 +48,6 @@ export default function ProjectContent({ project, edit }: ProjectContentProps) {
             ) : null}
 
             <ProjectContentForm project={project} edit={edit} />
-        </AppLayout>
+        </SingleProjectLayout>
     );
 }

@@ -35,22 +35,22 @@ class CourseDiscussionReply extends Model
             ->logOnlyDirty();
     }
 
-    public function discussion()
+    public function discussion(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(CourseDiscussion::class, 'course_discussion_id');
     }
 
-    public function parent()
+    public function parent(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(self::class, 'parent_id');
     }
 
-    public function children()
+    public function children(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(self::class, 'parent_id');
     }
 
-    public function author()
+    public function author(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Events\Competition;
 
-use App\Concerns\ApiQueryable;
 use App\Enums\Events\RoundStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Events\StoreCompetitionRoundRequest;
@@ -13,6 +12,7 @@ use App\Http\Resources\Events\EventCollection;
 use App\Models\Events\CompetitionRound;
 use App\Models\Events\Event;
 use App\Models\Events\EventActivity;
+use App\Modules\Shared\Concerns\ApiQueryable;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;

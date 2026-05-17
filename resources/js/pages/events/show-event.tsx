@@ -2,21 +2,31 @@ import { Head, router } from '@inertiajs/react';
 import { Render } from '@puckeditor/core';
 import { ChevronLeft, Clock, LogIn, Pencil } from 'lucide-react';
 import ShowLocationMap from '@/components/leaflet/ShowLocationMap';
-import { Avatar, AvatarFallback, AvatarGroup, AvatarGroupCount } from '@/components/ui/shadcn/avatar';
+import {
+    Avatar,
+    AvatarFallback,
+    AvatarGroup,
+    AvatarGroupCount,
+} from '@/components/ui/shadcn/avatar';
 import { Button } from '@/components/ui/shadcn/button';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/shadcn/hover-card';
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from '@/components/ui/shadcn/hover-card';
+import type { EventData } from '@/generated/types/App/Modules/Events/DTOs';
 import { useInitials } from '@/hooks/use-initials';
-import AppLayout from '@/layouts/app-layout';
+import SingleEventLayout from '@/layouts/events/SingleEventLayout';
 import { puckConfig } from '@/lib/puck';
 import { formatDatetimeToLocale, formatDateToLocale } from '@/lib/utils';
 import events from '@/routes/events';
-import type { BreadcrumbItem, Event } from '@/types';
+import type { BreadcrumbItem } from '@/types';
 
 type ShowEventProps = {
-    event: Event;
+    event: EventData;
 };
 
-const breadcrumbs = (event: Event): BreadcrumbItem[] => [
+const breadcrumbs = (event: EventData): BreadcrumbItem[] => [
     {
         title: 'Eventos',
         href: events.index().url,
@@ -28,13 +38,13 @@ const breadcrumbs = (event: Event): BreadcrumbItem[] => [
 ];
 
 export default function ShowEvent({ event }: ShowEventProps) {
-    const getInitials = useInitials()
-    const firstFiveCollaborators = event.collaborators.slice(0, 5);
+    const getInitials = useInitials();
+    const firstFiveCollaborators = event.collaborators?.slice(0, 5);
     const remainingCollaborators =
-        event.collaborators.length - firstFiveCollaborators.length;
+        event.collaborators!.length - firstFiveCollaborators!.length;
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs(event)}>
+        <SingleEventLayout breadcrumbs={breadcrumbs(event)} event={event}>
             <Head title={event.name} />
 
             <div className="mb-15 flex items-center justify-between">
@@ -47,9 +57,13 @@ export default function ShowEvent({ event }: ShowEventProps) {
                 </Button>
 
                 <Button
-                    onClick={() => router.visit(events.edit({
-                        event: event.id,
-                    }))}
+                    onClick={() =>
+                        router.visit(
+                            events.edit({
+                                event: event.id,
+                            }),
+                        )
+                    }
                     variant="outline"
                 >
                     <Pencil />
@@ -62,7 +76,7 @@ export default function ShowEvent({ event }: ShowEventProps) {
                     <main className="mb-10">
                         <div className="">
                             <img
-                                src={event.media?.[0].urls.main}
+                                src={event.media?.at(0)?.urls.main || ''}
                                 alt={event.name}
                                 className="mx-auto block aspect-square w-full max-w-40 rounded-full shadow-md"
                                 width={event.media?.[0].dimensions.main.width}
@@ -79,10 +93,10 @@ export default function ShowEvent({ event }: ShowEventProps) {
                         </p>
                     </main>
 
-                    <section className="my-10 overflow-x-scroll w-full">
+                    <section className="my-10 w-full">
                         <Render
                             config={puckConfig}
-                            data={{ content: event.content }}
+                            data={{ content: event.content as never }}
                         />
                     </section>
                 </div>
@@ -93,10 +107,10 @@ export default function ShowEvent({ event }: ShowEventProps) {
                             <AvatarFallback className="rounded-lg bg-indigo-200 text-indigo-700 dark:bg-neutral-700 dark:text-white">
                                 {getInitials(
                                     event.author?.name +
-                                    ' ' +
-                                    event.author?.father_last_name +
-                                    ' ' +
-                                    event.author?.mother_last_name,
+                                        ' ' +
+                                        event.author?.father_last_name +
+                                        ' ' +
+                                        event.author?.mother_last_name,
                                 )}
                             </AvatarFallback>
                         </Avatar>
@@ -113,7 +127,7 @@ export default function ShowEvent({ event }: ShowEventProps) {
                         </div>
                     </div>
 
-                    {event.collaborators.length > 0 && (
+                    {event.collaborators!.length > 0 && (
                         <div>
                             <h3 className="text-lg font-bold">
                                 Colaboradores:
@@ -121,7 +135,7 @@ export default function ShowEvent({ event }: ShowEventProps) {
 
                             <div className="mt-2 flex flex-wrap gap-2">
                                 <AvatarGroup className="grayscale">
-                                    {firstFiveCollaborators.map(
+                                    {firstFiveCollaborators?.map(
                                         (collaborator) => (
                                             <HoverCard key={collaborator.id}>
                                                 <HoverCardTrigger asChild>
@@ -129,10 +143,10 @@ export default function ShowEvent({ event }: ShowEventProps) {
                                                         <AvatarFallback className="rounded-lg bg-indigo-200 text-indigo-700 dark:bg-neutral-700 dark:text-white">
                                                             {getInitials(
                                                                 collaborator?.name +
-                                                                ' ' +
-                                                                collaborator?.father_last_name +
-                                                                ' ' +
-                                                                collaborator?.mother_last_name,
+                                                                    ' ' +
+                                                                    collaborator?.father_last_name +
+                                                                    ' ' +
+                                                                    collaborator?.mother_last_name,
                                                             )}
                                                         </AvatarFallback>
                                                     </Avatar>
@@ -143,10 +157,10 @@ export default function ShowEvent({ event }: ShowEventProps) {
                                                             <AvatarFallback className="rounded-lg bg-indigo-200 text-indigo-700 dark:bg-neutral-700 dark:text-white">
                                                                 {getInitials(
                                                                     collaborator.name +
-                                                                    ' ' +
-                                                                    collaborator.father_last_name +
-                                                                    ' ' +
-                                                                    collaborator.mother_last_name,
+                                                                        ' ' +
+                                                                        collaborator.father_last_name +
+                                                                        ' ' +
+                                                                        collaborator.mother_last_name,
                                                                 )}
                                                             </AvatarFallback>
                                                         </Avatar>
@@ -185,14 +199,10 @@ export default function ShowEvent({ event }: ShowEventProps) {
                     )}
 
                     <div>
-                        <h3 className="text-lg font-bold">
-                            Fecha:
-                        </h3>
+                        <h3 className="text-lg font-bold">Fecha:</h3>
 
                         <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground capitalize">
-                            <Clock
-                                className="size-6"
-                            />
+                            <Clock className="size-6" />
                             {formatDateToLocale(event.start_date)} -{' '}
                             {formatDateToLocale(event.end_date)}
                         </p>
@@ -204,11 +214,14 @@ export default function ShowEvent({ event }: ShowEventProps) {
                         </h3>
 
                         <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground capitalize">
-                            <LogIn
-                                className="size-6"
-                            />
-                            {formatDatetimeToLocale(event.registration_started_at)} -{' '}
-                            {formatDatetimeToLocale(event.registration_ended_at)}
+                            <LogIn className="size-6" />
+                            {formatDatetimeToLocale(
+                                event.registration_started_at,
+                            )}{' '}
+                            -{' '}
+                            {formatDatetimeToLocale(
+                                event.registration_ended_at,
+                            )}
                         </p>
                     </div>
 
@@ -241,7 +254,7 @@ export default function ShowEvent({ event }: ShowEventProps) {
                         </div>
                     )}
                 </aside>
-            </div >
-        </AppLayout >
+            </div>
+        </SingleEventLayout>
     );
 }

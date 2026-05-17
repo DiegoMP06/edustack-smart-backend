@@ -2,32 +2,33 @@
 
 namespace App\Modules\Admin\Http\Controllers;
 
-use App\Modules\Admin\Http\Requests\ListAllUsersRequest;
 use App\Modules\Admin\Http\Resources\UserCollection;
+use App\Modules\Admin\Services\RoleService;
 use App\Modules\Admin\Services\UserService;
-use Illuminate\Routing\Controller;
+use App\Modules\Shared\DTOs\Query\ListCollectionQueryParamsData;
+use Illuminate\Http\Request;
 use Inertia\Response;
-use Spatie\Permission\Models\Role;
 
 class ListAllUsersController extends Controller
 {
     public function __construct(
-        protected UserService $userService
-    ) {
-    }
+        protected UserService $userService,
+        protected RoleService $roleService,
+    ) {}
 
-    public function __invoke(ListAllUsersRequest $request): Response
+    public function __invoke(Request $request): Response
     {
-        $params = $request->validated();
-
-        $users = $this->userService->getPaginatedUsers(
-            $params,
+        $data = ListCollectionQueryParamsData::fromRequest($request);
+        $users = $this->userService->listUsers(
+            $data,
             $request->user()
         );
 
+        $roles = $this->roleService->getAll();
+
         return inertia('admin/users', [
             'users' => new UserCollection($users),
-            'roles' => Role::all(),
+            'roles' => $roles,
             'filter' => $request->query('filter'),
             'message' => $request->session()->get('message'),
         ]);

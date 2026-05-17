@@ -1,14 +1,19 @@
 import { Head } from '@inertiajs/react';
 import UserItem from '@/components/admin/users/UserItem';
 import Pagination from '@/components/ui/app/pagination';
+import type {
+    RoleData,
+    UserData,
+} from '@/generated/types/App/Modules/Admin/DTOs';
+import type { ListCollectionQueryParamsData } from '@/generated/types/App/Modules/Shared/DTOs/Query';
 import AppLayout from '@/layouts/app-layout';
 import users from '@/routes/admin/users';
-import type { BreadcrumbItem, PaginationType, Role, UserData } from '@/types';
+import type { BreadcrumbItem, PaginationType } from '@/types';
 
 type UsersProps = {
     users: PaginationType<UserData>;
-    roles: Role[];
-    filter: { [key: string]: string };
+    roles: RoleData[];
+    filter: ListCollectionQueryParamsData['filter'];
 };
 
 const breadcrumbs: BreadcrumbItem[] = [

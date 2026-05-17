@@ -6,18 +6,21 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import EventForm from '@/components/events/EventForm';
 import { Button } from '@/components/ui/shadcn/button';
+import type {
+    DraftEventFormData,
+    EventData,
+} from '@/generated/types/App/Modules/Events/DTOs';
 import useMediaUpload from '@/hooks/media/useMediaUpload';
 import events from '@/routes/events';
-import type { Event, EventFormData } from '@/types';
 
 type EditEventFormProps = {
-    event: Event;
+    event: EventData;
 };
 
 export default function EditEventForm({ event }: EditEventFormProps) {
     const [processing, setProcessing] = useState(false);
 
-    const initialValues: EventFormData = {
+    const initialValues: DraftEventFormData = {
         name: event.name,
         logo: [],
         description: event.description,
@@ -38,15 +41,11 @@ export default function EditEventForm({ event }: EditEventFormProps) {
 
     const { uploadImages } = useMediaUpload();
 
-    const {
-        control,
-        register,
-        handleSubmit,
-    } = useForm({
+    const { control, register, handleSubmit } = useForm({
         defaultValues: initialValues,
     });
 
-    const handleEditEvent: SubmitHandler<EventFormData> = async ({
+    const handleEditEvent: SubmitHandler<DraftEventFormData> = async ({
         latLng,
         start_date,
         end_date,
@@ -81,23 +80,19 @@ export default function EditEventForm({ event }: EditEventFormProps) {
                 .split('T')[0],
         };
 
-        router.patch(
-            events.update(event.id),
-            formData,
-            {
-                preserveScroll: true,
-                showProgress: true,
-                onSuccess: (data) => {
-                    toast.success(data.props.message as string);
-                },
-                onFinish() {
-                    setProcessing(false);
-                },
-                onError(error) {
-                    Object.values(error).forEach((value) => toast.error(value));
-                },
+        router.patch(events.update(event.id), formData, {
+            preserveScroll: true,
+            showProgress: true,
+            onSuccess: (data) => {
+                toast.success(data.props.message as string);
             },
-        );
+            onFinish() {
+                setProcessing(false);
+            },
+            onError(error) {
+                Object.values(error).forEach((value) => toast.error(value));
+            },
+        });
     };
 
     return (
@@ -109,7 +104,7 @@ export default function EditEventForm({ event }: EditEventFormProps) {
                 {...{
                     control,
                     register,
-                    defaultImage: event.media.at(0)?.urls.main,
+                    defaultImage: event.media?.at(0)?.urls.main,
                     edit: true,
                 }}
             />

@@ -17,10 +17,38 @@ export const compareDates = (date1: Date, date2: Date) => {
     );
 };
 
-export function toDateLocal(value: Date): string {
-    const year = value.getFullYear();
-    const month = `${value.getMonth() + 1}`.padStart(2, '0');
-    const day = `${value.getDate() + 1}`.padStart(2, '0');
+export function toDateLocal(value: Date | string | undefined): string {
+    if (!value) {
+        return '';
+    }
+
+    const date = value instanceof Date ? value : new Date(value);
+
+    if (isNaN(date.getTime())) {
+        return '';
+    }
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
 }
+
+export const formatDateToServer = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+};
+
+export const stringToDate = (val: string | null | undefined) => {
+    if (!val) {
+        return new Date();
+    }
+
+    const [y, m, d] = val.split('-').map(Number);
+
+    return new Date(y, m - 1, d);
+};

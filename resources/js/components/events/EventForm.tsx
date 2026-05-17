@@ -1,3 +1,4 @@
+import { LatLng } from 'leaflet';
 import type { Control, UseFormRegister } from 'react-hook-form';
 import { Controller, useFormState, useWatch } from 'react-hook-form';
 import DropzoneInput from '@/components/dropzone/DropzoneInput';
@@ -7,15 +8,12 @@ import { Input } from '@/components/ui/shadcn/input';
 import { Label } from '@/components/ui/shadcn/label';
 import { Switch } from '@/components/ui/shadcn/switch';
 import { Textarea } from '@/components/ui/shadcn/textarea';
-import {
-    toDateLocal,
-    toDatetimeLocal
-} from '@/lib/utils';
-import type { EventFormData } from '@/types/events';
+import type { DraftEventFormData } from '@/generated/types/App/Modules/Events/DTOs';
+import { stringToDate, toDateLocal, toDatetimeLocal } from '@/lib/utils';
 
 type EventFormProps = {
-    control: Control<EventFormData, unknown, EventFormData>;
-    register: UseFormRegister<EventFormData>;
+    control: Control<DraftEventFormData>;
+    register: UseFormRegister<DraftEventFormData>;
     edit?: boolean;
     defaultImage?: string | null;
 };
@@ -26,10 +24,21 @@ export default function EventForm({
     defaultImage,
     edit,
 }: EventFormProps) {
-    const { errors } = useFormState({ control })
+    const { errors } = useFormState({ control });
+
     const is_free = useWatch({ control, name: 'is_free' });
     const is_online = useWatch({ control, name: 'is_online' });
     const with_capacity = useWatch({ control, name: 'with_capacity' });
+
+    const registration_started_at = useWatch({
+        control,
+        name: 'registration_started_at',
+    });
+    const registration_ended_at = useWatch({
+        control,
+        name: 'registration_ended_at',
+    });
+    const start_date = useWatch({ control, name: 'start_date' });
 
     return (
         <>
@@ -62,7 +71,7 @@ export default function EventForm({
                         minLength: {
                             value: 50,
                             message:
-                                'El resumen debe tener al menos 100 caracteres',
+                                'El resumen debe tener al menos 50 caracteres',
                         },
                     })}
                     id="description"
@@ -93,7 +102,6 @@ export default function EventForm({
             </div>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-
                 <div className="grid flex-1 gap-2">
                     <Label htmlFor="registration_started_at">
                         Fecha de inicio del Registro:{' '}
@@ -102,20 +110,33 @@ export default function EventForm({
                     <Controller
                         name="registration_started_at"
                         control={control}
-                        rules={{ required: 'La Fecha es requerida' }}
+                        rules={{
+                            required: 'La Fecha es requerida',
+                            validate: {
+                                futureDate: (value) =>
+                                    !value || !(value instanceof Date)
+                                        ? true
+                                        : value > new Date() ||
+                                          'La fecha debe ser futura',
+                            },
+                        }}
                         render={({ field: { value, onChange } }) => (
                             <Input
                                 id="registration_started_at"
                                 type="datetime-local"
+                                min={new Date().toISOString().slice(0, 16)}
                                 value={toDatetimeLocal(value)}
-                                onChange={(event) =>
-                                    onChange(new Date(event.target.value))
-                                }
+                                onChange={(event) => {
+                                    const val = event.target.value;
+                                    onChange(val ? new Date(val) : new Date());
+                                }}
                             />
                         )}
                     />
 
-                    <InputError message={errors.start_date?.message} />
+                    <InputError
+                        message={errors.registration_started_at?.message}
+                    />
                 </div>
 
                 <div className="grid flex-1 gap-2">
@@ -126,20 +147,38 @@ export default function EventForm({
                     <Controller
                         name="registration_ended_at"
                         control={control}
-                        rules={{ required: 'La Fecha es requerida' }}
+                        rules={{
+                            required: 'La Fecha es requerida',
+                            validate: {
+                                afterStart: (value) =>
+                                    !value || !registration_started_at
+                                        ? true
+                                        : value > registration_started_at ||
+                                          'La fecha debe ser posterior a la de inicio de registro',
+                                beforeEvent: (value) =>
+                                    !value || !start_date
+                                        ? true
+                                        : value < start_date ||
+                                          'La fecha debe ser anterior a la de inicio del evento',
+                            },
+                        }}
                         render={({ field: { value, onChange } }) => (
                             <Input
                                 id="registration_ended_at"
                                 type="datetime-local"
+                                min={toDatetimeLocal(registration_started_at)}
                                 value={toDatetimeLocal(value)}
-                                onChange={(event) =>
-                                    onChange(new Date(event.target.value))
-                                }
+                                onChange={(event) => {
+                                    const val = event.target.value;
+                                    onChange(val ? new Date(val) : new Date());
+                                }}
                             />
                         )}
                     />
 
-                    <InputError message={errors.end_date?.message} />
+                    <InputError
+                        message={errors.registration_ended_at?.message}
+                    />
                 </div>
             </div>
 
@@ -150,14 +189,25 @@ export default function EventForm({
                     <Controller
                         name="start_date"
                         control={control}
-                        rules={{ required: 'La Fecha es requerida' }}
+                        rules={{
+                            required: 'La Fecha es requerida',
+                            validate: {
+                                afterRegistration: (value) =>
+                                    !value || !registration_ended_at
+                                        ? true
+                                        : new Date(value) >
+                                              registration_ended_at ||
+                                          'La fecha debe ser posterior a la de fin de registro',
+                            },
+                        }}
                         render={({ field: { value, onChange } }) => (
                             <Input
                                 id="start_date"
                                 type="date"
+                                min={toDateLocal(registration_ended_at)}
                                 value={toDateLocal(value)}
                                 onChange={(event) =>
-                                    onChange(new Date(event.target.value))
+                                    onChange(stringToDate(event.target.value))
                                 }
                             />
                         )}
@@ -172,14 +222,25 @@ export default function EventForm({
                     <Controller
                         name="end_date"
                         control={control}
-                        rules={{ required: 'La Fecha es requerida' }}
+                        rules={{
+                            required: 'La Fecha es requerida',
+                            validate: {
+                                afterOrEqual: (value) =>
+                                    !value || !start_date
+                                        ? true
+                                        : new Date(value) >=
+                                              new Date(start_date) ||
+                                          'La fecha debe ser posterior o igual a la de inicio del evento',
+                            },
+                        }}
                         render={({ field: { value, onChange } }) => (
                             <Input
                                 id="end_date"
                                 type="date"
+                                min={toDateLocal(start_date)}
                                 value={toDateLocal(value)}
                                 onChange={(event) =>
-                                    onChange(new Date(event.target.value))
+                                    onChange(stringToDate(event.target.value))
                                 }
                             />
                         )}
@@ -202,7 +263,7 @@ export default function EventForm({
                     )}
                 />
 
-                <Label htmlFor="with_capacity">Con Capacidad</Label>
+                <Label htmlFor="with_capacity">Con Capacidad Limitada</Label>
             </div>
 
             {with_capacity && (
@@ -225,7 +286,7 @@ export default function EventForm({
                         placeholder="Capacidad del Evento"
                     />
 
-                    <InputError message={errors.price?.message} />
+                    <InputError message={errors.capacity?.message} />
                 </div>
             )}
 
@@ -246,7 +307,7 @@ export default function EventForm({
             </div>
 
             {!is_free && (
-                <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div className="grid gap-2">
                         <Label htmlFor="price">Precio:</Label>
 
@@ -366,8 +427,13 @@ export default function EventForm({
                             control={control}
                             render={({ field: { value, onChange } }) => (
                                 <LocationMap
-                                    value={value}
-                                    onChange={onChange}
+                                    value={new LatLng(value.lat, value.lng)}
+                                    onChange={(value) =>
+                                        onChange({
+                                            lat: value.lat,
+                                            lng: value.lng,
+                                        })
+                                    }
                                 />
                             )}
                         />

@@ -1,12 +1,17 @@
 import type { Content, Data } from '@puckeditor/core';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { useConfirmDialog } from '@/components/ui/app/confirm-dialog-provider';
 import { db } from '@/lib/dexie';
-import type { TableContent } from '@/lib/dexie';
 import type { ComponentProps } from '@/lib/puck';
 
-type ContentTypes = 'posts' | 'projects' | 'events' | 'event-activities' | 'competition-rounds' | 'classroom';
+type ContentTypes =
+    | 'posts'
+    | 'projects'
+    | 'events'
+    | 'event-activities'
+    | 'competition-rounds'
+    | 'classroom';
 
 type UsePuckContentProps = {
     contentType: ContentTypes;
@@ -21,17 +26,39 @@ export default function usePuckContent({
     title,
     serverContent,
 }: UsePuckContentProps) {
-    const [initialData, setInitialData] = useState<Partial<
-        Data<ComponentProps>
-    > | null>(null);
+    const [initialData, setInitialData] = useState<Data<ComponentProps> | null>(
+        null,
+    );
     const [content, setContent] = useState<Content<ComponentProps>>([]);
     const [processing, setProcessing] = useState(false);
     const confirmDialog = useConfirmDialog();
+
+    const confirmDialogRef = useRef(confirmDialog);
+    const serverContentRef = useRef(serverContent);
+    const titleRef = useRef(title);
+    const initialized = useRef(false);
+
+    useEffect(() => {
+        confirmDialogRef.current = confirmDialog;
+    }, [confirmDialog]);
+
+    useEffect(() => {
+        serverContentRef.current = serverContent;
+    }, [serverContent]);
+
+    useEffect(() => {
+        titleRef.current = title;
+    }, [title]);
 
     const DBId = useMemo(
         () => `${contentType}_${itemId}`,
         [contentType, itemId],
     );
+
+    const DBIdRef = useRef(DBId);
+    useEffect(() => {
+        DBIdRef.current = DBId;
+    }, [DBId]);
 
     const handleSaveToIndexDB = useCallback(
         async (data: Content<ComponentProps>) => {
@@ -45,33 +72,6 @@ export default function usePuckContent({
         [DBId],
     );
 
-    const loadLocalContent = useCallback(
-        async (localContent: TableContent) => {
-            setInitialData({
-                root: {
-                    props: {
-                        title,
-                    },
-                },
-                content: localContent.content,
-            });
-            setContent(localContent.content);
-        },
-        [title],
-    );
-
-    const loadServerContent = useCallback(() => {
-        setInitialData({
-            root: {
-                props: {
-                    title,
-                },
-            },
-            content: serverContent,
-        });
-        setContent(serverContent);
-    }, [serverContent, title]);
-
     const debouncedSaveDB = useDebouncedCallback(handleSaveToIndexDB, 1000);
 
     useEffect(() => {
@@ -81,11 +81,18 @@ export default function usePuckContent({
     }, [debouncedSaveDB]);
 
     useEffect(() => {
+        if (initialized.current) {
+            return;
+        }
+
+        initialized.current = true;
+
         (async () => {
-            const localPost = await db.contents.get(DBId);
+            const id = DBIdRef.current;
+            const localPost = await db.contents.get(id);
 
             if (localPost && localPost.content.length > 0) {
-                const shouldUseLocalContent = await confirmDialog({
+                const shouldUseLocalContent = await confirmDialogRef.current({
                     title: 'Contenido local sin guardar',
                     description:
                         'Encontramos contenido local pendiente. ¿Quieres continuar con ese contenido?',
@@ -95,13 +102,30 @@ export default function usePuckContent({
                 });
 
                 if (shouldUseLocalContent) {
-                    loadLocalContent(localPost);
+                    const t = titleRef.current;
+                    setInitialData({
+                        root: { props: { title: t } },
+                        content: localPost.content,
+                    });
+                    setContent(localPost.content);
                 } else {
-                    await db.contents.delete(DBId);
-                    loadServerContent();
+                    await db.contents.delete(id);
+                    const t = titleRef.current;
+                    const sc = serverContentRef.current;
+                    setInitialData({
+                        root: { props: { title: t } },
+                        content: sc,
+                    });
+                    setContent(sc);
                 }
             } else {
-                loadServerContent();
+                const t = titleRef.current;
+                const sc = serverContentRef.current;
+                setInitialData({
+                    root: { props: { title: t } },
+                    content: sc,
+                });
+                setContent(sc);
             }
         })();
     }, []);

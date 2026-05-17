@@ -2,64 +2,59 @@ import { Head, router } from '@inertiajs/react';
 import { Check, ChevronLeft, Eye } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+
 import ShowCollaboratorsModal from '@/components/collaborators/ShowCollaboratorsModal';
 import UserCollaboratorItem from '@/components/collaborators/UserCollaboratorItem';
 import Pagination from '@/components/ui/app/pagination';
 import { Button } from '@/components/ui/shadcn/button';
 import { PROJECT_COLLABORATOR_ROLE } from '@/consts/projects';
-import AppLayout from '@/layouts/app-layout';
-import projectCollaborators from '@/routes/project-collaborators';
+import type { UserData } from '@/generated/types/App/Modules/Admin/DTOs';
+import type { ProjectData } from '@/generated/types/App/Modules/Projects/DTOs';
+import type { ListCollectionQueryParamsData } from '@/generated/types/App/Modules/Shared/DTOs/Query';
+import SingleProjectLayout from '@/layouts/projects/SingleProjectLayout';
 import projects from '@/routes/projects';
-import type {
-    BreadcrumbItem,
-    PaginationType,
-    Project,
-    UserData
-} from '@/types';
+import type { BreadcrumbItem, PaginationType } from '@/types';
 
 type ProjectCollaboratorsProps = {
     users: PaginationType<UserData>;
-    project: Project;
-    page: number;
-    search: string;
+    project: ProjectData;
+    filter: ListCollectionQueryParamsData['filter'];
     message?: string;
     edit: boolean;
 };
 
-const breadcrumbs: (project: Project) => BreadcrumbItem[] = (
-    project: Project,
-) => [
-        {
-            title: 'Proyectos',
-            href: projects.index().url,
-        },
-        {
-            title: project.name,
-            href: projects.show(project.id).url,
-        },
-        {
-            title: `Colaboradores`,
-            href: projectCollaborators.index(project.id).url,
-        },
-    ];
+const breadcrumbs: (project: ProjectData) => BreadcrumbItem[] = (project) => [
+    {
+        title: 'Proyectos',
+        href: projects.index().url,
+    },
+    {
+        title: project.name,
+        href: projects.show(project.id).url,
+    },
+    {
+        title: `Colaboradores`,
+        href: projects.collaborators.index(project.id).url,
+    },
+];
 
 export default function ProjectCollaborators({
     users,
     project,
     edit,
-    search,
+    filter,
 }: ProjectCollaboratorsProps) {
     const [isModalActive, setIsModalActive] = useState(false);
     const [processing, setProcessing] = useState(false);
 
-    const handleAddCollaborator = (userId: UserData['id'], role: string,) => {
+    const handleAddCollaborator = (userId: UserData['id'], role: string) => {
         setProcessing(true);
         const formData = {
             user_id: userId,
             role,
         };
 
-        router.post(projectCollaborators.store(project.id), formData, {
+        router.post(projects.collaborators.store(project.id), formData, {
             preserveScroll: true,
             forceFormData: false,
             showProgress: true,
@@ -78,10 +73,13 @@ export default function ProjectCollaborators({
 
     const handleDeleteCollaborator = (userId: UserData['id']) => {
         setProcessing(true);
-        const collaboratorIndex = project.collaborators.find((collaborator) => collaborator.id === userId)?.pivot.id || -1;
+        const collaboratorIndex =
+            project.collaborators?.find(
+                (collaborator) => collaborator.id === userId,
+            )?.pivot_id || -1;
 
         router.delete(
-            projectCollaborators.destroy({
+            projects.collaborators.destroy({
                 project: project.id,
                 project_collaborator: collaboratorIndex,
             }),
@@ -103,21 +101,21 @@ export default function ProjectCollaborators({
     };
 
     return (
-        <AppLayout
+        <SingleProjectLayout
             breadcrumbs={breadcrumbs(project)}
             withSearch
-            collectionName='users'
+            collectionName="users"
+            project={project}
         >
             <Head title={`Colaboradores de ${project.name}`} />
 
             <div className="flex h-screen flex-col gap-6 overflow-hidden">
                 <div className="flex-1 overflow-y-auto p-4">
-
                     <div className="mb-15 flex gap-4">
                         {edit ? (
                             <Button
                                 onClick={() =>
-                                    router.visit(projects.edit(project))
+                                    router.visit(projects.show(project))
                                 }
                             >
                                 <ChevronLeft />
@@ -139,10 +137,12 @@ export default function ProjectCollaborators({
                                 <UserCollaboratorItem
                                     key={user.id}
                                     user={user}
-                                    collaborators={project.collaborators}
+                                    collaborators={project.collaborators || []}
                                     processing={processing}
                                     roles={PROJECT_COLLABORATOR_ROLE}
-                                    onDeleteCollaborator={handleDeleteCollaborator}
+                                    onDeleteCollaborator={
+                                        handleDeleteCollaborator
+                                    }
                                     onAddCollaborator={handleAddCollaborator}
                                 />
                             ))}
@@ -156,8 +156,7 @@ export default function ProjectCollaborators({
                     <Pagination
                         pagination={users}
                         queryParams={{
-                            search,
-                            edit,
+                            filter,
                         }}
                     />
                 </div>
@@ -168,7 +167,7 @@ export default function ProjectCollaborators({
                         onClick={() =>
                             router.visit(
                                 edit
-                                    ? projects.edit(project)
+                                    ? projects.show(project)
                                     : projects.index(),
                             )
                         }
@@ -181,13 +180,13 @@ export default function ProjectCollaborators({
 
             <ShowCollaboratorsModal
                 isModalActive={isModalActive}
-                collaborators={project.collaborators}
+                collaborators={project.collaborators || []}
                 processing={processing}
                 roles={PROJECT_COLLABORATOR_ROLE}
                 setIsModalActive={setIsModalActive}
                 onDeleteCollaborator={handleDeleteCollaborator}
                 onAddCollaborator={handleAddCollaborator}
             />
-        </AppLayout>
+        </SingleProjectLayout>
     );
 }
